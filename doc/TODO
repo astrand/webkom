@@ -45,3 +45,6 @@
 * List all conferences and/or persons. 
 
 * Feature: View more than one article on a single HTML page. 
+
+* Break text if paragraph begings with ">+*"
+
