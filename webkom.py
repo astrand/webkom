@@ -530,6 +530,7 @@ class AboutPageActions(Action):
                                       "Erik Forsberg"), BR())
         self.doc.append("Kjell Enblom", BR())
         self.doc.append("Niklas Lindgren", BR())
+        self.doc.append("Eva Isaksson", BR())
 
         self.doc.append(Heading(3, self._("Technology")))
         self.doc.append(self._("WebKOM is written in Python and is a persistent, threaded "))
