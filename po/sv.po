@@ -500,7 +500,7 @@ msgid "This text is FAQ for conference "
 msgstr "Detta inlägg är FAQ för möte "
 
 msgid "Request read confirmation"
-msgstr "Begära läsbekräftelse\n"
+msgstr "Begära läsbekräftelse"
 
 msgid "Showing all sessions active within the last 30 minutes."
 msgstr "Visar alla sessioner som har varit aktiva de senaste 30 minuterna."
