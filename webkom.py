@@ -127,6 +127,10 @@ class Response:
         self.form = form
         self.key = ""
         self.sess = None
+        self.shortcuts = []
+
+    def add_shortcut(self, key, url):
+        self.shortcuts.append((key, url))
 
 
 class Action:
@@ -227,6 +231,76 @@ class ViewPendingMessages(Action):
         if was_pending:
             self.doc.append("<hr noshade size=2>")
         return
+
+
+class AddShortCuts(Action):
+    def shortcut_case(self, key, location):
+        ret = """case '%s':
+            window.location="%s";
+            break;
+        """ % (key, location)
+        return ret
+    
+    def response(self):
+        code_begin = """
+        <SCRIPT LANGUAGE="JavaScript1.2">
+        <!--
+        function reFocus(e) {
+            if (active) {
+                document.shortcut_form.shortcut_entry.focus();
+                window.setTimeout(reFocus, 1000);
+            }
+        }
+        
+        var ns4 = (document.layers)? true:false
+        var ie4 = (document.all)? true:false
+        var active = new Boolean(true);
+
+        document.onkeypress=keyPress;
+
+        if (ns4) {
+            document.write("<form name='shortcut_form'>");
+            document.write("<input name='shortcut_entry' type=text size=1>")
+            document.write("</form>")
+            document.captureEvents(Event.KEYPRESS);
+            window.setTimeout(reFocus, 100);
+        }
+        
+        function keyPress(e) {
+            if (!active) return false;
+            if (ns4)
+                keyChar = String.fromCharCode(e.which);
+            else if (ie4)
+                keyChar = String.fromCharCode(window.event.keyCode);
+            else
+                keyChar = ""
+            switch (keyChar) {
+        """
+        
+        disable_shortcuts = """
+        case 'z':
+            active = false;
+            alert("Snabbtangenter avslagna.");
+            break;
+        """
+            
+        code_end = """
+                }
+            return false;
+        }
+        //-->
+        </SCRIPT>
+        """
+        
+        ret = code_begin + disable_shortcuts
+        # Example:
+        #ret = ret + self.shortcut_case("q", "http://www.abc.se")
+        
+        for s in self.resp.shortcuts:
+            ret = ret + self.shortcut_case(s[0], s[1])
+        
+        ret = ret + code_end
+        self.doc.append(ret)
     
     
 class LoginPageActions(Action):
@@ -379,8 +453,10 @@ class MainPageActions(Action):
 
         tab=[[cont]]
         self.doc.append(Table(body=tab, border=0, cell_padding=50, width="100%"))
+
         
-        return 
+        return
+
 
 class LogOutActions(Action):
     "Do logout actions"
@@ -729,62 +805,15 @@ class GoConfActions(Action):
 
 class ViewTextActions(Action):
     "Generate a page with a requested article"
-    def response(self):
-        # Toplink
-        toplink = Href(self.base_session_url(), "WebKOM")
-        # Link to conferences
-        conflink = self.action_href("viewconfs", "Möten")
-        cont = Container(toplink, " : ", conflink)
-        self.append_std_top(cont)
-
-        # Local and global text number
-        global_num = int(self.form["textnum"].value)
-
-        # Valid article?
-        try:
-            if global_num == 0:
-                raise kom.NoSuchText
-            ts = self.sess.conn.textstats[global_num]
-        except kom.NoSuchText:
-            self.print_error("Inlägget finns inte.")
-            return 
-        except:
-            self.print_error("Ett fel uppstod vid hämtning av inläggsinformation.")
-            return 
-            
-        # Link to current conference
-        # Note: It's possible to view texts from other conferences,
-        # while still staying in another conference
-        cont.append(" : ")
-        cont.append(self.action_href("goconf&conf=" + str(self.sess.current_conf),
-                                     self.get_conf_name(self.sess.current_conf)))
-        
-        # Link to this page
-        cont.append(" : ")
-        cont.append(self.action_href("viewtext" + "&textnum=" + str(global_num),
-                                     self.sess.conn.subjects[global_num]))
-        self.doc.append(BR(2))
-
-        # Fetch text
-        try:
-            text = kom.ReqGetText(self.sess.conn, global_num, 0, ts.no_of_chars).response()
-        except:
-            self.print_error("Hämtning av texten misslyckades")
-            return
-            
+    def get_subject(self, global_num):
         subject = self.sess.conn.subjects[global_num]
         if not subject:
             # If subject is empty, the table gets ugly
             subject = "&nbsp;"
-        body = text[string.find(text, "\n"):]
+        return subject
 
-        header = []
-        header.append(["Ärende:", subject])
-        header.append(["Datum:", ts.creation_time.to_date_and_time()]);
-        presentation = str(self.get_presentation(ts.author))
-        header.append(["Författare:",
-                       self.action_href("viewtext&textnum=" + presentation,
-                                        self.get_conf_name(ts.author), presentation)])
+
+    def add_comments_to(self, ts, header):
         # Comment to
         for c in ts.misc_info.comment_to_list:
             # Fetch info about commented text
@@ -810,9 +839,7 @@ class ViewTextActions(Action):
             if c.sent_at is not None:
                 header.append(["Adderad:", c.sent_at.to_date_and_time()])
 
-        
-        # A part of the URL used for commenting this text (includes all recipients)
-        comment_url = ""
+    def do_recipients(self, ts, header, comment_url):
         local_num = None    
         for r in ts.misc_info.recipient_list:
             leftcol = mir2caption(r.type)
@@ -842,25 +869,11 @@ class ViewTextActions(Action):
             # Fetch the local_num
             if r.recpt == self.sess.current_conf:
                 local_num = r.loc_no
-                
-        if ts.no_of_marks:
-            header.append(["Markeringar:", str(ts.no_of_marks)])
 
-        header.append(["Inläggsnummer:",
-                       self.action_href("viewtext&textnum=" + str(global_num), str(global_num))])
-        
-        self.doc.append(BR())
-        self.doc.append(Table(body=header, cell_padding=2, column1_align="right", width="80%"))
-        # Body
-        # FIXME: Reformatting according to protocol A. 
-        body = HTMLutil.latin1_escape(escape(body))
-        body = linkify_text(body)
-        
-        self.doc.append(string.replace(body, "\n","<br>\n"))
+        return local_num
 
-        # Ok, the body is done. Let's add all comments.
-        header = []
-        new_comments = []
+
+    def add_comments_in(self, ts, header, new_comments):
         for c in ts.misc_info.comment_in_list:
             # Fetch info about comment
             try:
@@ -884,7 +897,104 @@ class ViewTextActions(Action):
                     new_comments.append(c.text_no)
         self.doc.append(Table(body=header, cell_padding=2, column1_align="right", width="80%"))
 
-        # Comment handling
+
+
+    def response(self):
+        # Toplink
+        toplink = Href(self.base_session_url(), "WebKOM")
+        # Link to conferences
+        conflink = self.action_href("viewconfs", "Möten")
+        cont = Container(toplink, " : ", conflink)
+        self.append_std_top(cont)
+
+        # Local and global text number
+        global_num = int(self.form["textnum"].value)
+        
+        # Link to current conference
+        # Note: It's possible to view texts from other conferences,
+        # while still staying in another conference
+        cont.append(" : ")
+        cont.append(self.action_href("goconf&conf=" + str(self.sess.current_conf),
+                                     self.get_conf_name(self.sess.current_conf)))
+        # Link to this page
+        cont.append(" : ")
+        cont.append(self.action_href("viewtext" + "&textnum=" + str(global_num),
+                                     self.sess.conn.subjects[global_num]))
+        self.doc.append(BR())
+        lower_actions = Container()
+        #
+        # Upper actions
+        #
+        std_cmd = Container()
+        self.doc.append("Standardkommando: ", std_cmd, BR(2))
+        upper_actions = Container()
+        self.doc.append(upper_actions)
+
+        # Link for next conference with unread
+        upper_actions.append(self.action_href("goconf_with_unread",
+                                              "Nästa möte med olästa"), NBSP)
+
+        self.doc.append(BR())
+
+        # Valid article?
+        try:
+            if global_num == 0:
+                raise kom.NoSuchText
+            ts = self.sess.conn.textstats[global_num]
+        except kom.NoSuchText:
+            self.print_error("Inlägget finns inte.")
+            return 
+        except:
+            self.print_error("Ett fel uppstod vid hämtning av inläggsinformation.")
+            return 
+
+        # Fetch text
+        try:
+            text = kom.ReqGetText(self.sess.conn, global_num, 0, ts.no_of_chars).response()
+        except:
+            self.print_error("Hämtning av texten misslyckades")
+            return
+            
+        subject = self.get_subject(global_num)
+        body = text[string.find(text, "\n"):]
+
+        header = []
+        header.append(["Ärende:", subject])
+        header.append(["Datum:", ts.creation_time.to_date_and_time()]);
+        presentation = str(self.get_presentation(ts.author))
+        header.append(["Författare:",
+                       self.action_href("viewtext&textnum=" + presentation,
+                                        self.get_conf_name(ts.author), presentation)])
+
+        # Comments-to
+        self.add_comments_to(ts, header)
+        
+        # Recipients
+        comment_url = ""
+        # NOTE: Currently, we have no use of the local_num. Keep it anyway. 
+        local_num = self.do_recipients(ts, header, comment_url)
+
+        if ts.no_of_marks:
+            header.append(["Markeringar:", str(ts.no_of_marks)])
+
+        header.append(["Inläggsnummer:",
+                       self.action_href("viewtext&textnum=" + str(global_num), str(global_num))])
+        
+        self.doc.append(BR())
+        self.doc.append(Table(body=header, cell_padding=2, column1_align="right", width="80%"))
+        # Body
+        # FIXME: Reformatting according to protocol A. 
+        body = HTMLutil.latin1_escape(escape(body))
+        body = linkify_text(body)
+        
+        self.doc.append(string.replace(body, "\n","<br>\n"))
+
+        # Ok, the body is done. Let's add all comments.
+        header = []
+        new_comments = []
+        self.add_comments_in(ts, header, new_comments)
+
+        # Handling for reading comments
         reading_comment = self.form.getvalue("reading_comment", 0)
         if not reading_comment:
             # Zero comment_tree
@@ -895,11 +1005,19 @@ class ViewTextActions(Action):
                 if global_num == self.sess.comment_tree[0]:
                     del self.sess.comment_tree[0]
 
-        # Add links for reading next local text
+        #
+        # Lower actions
+        #
+        self.doc.append(lower_actions)
+
+        # Add links for reading next unread
         next_text = get_next_unread(self.sess.conn, self.sess.pers_num,
                                     self.sess.current_conf)
-        self.doc.append(self.action_href("viewtext&textnum=" + str(next_text),
-                                         "Läsa nästa olästa", next_text), NBSP)
+        next_text_url = "viewtext&textnum=" + str(next_text)
+        next_text_caption = "Läs nästa olästa"
+        lower_actions.append(self.action_href(next_text_url, next_text_caption, 
+                                              next_text), NBSP)
+
         # Add new comments
         self.sess.comment_tree = new_comments + self.sess.comment_tree
 
@@ -907,25 +1025,34 @@ class ViewTextActions(Action):
         # this conference and be valid. So, if reading comments, add a
         # link.
         if self.sess.comment_tree:
-            next_text = self.sess.comment_tree[0]
+            next_comment = self.sess.comment_tree[0]
         else:
-            next_text = None
-        self.doc.append(self.action_href("viewtext&textnum=" + str(next_text) + "&reading_comment=1",
-                                         "Läsa nästa kommentar", next_text), NBSP)
+            next_comment = None
+        next_comment_url = "viewtext&textnum=" + str(next_comment) + "&reading_comment=1"
+        next_comment_caption = "Läs nästa kommentar"
+        lower_actions.append(self.action_href(next_comment_url, next_comment_caption,
+                                              next_comment), NBSP)
 
-            
-        # Link for next conference with unread
-        self.doc.append(self.action_href("goconf_with_unread",
-                                         "Nästa möte med olästa"), NBSP)
+        # Standard action
+        if next_comment:
+            std_cmd.append(self.action_href(next_comment_url, next_comment_caption,
+                                            1), NBSP)
+            std_url = self.base_session_url() + "&action=" + next_comment_url
+        elif next_text:
+            std_cmd.append(self.action_href(next_text_url, next_text_caption,
+                                            1), NBSP)
+            std_url = self.base_session_url() + "&action=" + next_text_url
+        else:
+            std_cmd.append(self.action_href("goconf_with_unread",
+                                            "Nästa möte med olästa"), NBSP)
+            std_url = self.base_session_url() + "&action=" + "goconf_with_unread"
+        self.resp.add_shortcut(" ", std_url)
             
         # Maybe the user want to comment?
         comment_url = comment_url + "&comment_to=" + str(global_num)
-        self.doc.append(self.action_href("writearticle" + comment_url,
-                                         "Kommentera detta inlägg"), NBSP)
-
-        # Or write an new article?
-        self.doc.append(self.action_href("writearticle&rcpt=" + str(self.sess.current_conf),
-                                         "Skriv inlägg"), NBSP)
+        lower_actions.append(self.action_href("writearticle" + comment_url,
+                                              "Kommentera detta inlägg"), NBSP)
+        
         return 
 
 
@@ -1414,10 +1541,16 @@ def actions(resp):
     resp.sess = sessionset.get_session(resp.key)
     resp.sess.lock_sess()
 
+    # View messages
     ViewPendingMessages(resp).response()
-    
+
     # Create an instance of apropriate class and let it generate response
     response_type(resp).response()
+
+    resp.add_shortcut("p", "http://www.pp.se")
+
+    # Add Javascript shortcuts
+    AddShortCuts(resp).response()
     return 
 
 
