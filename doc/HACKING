@@ -22,6 +22,10 @@ Additionally:
 
 * Strings should be written with double quotes like "this". 
 
+* The Maximum Line Length should be 80, just as PEP8
+  suggests. However, if you feel this is a bad decision, feel free to
+  contact me. The policy of 80 columns may change in the future.
+
 
 Handling submits
 ================
