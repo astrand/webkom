@@ -64,3 +64,12 @@ automatically logged out.
 The default language, if the browser does not specify
 HTTP_ACCEPT_LANGUAGE. 
 
+* LOGLEVEL
+
+Specifies the amount of logging information:
+
+1: Internal errors. Server start etc. 
+2: Creation and deletion of sessions etc. 
+3: Nothing extra.
+4: Debugging. 
+
