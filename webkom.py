@@ -3117,7 +3117,7 @@ class Logger:
 
         
 # Console
-def run_console(*args):
+def run_console():
     system_log.level_write(2, "Console thread started")
     system_log.level_write(4, "Console using socket " + CONSOLE_SOCKET)
     import consoleserver
@@ -3130,7 +3130,7 @@ def run_console(*args):
         traceback.print_exc(file = f)
         f.close()
 
-def run_maintenance(*args):
+def run_maintenance():
     system_log.level_write(2, "Maintenance thread started")
     while 1:
         time.sleep(60)
