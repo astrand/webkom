@@ -2422,7 +2422,6 @@ def write_traceback(resp):
     _ = translator_cache.get_translator("en").gettext
     
     # Save a copy on disk
-    import traceback
     import time
     timetext = time.strftime("%y%m%d-%H%M", time.localtime(time.time()))                
     f = open(LOG_DIR + "traceback-" + timetext, "w")
@@ -2531,7 +2530,6 @@ def run_fcgi():
     try:
         fcgi.run()
     except:
-        import traceback
         f = open(LOG_DIR + "traceback.main", "w")
         traceback.print_exc(file = f)
         f.close()
