@@ -57,6 +57,11 @@ def get_origin_dir(argv0=sys.argv[0]):
 def get_httpd_config():
     p = popen2.Popen3("httpd -V", 1)
     while 1:
+        err = p.childerr.read()
+        if err:
+            print >> sys.stderr, "error:", err
+            sys.exit()
+        
         line = p.fromchild.readline()
         if not line:
             break
