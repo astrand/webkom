@@ -249,6 +249,7 @@ class Request:
                 return
                 
     def getFieldStorage(self):
+        self.stdin.reset()
         return cgi.FieldStorage(fp=self.stdin, environ=self.env,
                                 keep_blank_values=1)
 
