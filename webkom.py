@@ -765,6 +765,12 @@ class SelectServerPageActions(Action):
         return [description, Href(BASE_URL + "?komserver=" + hostname, hostname)]
 
 
+class RedirectToExternalURL(Action):
+    def response(self):
+        url = self.resp.form.getvalue("redirect")
+        self.resp.http_headers = ["Location: " + url]
+
+
 class WhatsImplementedActions(Action):
     "Generate a page with implementation details"
     def response(self):
@@ -2999,6 +3005,9 @@ def actions(resp):
         return
     elif resp.form.has_key("create_user_submit"):
         CreateUserSubmit(resp).response()
+        return
+    elif resp.form.has_key("redirect"):
+        RedirectToExternalURL(resp).response()
         return
     else:
         LoginPageActions(resp).response()
