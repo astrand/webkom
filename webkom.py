@@ -1477,7 +1477,6 @@ class WriteLetterActions(Action):
         WriteArticleActions(self.resp, self._).response()
 
 
-        # FIXME: Translations
 class WriteArticleActions(Action):
     "Generate a page for writing or commenting an article"
     def response(self, presentationfor = None, presconf = None):
@@ -1501,16 +1500,16 @@ class WriteArticleActions(Action):
         footnote_to_list = get_values_as_list(self.form, "footnote_to")
 
         submitname = "writearticlesubmit"
-        submitvalue = "Skicka in"
+        submitvalue = self._("Submit")
         if presentationfor:
-            submitname="writepresentationsubmit"
-            submitvalue="Sätt som presentation"
-            page_heading = "Skriv presentation"
+            submitname = "writepresentationsubmit"
+            submitvalue = self._("Set as presentation")
+            page_heading = self._("Write presentation")
         else:
             if comment_to_list:
-                page_heading = "Kommentera inlägg"
+                page_heading = self._("Write comment")
             else:
-                page_heading = "Skriv inlägg"
+                page_heading = self._("Write article")
 
         writeart = self.action_href("writearticle", page_heading)
         
@@ -1662,9 +1661,10 @@ class WriteArticleActions(Action):
                                       ts.no_of_chars).response()
                 text = text[string.find(text, "\n")+1:]
             except:
-                self.print_error("Ett fel uppstod vid hämtning av inläggsinformation för text %d" % self.sess.conn.conferences[presentationfor].presentation)
+                self.print_error("An error occured when fetching article information for text %d" \
+                                 % self.sess.conn.conferences[presentationfor].presentation)
                 
-        F.append("Inläggstext:", BR())
+        F.append("Article text:", BR())
         # F.append(Textarea(text, rows=20, cols=70))
         # NOTE: This is non-standardized way to get linewrapping. Then why use it?
         # Because there are no way to achieve this without Javascript etc. 
@@ -1725,7 +1725,7 @@ class WriteArticleSubmit(Action):
         # Comment/footnote to
         comment_to_list = get_values_as_list(self.form, "comment_to")
         footnote_to_list = get_values_as_list(self.form, "footnote_to")
-        # FIXME: Translations?
+
         for (type, typename, list) in \
             [(kom.MIC_COMMENT, "Comment to", comment_to_list),
              (kom.MIC_FOOTNOTE, "Footnote to", footnote_to_list)]:
@@ -2199,7 +2199,42 @@ def actions(resp):
     # For debugging 
     #resp.doc.append(str(resp.env))
         
-    return 
+    return
+
+
+def write_traceback(resp):
+    # Something failed in response generation.
+    try:
+        lang_string = resp.env["HTTP_ACCEPT_LANGUAGE"]
+    except KeyError:
+        lang_string = ""
+    
+    _ = translator_cache.get_translator(lang_string).gettext
+    
+    # Save a copy on disk
+    import traceback
+    import time
+    timetext = time.strftime("%y%m%d-%H%M", time.localtime(time.time()))                
+    f = open(LOG_DIR + "traceback-" + timetext, "w")
+    traceback.print_exc(file = f)
+    f.close()
+    
+    # Put it on the web.
+    # (Is it possible to print it directly, without going via the file?
+    # Then tell me!)
+    resp.doc.append(Heading(3, "Internal server error"))
+    resp.doc.append(_("Check if this bug is listed on"))
+    resp.doc.append(Href("../bugs.html", _("the list with known bugs")))
+    resp.doc.append(_("If it doesn't, please report this problem "))
+    resp.doc.append(_("to ") + MAINTAINER_NAME)
+    resp.doc.append(Href("mailto: " + MAINTAINER_MAIL, MAINTAINER_MAIL + "."))
+
+    resp.doc.append(_("Attach the error message below."))
+    resp.doc.append(_("The server time was: ") + \
+                    time.strftime("%Y%m%d-%H:%M", time.localtime(time.time())))
+    f = open(LOG_DIR + "traceback-" + timetext, "r")
+    resp.doc.append(Pre(str(f.read())))
+    f.close()
 
 
 # Main action routine
@@ -2209,34 +2244,9 @@ def func(fcg, env, form):
         try: # Don't catch SystemExit
             resp = Response(env, form)
             try: # For response generation
-                pass
                 actions(resp)
             except:
-                # Something failed in response generation.
-                # Save a copy on disk
-                import traceback
-                import time
-                timetext = time.strftime("%y%m%d-%H%M", time.localtime(time.time()))                
-                f = open(LOG_DIR + "traceback-" + timetext, "w")
-                traceback.print_exc(file = f)
-                f.close()
-                # Put it on the web.
-                # (Is it possible to print it directly, without going via the file?
-                # Then tell me!)
-                # FIXME: Translate
-                resp.doc.append(Heading(3, "Internal server error"))
-                resp.doc.append("Kontrollera ifall buggen finns med på")
-                resp.doc.append(Href("../bugs.html", "listan över kända buggar"))
-                resp.doc.append("Om den inte gör det, rapportera då gärna")
-                resp.doc.append("detta till " + MAINTAINER_NAME)
-                resp.doc.append(Href("mailto: " + MAINTAINER_MAIL, MAINTAINER_MAIL + "."))
-                
-                resp.doc.append("Bifoga felutskriften nedan.")
-                resp.doc.append("Serverns tid var: " + \
-                                time.strftime("%Y%m%d-%H:%M", time.localtime(time.time())))
-                f = open(LOG_DIR + "traceback-" + timetext, "r")
-                resp.doc.append(Pre(str(f.read())))
-                f.close()
+                write_traceback(resp)
 
             # Unlock session (it was probably locked in "actions")
             if resp.sess:
