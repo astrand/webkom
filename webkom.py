@@ -42,6 +42,7 @@ import thread
 from webkom_utils import *
 import webkom_js
 import TranslatorCache
+import acceptlang
 import traceback
 import types
 
@@ -291,14 +292,12 @@ class Response:
     def add_shortcut(self, key, url):
         self.shortcuts.append((key, url))
 
-
     def get_translator(self):
-        try:
-            lang_string = self.env["HTTP_ACCEPT_LANGUAGE"]
-        except KeyError:
-            lang_string = ""
-
-        return translator_cache.get_translator(lang_string).gettext
+        header = self.env.get("HTTP_ACCEPT_LANGUAGE", "")
+        lang_selector = acceptlang.language(header)
+        # Get selected language, a string like 'en'
+        selected_lang = lang_selector.select_from(installed_langs)
+        return translator_cache.get_translator(selected_lang).gettext
 
 class Action:
     "Abstract class for actions. Action- and Submit-methods inherits this class."
@@ -591,7 +590,7 @@ class AboutPageActions(Action):
         self.doc.append(Heading(3, self._("Translations")))
         self.doc.append(self._("Translations are provided by the GNU gettext library."))
         self.doc.append(self._("The following translations are installed on this system:"), BR())
-        self.doc.append(get_installed_languages())
+        self.doc.append(list2string(installed_langs))
 
         self.doc.append(Heading(3, self._("Web page")))
         self.doc.append(self._("You can find more information about WebKOM on the"))
@@ -3158,8 +3157,10 @@ thread.start_new_thread(run_console,())
 # Start maintenance thread
 thread.start_new_thread(run_maintenance,())
 
+# Get a list of installed languages
+installed_langs = get_installed_languages()
 # Create instance of translator
-translator_cache = TranslatorCache.TranslatorCache("webkom", LOCALE_DIR, DEFAULT_LANG)
+translator_cache = TranslatorCache.TranslatorCache("webkom", LOCALE_DIR)
 
 # Create an instance of THFCGI 
 fcgi = thfcgi.THFCGI(handle_req)

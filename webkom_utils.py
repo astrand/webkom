@@ -29,6 +29,7 @@ import string
 import random
 import sys
 import inspect
+import dircache
 
 NBSP = "&nbsp;"
 INACTIVE_LINK_COLOR = HTMLcolors.GREY6
@@ -421,17 +422,21 @@ def mime_content_params(str):
 ##             more_to_fetch = 0
 ##     return 0
 
+def list2string(l):
+    formatstring = "%s, " * len(l)
+    formatstring = formatstring[:-2]
+    return formatstring % tuple(l)
+
 
 def get_installed_languages():
-    import os.path
-    import dircache
-
-    result = "en"
+    """Returns a list of installed languages"""
+    result = ["en"]
     for lang in dircache.listdir(LOCALE_DIR):
         if os.path.exists(os.path.join(LOCALE_DIR, lang, "LC_MESSAGES/webkom.mo")):
-            result += ", " + lang 
+            result.append(lang)
 
     return result
+
 
 class FinalizerChecker:
     def __init__(self, syslog):
