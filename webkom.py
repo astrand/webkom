@@ -100,6 +100,8 @@ class Session:
     "A session class. Lives as long as the session (and connection)"
     def __init__(self, conn, pers_num):
         self.conn = conn
+        # FIXME: Since CachedUserConnection now contains the user number,
+        # this variable is not neccessary any longer. 
         self.pers_num = pers_num
         self.current_conf = 0
         self.comment_tree = []
@@ -132,6 +134,7 @@ class Response:
         self.key = ""
         self.sess = None
         self.shortcuts = []
+        self.shortcuts_active = 1
 
     def add_shortcut(self, key, url):
         self.shortcuts.append((key, url))
@@ -186,6 +189,26 @@ class Action:
             return Href(self.base_session_url() + "&action=" + actionstr, text)
         else:
             return Font(text, color=INACTIVE_LINK_COLOR)
+
+    def add_stdaction(self, container, resp, action, caption):
+        "Add a link to a standard action and also the keyboard shortcut space"
+        # Add link to page
+        container.append(self.action_href(action, caption))
+        # Add keyboard shortcut
+        std_url = self.base_session_url() + "&action=" + action
+        resp.add_shortcut(" ", std_url)
+
+    def unread_info(self, current_conf=0):
+        "Return a string with information about number of unread"
+        total = get_total_num_unread(self.sess.conn, self.sess.pers_num,
+                                     self.sess.conn.member_confs)
+        retval = NBSP*4 + "Olästa: "
+        if current_conf:
+            unread = self.sess.conn.no_unread[current_conf] 
+            retval = retval + str(unread) + "/" + str(total)
+        else:
+            retval = retval + str(total) 
+        return retval + str(BR())
 
     # Only used on pages with forms
     def hidden_key(self):
@@ -271,7 +294,7 @@ class AddShortCuts(Action):
         }
         
         function keyPress(e) {
-            if (!active) return false;
+            if (!active) return true;
             if (ns4)
                 keyChar = String.fromCharCode(e.which);
             else if (ie4)
@@ -473,7 +496,8 @@ class LogOutActions(Action):
         sessionset.del_session(self.key)
         self.resp.sess.conn.socket.close()
         self.resp.sess = None
-        
+
+        self.resp.shortcuts_active = 0
         LoginPageActions(self.resp).response()
         return 
 
@@ -532,7 +556,7 @@ class LogInActions(Action):
         self.password = self.form["password"].value
 
         try:
-            conn = kom.CachedConnection(self.komserver, 4894)
+            conn = kom.CachedUserConnection(self.komserver, 4894, "WebKOM")
             # Set up asyncs
             ACCEPTING_ASYNCS = [
                 kom.ASYNC_NEW_NAME,
@@ -566,6 +590,7 @@ class LogInActions(Action):
             return
 
         pers_num = matches[0][0]
+        
         try:
             kom.ReqLogin(conn, pers_num, self.password, invisible = 0).response()
         except kom.InvalidPassword:
@@ -580,8 +605,12 @@ class LogInActions(Action):
         while sessionset.valid_session(sessionkey):
             sessionkey = hex(random.randrange(1E12))
         self.resp.sess = Session(conn, pers_num)
+        # Add to sessionset
         sessionset.new_session(sessionkey, self.resp.sess)
         self.resp.key = sessionkey
+
+        # Set user_no in connection
+        conn.set_user(pers_num)
 
         # Handle messages
         conn.add_async_handler(kom.ASYNC_SEND_MESSAGE, self.resp.sess.async_message)
@@ -611,15 +640,21 @@ class ViewConfsActions(Action):
         
         self.doc.append(Heading(2,"Möten (som du är medlem i)"))
 
+        std_cmd = Container()
+        self.doc.append("Standardkommando: ", std_cmd)
+        self.add_stdaction(std_cmd, self.resp, "goconf_with_unread", "Nästa möte med olästa")
+
+        # Information about number of unread
+        self.doc.append(self.unread_info())
+
         if self.form.getvalue("first_conf"):
             ask_for = int(self.form.getvalue("first_conf"))
         else:
             ask_for = 0
 
         # We ask for one extra, so we can know if we should display a next-page-link
-        memberships = get_active_memberships(self.sess.conn, self.sess.pers_num, ask_for,
+        memberships = get_active_memberships(self.sess.conn, self.sess.conn.member_confs, ask_for,
                                              MAX_CONFS_PER_PAGE + 1)
-
         prev_first = next_first = None
         if ask_for:
             # Link to previous page
@@ -643,7 +678,8 @@ class ViewConfsActions(Action):
             conf_name = string.upper(conf_name[:1]) + conf_name[1:]
 
             # Get number of unread
-            num_unread = get_num_unread_texts(self.sess.conn, self.sess.pers_num, conf_num)
+            num_unread = self.sess.conn.no_unread[conf_num]
+            
             conf_dict[conf_name] = (conf_num, num_unread)
 
         # Add the previous-page-link
@@ -651,7 +687,7 @@ class ViewConfsActions(Action):
                                          "Föregående sida", prev_first is not None), NBSP)
 
         # Add a table
-        headings = ["Mötesnamn", "Ev. antal olästa"]
+        headings = ["Mötesnamn", "Antal olästa"]
         tab = []
         self.doc.append(Table(heading=headings, body=tab, cell_padding=2, width="60%"))
 
@@ -683,7 +719,7 @@ class ViewConfsActions(Action):
 class GoConfWithUnreadActions(Action):
     "Go to conference with unread articles"
     def response(self):
-        next_conf = get_conf_with_unread(self.sess.conn, self.sess.pers_num)
+        next_conf = get_conf_with_unread(self.sess.conn, self.sess.conn.member_confs)
         if next_conf:
             GoConfActions(self.resp).response(next_conf)
         else:
@@ -725,12 +761,21 @@ class GoConfActions(Action):
                                             conf_name))
 
         self.doc.append(Heading(2, conf_name))
+
+        # Standard action
+        std_cmd = Container()
+        self.doc.append("Standardkommando: ", std_cmd)
+        # Information about number of unread
+        self.doc.append(self.unread_info(self.sess.current_conf))
+
         self.doc.append(self.action_href("writearticle&rcpt=" + str(conf_num),
-                                         "Skriv inlägg"))
+                                         "Skriv inlägg"), NBSP)
         # Link to view presentation for this conference
         presentation = self.get_presentation(conf_num)
         self.doc.append(self.action_href("viewtext&textnum=" + str(presentation),
-                                         "Visa presentation", presentation))
+                                         "Visa presentation", presentation), NBSP)
+
+
         
         self.doc.append(BR(), Heading(3, "Inläggsrubriker"))
 
@@ -742,15 +787,15 @@ class GoConfActions(Action):
 
         # Get unread texts
         # FIXME: error handling
-        ms = kom.ReqQueryReadTexts(self.sess.conn, self.sess.pers_num, conf_num).response()
-        texts = get_texts(self.sess.conn, self.sess.pers_num, conf_num, ask_for)
+        ms = self.sess.conn.memberships[conf_num]
+        texts = get_texts(self.sess.conn, self.sess.pers_num, conf_num, MAX_SUBJ_PER_PAGE, ask_for)
         
         # Prepare for links to earlier/later pages of texts
         first_local_num = self.sess.conn.conferences[3].first_local_no
         highest_local_num = self.sess.conn.uconferences[conf_num].highest_local_no
         prev_first = next_first = None
         if len(texts) > 0:
-            first_in_set = texts[:1][0][0]
+            first_in_set = texts[0][0]
             last_in_set = texts[-1:][0][0]
             if first_in_set > first_local_num:
                 prev_first = first_in_set - MAX_SUBJ_PER_PAGE
@@ -775,7 +820,7 @@ class GoConfActions(Action):
                               column1_align="right", cell_align="left", width="100%"))
 
         # Format and append text numbers, authors and subjects to the page
-        for (local_num, global_num, unread) in texts:
+        for (local_num, global_num) in texts:
             ts = self.sess.conn.textstats[global_num]
             # Textnum
             textnum = self.action_href("viewtext&textnum=" + str(global_num), str(global_num))
@@ -790,7 +835,8 @@ class GoConfActions(Action):
                 subjtext = "&nbsp;"
             subj = self.action_href("viewtext&textnum=" + str(global_num),
                                     subjtext)
-            if unread:
+            
+            if is_unread(self.sess.conn, conf_num, local_num):
                 subj = Bold(subj)
                 textnum = Bold(textnum)
                 unreadindicator = Bold("x")
@@ -806,6 +852,16 @@ class GoConfActions(Action):
         self.doc.append(self.action_href("goconf_with_unread",
                                          "Nästa möte med olästa"), NBSP)
 
+
+        # Standard action
+        next_text = get_next_unread(self.sess.conn, self.sess.pers_num,
+                                    self.sess.current_conf)
+        if next_text:
+            std_url = "viewtext&textnum=" + str(next_text)
+            self.add_stdaction(std_cmd, self.resp, std_url, "Läs nästa olästa")
+        else:
+            self.add_stdaction(std_cmd, self.resp, "goconf_with_unread", "Nästa möte med olästa")
+            
 
 class ViewTextActions(Action):
     "Generate a page with a requested article"
@@ -843,8 +899,8 @@ class ViewTextActions(Action):
             if c.sent_at is not None:
                 header.append(["Adderad:", c.sent_at.to_date_and_time()])
 
-    def do_recipients(self, ts, header, comment_url):
-        local_num = None    
+    def do_recipients(self, ts, header):
+        comment_url = ""
         for r in ts.misc_info.recipient_list:
             leftcol = mir2caption(r.type)
             presentation = str(self.get_presentation(r.recpt))
@@ -870,11 +926,18 @@ class ViewTextActions(Action):
             except:
                 pass
 
+            # Update memberships and no_unread in cache 
+            if r.recpt in self.sess.conn.member_confs:
+                # Note: update_unread must be called before update_membership, otherwise
+                # update_unread thinks this text is already read...
+                update_unread(self.sess.conn, r.recpt, r.loc_no)
+                update_membership(self.sess.conn, r.recpt, r.loc_no)
+            
             # Fetch the local_num
-            if r.recpt == self.sess.current_conf:
-                local_num = r.loc_no
-
-        return local_num
+            ## if r.recpt == self.sess.current_conf:
+            ## local_num = r.loc_no
+                
+        return comment_url
 
 
     def add_comments_in(self, ts, header, new_comments):
@@ -898,12 +961,11 @@ class ViewTextActions(Action):
                 # The text seems to exist. Maybe add it to comment_tree. 
                 if c_authortext:
                     for rcpt in self.sess.conn.textstats[c.text_no].misc_info.recipient_list:
-                        if is_member(self.sess.conn, self.sess.pers_num, rcpt.recpt):
+                        if rcpt.recpt in self.sess.conn.member_confs:
                             new_comments.append(c.text_no)
                             break
+
         self.doc.append(Table(body=header, cell_padding=2, column1_align="right", width="80%"))
-
-
 
     def response(self):
         # Toplink
@@ -932,7 +994,12 @@ class ViewTextActions(Action):
         # Upper actions
         #
         std_cmd = Container()
-        self.doc.append("Standardkommando: ", std_cmd, BR(2))
+        self.doc.append("Standardkommando: ", std_cmd)
+
+        # Information about number of unread
+        unread_cont = Container()
+        self.doc.append(unread_cont)
+
         upper_actions = Container()
         self.doc.append(upper_actions)
 
@@ -976,9 +1043,10 @@ class ViewTextActions(Action):
         self.add_comments_to(ts, header)
         
         # Recipients
-        comment_url = ""
-        # NOTE: Currently, we have no use of the local_num. Keep it anyway. 
-        local_num = self.do_recipients(ts, header, comment_url)
+        comment_url = self.do_recipients(ts, header)
+
+        # The number of unread has been updated in do_recipients, so now it's OK to add it
+        unread_cont.append(self.unread_info(self.sess.current_conf))
 
         if ts.no_of_marks:
             header.append(["Markeringar:", str(ts.no_of_marks)])
@@ -1021,8 +1089,7 @@ class ViewTextActions(Action):
         next_text = get_next_unread(self.sess.conn, self.sess.pers_num,
                                     self.sess.current_conf)
         next_text_url = "viewtext&textnum=" + str(next_text)
-        next_text_caption = "Läs nästa olästa"
-        lower_actions.append(self.action_href(next_text_url, next_text_caption, 
+        lower_actions.append(self.action_href(next_text_url, "Läs nästa olästa",
                                               next_text), NBSP)
 
         # Add new comments
@@ -1036,24 +1103,17 @@ class ViewTextActions(Action):
         else:
             next_comment = None
         next_comment_url = "viewtext&textnum=" + str(next_comment) + "&reading_comment=1"
-        next_comment_caption = "Läs nästa kommentar"
-        lower_actions.append(self.action_href(next_comment_url, next_comment_caption,
+        lower_actions.append(self.action_href(next_comment_url, "Läs nästa kommentar",
                                               next_comment), NBSP)
 
         # Standard action
         if next_comment:
-            std_cmd.append(self.action_href(next_comment_url, next_comment_caption,
-                                            1), NBSP)
-            std_url = self.base_session_url() + "&action=" + next_comment_url
+            self.add_stdaction(std_cmd, self.resp, next_comment_url, "Läs nästa kommentar")
         elif next_text:
-            std_cmd.append(self.action_href(next_text_url, next_text_caption,
-                                            1), NBSP)
-            std_url = self.base_session_url() + "&action=" + next_text_url
+            self.add_stdaction(std_cmd, self.resp, next_text_url, "Läs nästa olästa")
         else:
-            std_cmd.append(self.action_href("goconf_with_unread",
-                                            "Nästa möte med olästa"), NBSP)
-            std_url = self.base_session_url() + "&action=" + "goconf_with_unread"
-        self.resp.add_shortcut(" ", std_url)
+            self.add_stdaction(std_cmd, self.resp, "goconf_with_unread", "Nästa möte med olästa")
+            
             
         # Maybe the user want to comment?
         comment_url = comment_url + "&comment_to=" + str(global_num)
@@ -1125,6 +1185,7 @@ class WriteLetterActions(Action):
 class WriteArticleActions(Action):
     "Generate a page for writing or commenting an article"
     def response(self):
+        self.resp.shortcuts_active = 0
         # Fetch conference name
         conf_num = self.sess.current_conf
         conf_name = self.get_conf_name(conf_num)
@@ -1360,9 +1421,15 @@ class WriteArticleSubmit(Action):
             ts = self.sess.conn.textstats[text_num]
             for r in ts.misc_info.recipient_list:
                 try:
-                    kom.ReqMarkAsRead(self.sess.conn, conf_num, [r.loc_no]).response()
+                    kom.ReqMarkAsRead(self.sess.conn, r.recpt, [r.loc_no]).response()
                 except:
                     pass
+                if r.recpt in self.sess.conn.member_confs:
+                    # Note: update_unread must be called before update_membership, otherwise
+                    # update_unread thinks this text is already read...
+                    update_unread(self.sess.conn, r.recpt, r.loc_no)
+                    update_membership(self.sess.conn, r.recpt, r.loc_no)
+                
         except kom.Error:
             self.print_error("Det gick ej att skapa inlägget")
 
@@ -1557,7 +1624,8 @@ def actions(resp):
     resp.add_shortcut("p", "http://www.pp.se")
 
     # Add Javascript shortcuts
-    AddShortCuts(resp).response()
+    if resp.shortcuts_active:
+        AddShortCuts(resp).response()
     return 
 
 
