@@ -1292,9 +1292,14 @@ class ViewTextActions(Action):
         
         ct_params = mime_content_params(ai_ct.data)
         charset = ct_params.get("charset")
-        if charset and charset != "iso-8859-1":
+        if charset and charset not in ["iso-8859-1", "us-ascii"]:
             self.doc.append(Bold("Warning: article has unknown character set ",
                                  webkom_escape(charset), BR()))
+
+    def print_fast_replies(self, ts):
+        ai_fr = kom.first_aux_items_with_tag(ts.aux_items, kom.AI_FAST_REPLY)
+        replystring = ai_fr.data + " /" + self.get_pers_name(ai_fr.creator)
+        self.doc.append(webkom_escape(replystring), BR())
 
     def response(self):
         # Toplink
@@ -1470,7 +1475,10 @@ class ViewTextActions(Action):
         self.doc.append("<tr><td>" + str(bodycont) + "</td></tr>")
         self.doc.append("</table>")
 
-        # Ok, the body is done. Let's add all comments.
+        # Ok, the body is done. Lets add fast replies.
+        self.print_fast_replies(ts)
+
+        # Add all comments.
         new_comments = []
         self.add_comments_in(ts, new_comments)
 
