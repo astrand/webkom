@@ -88,30 +88,33 @@ class SessionSet:
         return key
 
     def _delete_session(self, key, deltype=""):
-        try:
-            # Log this deletion. Don't let exceptions here affect anything. 
-            sess = self.sessionset[key]
-            system_log.write(2, "Deleting %ssession for person %d on server %s, sessnum=%d"
-                             % (deltype, sess.conn.get_user(), sess.komserver, sess.session_num))
-            del sess
-        except:
-            system_log.write(1, "Exception in _delete_session when deleting:" + deltype)
-
+        sess = self.sessionset[key]
+        system_log.write(2, "Deleting %ssession for person %d on server %s, sessnum=%d"
+                         % (deltype, sess.conn.get_user(), sess.komserver, sess.session_num))
+        
+        # Be nice and shut down connection and socket. 
+        kom.ReqDisconnect(sess.conn, 0)
+        sess.conn.socket.close()
+            
         try:
             # Do the actual deletion.
             # The CachedUserConnection object probably has registered callbacks for
             # asynchronous messages. These must be removed to prevent circular references.
             self.sessionset[key].conn.async_handlers = {}
-            # At this point, there should be 4 references to this Session object:
+            # At this point, there should be 5 references to this Session object:
             # * The reference in the sessionset.sessionset dictionary. 
             # * Response().sess
             # * Action().sess (shortcut reference)
             # * At temporary reference from sys.getrefcount()
-            # If there are more references, we will most likely get a memory "leak".
+            # * The variable sess above. 
+            # If there are more references, there are probably circular references.
+            # The GC will take care of this (as long as no __del__:s are used!),
+            # but there is nothing wrong with helping the GC a little bit...
             num_refs = sys.getrefcount(self.sessionset[key])
-            if num_refs != 4:
+            if num_refs != 5:
                 system_log.write(1, "INTERNAL ERROR: Wrong number of Session references before deletion")
             del self.sessionset[key]
+
         except:
             system_log.write(1, "Exception in _delete_session when deleting session.")
 
@@ -190,14 +193,6 @@ class Session:
         # at the same time from one session, since the session is locked. 
         self.submit_result = {}
 
-    def __del__(self):
-        try:
-            kom.ReqDisconnect(self.sess.conn, 0)
-        except:
-            pass
-        system_log.write(4, "Session object destroyed.")
-        self.resp.sess.conn.socket.close()
-        
     def lock_sess(self):
         "Lock session"
         self.lock.acquire()
