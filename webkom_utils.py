@@ -258,7 +258,7 @@ def linkify_text(text):
     text = pat.sub(repl, text)
 
     # https URLs
-    pat = re.compile("(?P<fullurl>(https://|(?=www\\.))(?P<url>[^\t \012\014\"<>|\\\]*[^\t \012\014\"<>|.,!(){}?'`:]))")
+    pat = re.compile("(?P<fullurl>(https://)(?P<url>[^\t \012\014\"<>|\\\]*[^\t \012\014\"<>|.,!(){}?'`:]))")
     repl = '\001a href="https://\\g<url>"\002\\g<fullurl>\001/a\002'
     text = pat.sub(repl, text)
 
