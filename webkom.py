@@ -523,14 +523,14 @@ class AboutPageActions(Action):
         self.doc.append(self._("The following people have in one way or another "
                                "contributed to WebKOM:"), BR(2))
         self.doc.append(external_href("http://www.lysator.liu.se/~astrand/",
-                                      self._("Peter Åstrand (project starter)")), BR())
-        self.doc.append("Kent Engström", BR())
-        self.doc.append("Per Cederqvist", BR())
+                                      self._("Peter Åstrand (project starter, most of implementation)")), BR())
+        self.doc.append("Kent Engström (python-lyskom)", BR())
+        self.doc.append("Per Cederqvist (LysKOM server etc.)", BR())
         self.doc.append(external_href("http://www.lysator.liu.se/~forsberg/",
-                                      "Erik Forsberg"), BR())
-        self.doc.append("Kjell Enblom", BR())
-        self.doc.append("Niklas Lindgren", BR())
-        self.doc.append("Eva Isaksson", BR())
+                                      "Erik Forsberg (implementation)"), BR())
+        self.doc.append("Kjell Enblom (miscellaneous)", BR())
+        self.doc.append("Niklas Lindgren (miscellaneous)", BR())
+        self.doc.append("Eva Isaksson (finnish translation)", BR())
 
         self.doc.append(Heading(3, self._("Technology")))
         self.doc.append(self._("WebKOM is written in Python and is a persistent, threaded "))
