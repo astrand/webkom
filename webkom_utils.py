@@ -19,7 +19,10 @@
 
 import kom
 from HTMLgen import *
+# Override default escape
+AbstractTag.html_escape = 'OFF'
 import HTMLcolors
+import HTMLutil
 from webkom_constants import *
 import re
 import string
@@ -273,10 +276,26 @@ def linkify_text(text):
     text = pat.sub(repl, text)
     return text
 
+
 def unquote_specials(text):
     text = string.replace(text, "\001","<")
     text = string.replace(text, "\002",">")
     return text
+
+
+def webkom_escape(str):
+    str = del_8859_1_invalid_chars(str)
+    str = HTMLutil.latin1_escape(escape(str))
+    return str
+
+
+def webkom_escape_linkify(str):
+    str = del_8859_1_invalid_chars(str)
+    str = linkify_text(str)
+    str = HTMLutil.latin1_escape(escape(str))
+    str = unquote_specials(str)
+    return str
+
 
 def reformat_text(text):
     linelist = string.split(text, "\n")

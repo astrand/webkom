@@ -32,6 +32,8 @@ import cgi
 import thfcgi
 import kom
 from HTMLgen import *
+# Override default escape
+AbstractTag.html_escape = 'OFF'
 from HTMLcolors import *
 import HTMLutil
 import Formtools
@@ -458,7 +460,7 @@ class ViewPendingMessages(Action):
             self.doc.append(Bold(self._("Time: ") +
                                  time.strftime("%Y-%m-%d %H:%M", time.localtime(msg.time))))
             
-            self.doc.append(BR(), msg.message)
+            self.doc.append(BR(), webkom_escape(msg.message))
 
         if was_pending:
             self.doc.append("<hr noshade size=2>")
@@ -963,7 +965,7 @@ class ViewConfsActions(Action):
             name = self.get_conf_name(conf.conference)
             name = string.upper(name[:1]) + name[1:]
             if n_unread > 500:
-                comment = escape(">500")
+                comment = webkom_escape(">500")
                 name = Bold(name)
             elif n_unread > 0:
                 comment = str(n_unread)
@@ -1115,6 +1117,9 @@ class GoConfActions(Action):
             if not subjtext:
                 # If subject is empty, the table gets ugly
                 subjtext = "&nbsp;"
+            else:
+                subjtext = webkom_escape(subjtext)
+                
             subj = self.action_href("viewtext&amp;textnum=" + str(global_num),
                                     subjtext)
             
@@ -1152,6 +1157,9 @@ class ViewTextActions(Action):
         if not subject:
             # If subject is empty, the table gets ugly
             subject = "&nbsp;"
+        else:
+            subject = webkom_escape(subject)
+        print "subject is", repr(subject)
         return subject
 
 
@@ -1297,7 +1305,7 @@ class ViewTextActions(Action):
         # Link to this page
         cont.append(" : ")
         cont.append(self.action_href("viewtext" + "&amp;textnum=" + str(global_num),
-                                     self.sess.conn.subjects[global_num]))
+                                     webkom_escape(self.sess.conn.subjects[global_num])))
         self.doc.append(BR())
         lower_actions = Container()
         #
@@ -1403,7 +1411,7 @@ class ViewTextActions(Action):
 
         if ts.no_of_marks:
             header.append([self._("Marks:"), str(ts.no_of_marks)])
-    
+
         header.append([self._("Subject:"), Bold(self.get_subject(global_num))])
 
         self.doc.append(BR())
@@ -1411,11 +1419,7 @@ class ViewTextActions(Action):
         
         # Body
         # FIXME: Reformatting according to protocol A.
-        # FIXME: Can these translations be done more efficient, eg. in less steps?
-        body = del_8859_1_invalid_chars(body)
-        body = linkify_text(body)
-        body = HTMLutil.latin1_escape(escape(body))
-        body = unquote_specials(body)
+        body = webkom_escape_linkify(body)
         body = string.replace(body, "\n","<br>\n")
 
         bodycont = Container()
@@ -1877,7 +1881,7 @@ class WriteArticleActions(Action):
 
         self.doc.append(self._("If certain characters are hard to write with your keyword, "
                                "you can copy and paste from the line below:"), BR())
-        self.doc.append(HTMLutil.latin1_escape(escape(COPYPASTE_CHARACTERS)))
+        self.doc.append(webkom_escape(COPYPASTE_CHARACTERS))
 
         return
 
