@@ -27,6 +27,7 @@ cd /tmp
 DISTFILES=`find webkom-${VERSION} \
  -not -path '*CVS*' -and \
  -not -name .cvsignore -and \
+ -not -name TODO -and \
  -not -path .\ -and \
  -not -path '*/misc/*' \
  -type f`
