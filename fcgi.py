@@ -235,7 +235,7 @@ class FCGI:
         # Apaches mod_fastcgi seems not to use FCGI_WEB_SERVER_ADDRS. 
         if os.environ.has_key('FCGI_WEB_SERVER_ADDRS'):
             good_addrs = string.split(os.environ['FCGI_WEB_SERVER_ADDRS'], ',')
-            good_addrs = map(string.strip(good_addrs))        # Remove whitespace
+            good_addrs = map(string.strip, good_addrs)        # Remove whitespace
         else:
             good_addrs = None
 
@@ -400,7 +400,7 @@ def _test():
 
             try:
                 fs = req.getFieldStorage()
-                size = string.atoi(fs['size'].value)
+                size = int(fs['size'].value)
                 doc = ['*' * size]
             except:
                 doc = ['<HTML><HEAD><TITLE>FCGI TestApp</TITLE></HEAD>\n<BODY>\n']
@@ -408,7 +408,7 @@ def _test():
                 doc.append('<b>request count</b> = %d<br>' % counter)
                 doc.append('<b>pid</b> = %s<br>' % os.getpid())
                 if req.env.has_key('CONTENT_LENGTH'):
-                    cl = string.atoi(req.env['CONTENT_LENGTH'])
+                    cl = int(req.env['CONTENT_LENGTH'])
                     doc.append('<br><b>POST data (%s):</b><br><pre>' % cl)
                     keys = fs.keys()
                     keys.sort()
@@ -438,7 +438,7 @@ def _test():
                             % len(doc))
             req.out.write(doc)
 
-            req.Finish()
+            req.finish()
     except:
         import traceback
         f = open('traceback', 'w')
