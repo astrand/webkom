@@ -6,6 +6,8 @@ class TranslatorCache:
     def __init__(self, domain, locale_dir, default_lang):
         self.known_languages = {}
         self.known_languages["en"] = gettext.NullTranslations()
+        self.domain = domain
+        self.locale_dir = locale_dir
         self.default_lang = default_lang
 
 
@@ -36,7 +38,7 @@ class TranslatorCache:
             # This is a language new to us. 
             try:
                 # Try to initalize this new language
-                new_translator = gettext.translation(domain, locale_dir, languages=[lang])
+                new_translator = gettext.translation(self.domain, self.locale_dir, languages=[lang])
             except:
                 # The translator files was not found or something.
                 new_translator = None
