@@ -41,3 +41,5 @@
 * Feature: Mark/unmark articles. View marked articles. 
 
 * Better dummy-operation than ReqQueryAsync for handling all available responses. 
+
+* List all conferences and/or persons. 
