@@ -474,6 +474,66 @@ class Action:
         # Redirect to result page. Note: Since this is not HTML, do not escape "&"
         self.resp.set_redir("?sessionkey=" + self.resp.key + "&action=submit_result")
 
+    def gen_search_line(self):
+        cont = Container()
+        cont.append(Input(name="searchtext", value=self.form.getvalue("searchtext")))
+        cont.append(Input(type="checkbox", name="searchconf_komconvention",
+                          checked=self.form.getvalue("searchconf_komconvention")))
+        cont.append(self._("KOM matching"), 2*NBSP)
+        return cont
+
+    def gen_search_result_table(self, searchtext, matches, maxhits=20,
+                                match_handler=None):
+        """
+        Generate a table with search results
+
+        match_handler, if used, takes (rcpt_num, rcpt_name) as
+        arguments and must return a list.
+        """
+        cont = Container()
+        infotext = None
+        if len(matches) == 0:
+            infotext = self._("(Nothing matches %s)") % searchtext
+        elif len(matches) > maxhits:
+            infotext = self._("(Too many matches, search result truncated)")
+
+        cont.append(self._("Search result:"), BR())
+        tab=[]
+        for (rcpt_num, rcpt_name) in matches[:maxhits]:
+            if match_handler:
+                tab.append(match_handler(rcpt_num, rcpt_name))
+            else:
+                # Generate radio buttons
+                tab.append([webkom_escape(rcpt_name),
+                            Input(type="radio", name="selected_conf", value=str(rcpt_num))])
+        if infotext:
+            tab.append([infotext, ""])
+
+        cont.append(Table(body=tab, cell_padding=2, border=3, column1_align="left",
+                          cell_align="right", width="100%"))
+        return cont
+
+    def do_search(self, searchtext, want_pers=0, want_confs=1):
+        """Do either a KOM or regexp search, depending on if
+        self.form.getvalue("searchconf_komconvention") exists"""
+        if self.form.getvalue("searchconf_komconvention"):
+            return self.sess.conn.lookup_name(searchtext, want_pers=1, want_confs=1)
+        else:
+            return self.sess.conn.regexp_lookup(searchtext, want_pers=1, want_confs=1)
+
+    def search_help(self, want_pers=0, want_confs=1):
+        result = ""
+        if want_pers and want_confs:
+            result += self._("Type in a part of a conference name or person to search for. ")
+        elif want_pers:
+            result += self._("Type in a part of a person to search for. ")
+        elif want_confs:
+            result += self._("Type in a part of a conference name to search for. ")
+
+        result += self._("The search is not case sensitive. ")
+        result += self._("Regular expressions are allowed, unless the checkbox below is on.")
+        return result
+
 
 class ViewPendingMessages(Action):
     "View pending messages"
@@ -2114,7 +2174,7 @@ class WriteArticleActions(Action):
             type_list.append( (mir2caption(self, mir), keyword) )
 
         # Add new recipients
-        newones = get_values_as_list(self.form, "addrcpt")
+        newones = get_values_as_list(self.form, "selected_conf")
         if newones:
             for rcpt in newones:
                 rcpt_dict[int(rcpt)] = "rcpt"
@@ -2122,7 +2182,7 @@ class WriteArticleActions(Action):
         # If user did a search and the result was not ambiguous, add recipient.
         searchtext = self.form.getvalue("searchtext", None)
         if searchtext:
-            matches = self.sess.conn.lookup_name(searchtext, want_pers=1, want_confs=1)
+            matches = self.do_search(searchtext, want_pers=1, want_confs=1)
             if len(matches) == 1:
                 rcpt_dict[matches[0][0]] = "rcpt"
         
@@ -2156,7 +2216,7 @@ class WriteArticleActions(Action):
         ## Search and remove submit
         cont = Container()
         cont.append(self._("Search for new recipient:"))
-        cont.append(Input(name="searchtext"))
+        cont.append(self.gen_search_line())
         cont.append(Input(type="submit", name="searchrcptsubmit", value=self._("Search")))
         removesubmit = Input(type="submit", name="removercptsubmit",
                              value=self._("Remove marked recipients"))
@@ -2166,23 +2226,7 @@ class WriteArticleActions(Action):
         ## Search result
         searchtext = self.form.getvalue("searchtext", None)
         if searchtext and (len(matches) <> 1):
-            infotext = None
-            if len(matches) == 0:
-                infotext = self._("(Nothing matches %s)") % searchtext
-            elif len(matches) > 10:
-                infotext = self._("(Too many matches, search result truncated)")
-                
-            F.append(self._("Search result:"), BR())
-            tab=[]
-            for (rcpt_num, rcpt_name) in matches[:10]:
-                tab.append([webkom_escape(rcpt_name),
-                            Input(type="checkbox", name="addrcpt", value=str(rcpt_num))])
-            if infotext:
-                tab.append([infotext, ""])
-                
-            F.append(Table(body=tab, cell_padding=2, border=3, column1_align="left",
-                           cell_align="right", width="100%"))
-
+            F.append(self.gen_search_result_table(searchtext, matches, maxhits=10))
             addsubmit = Input(type="submit", name="addrcptsubmit",
                               value=self._("Add marked"))
             tab = [["", addsubmit]]
@@ -2205,7 +2249,7 @@ class WriteArticleActions(Action):
             comment_text = self.get_article_text(int(comment_to_list[0]))
             text = quote_text(comment_text) + "\n\n" + text
                 
-        F.append("Article text:", BR())
+        F.append(self._("Article text:"), BR())
         F.append(Textarea(rows=20, cols=70, text=text))
         F.append(BR())
         if comment_to_list and not presentationfor:
@@ -2468,48 +2512,26 @@ class JoinConfActions(Action):
             maxhits = 20
 
         # Search text
-        if self.form.has_key("searchtext"):
-            searchtext = self.form.getvalue("searchtext")
-        else:
-            searchtext = ""
+        searchtext = self.form.getvalue("searchtext")
 
         ## Search and remove submit
         cont = Container()
-        F.append(self._("Type in the beginning of the conference name. You can also search "
-                        "via conference numbers by giving # followed by the conference number."), BR(2))
-        cont.append(Input(name="searchtext", value=searchtext))
-        cont.append(Input(type="hidden", name="searchconfsubmit"))
-        cont.append(Input(type="submit", name="searchconfsubmit", value=self._("Search")), 2*NBSP)
-        cont.append(Input(type="submit", name="searchconfsall", value=self._("View all conferences")), BR(2))
-        cont.append(self._("Search result will be limited to "))
-        cont.append(Input(name="maxhits", size=4, value="%d" % maxhits), self._(" conferences."), BR())
-        F.append(cont)
+        F.append(self.search_help(want_pers=0, want_confs=1), BR(2))
+        F.append(self.gen_search_line())
+        F.append(Input(type="submit", name="searchconfsubmit", value=self._("Search")), 2*NBSP)
+        F.append(Input(type="submit", name="searchconfsall", value=self._("View all conferences")), BR(2))
+        F.append(self._("Search result will be limited to "))
+        F.append(Input(name="maxhits", size=4, value="%d" % maxhits), self._(" conferences."), BR())
 
-        # Viewall overrides the searchtext 
         if self.form.getvalue("searchconfsall"):
-            searchtext = " "
+            matches = self.sess.conn.lookup_name("", want_pers=0, want_confs=1)
+        elif self.form.getvalue("searchconfsubmit"):
+            matches = self.do_search(searchtext, want_pers=0, want_confs=1)
+        else:
+            matches = None
 
-        # Search result
-        # FIXME: Code duplicated from WriteArticleActions. 
-        if searchtext:
-            matches = self.sess.conn.lookup_name(searchtext, want_pers=0, want_confs=1)
-            infotext = None
-            if len(matches) == 0:
-                infotext = self._("(Nothing matches %s)") % searchtext
-            elif len(matches) > maxhits:
-                infotext = self._("(Too many matches, search result truncated)")
-                
-            F.append(self._("Search result:"), BR())
-            tab=[]
-            for (rcpt_num, rcpt_name) in matches[:maxhits]:
-                tab.append([webkom_escape(rcpt_name),
-                            Input(type="radio", name="new_conference", value=str(rcpt_num))])
-            if infotext:
-                tab.append([infotext, ""])
-                
-            F.append(Table(body=tab, cell_padding=2, border=3, column1_align="left",
-                           cell_align="right", width="100%"))
-
+        if matches is not None:
+            F.append(self.gen_search_result_table(searchtext, matches, maxhits))
             addsubmit = Input(type="submit", name="joinconfsubmit",
                               value=self._("Join marked conference"))
             tab = [["", addsubmit]]
@@ -2529,12 +2551,12 @@ class JoinConfSubmit(Action):
         top_cont = Container(toplink, TOPLINK_SEPARATOR, joinlink)
         result_cont.append(self.gen_std_top(top_cont))
 
-        if not self.form.getvalue("new_conference"):
+        if not self.form.getvalue("selected_conf"):
             self.doc.append(self.gen_std_top(top_cont))
             self.print_error(self._("No conference selected."))
             return
         
-        conf = int(self.form.getvalue("new_conference"))
+        conf = int(self.form.getvalue("selected_conf"))
         type = kom.ConfType()
         try:
             # FIXME: User settable priority
@@ -2790,51 +2812,29 @@ class ViewPresentationActions(Action):
         F.append(Heading(2, self._("View presentation")))
         F.append(BR())
 
-        F.append(self._("Type in the beginning of a conference or person. "\
-                        "You can also search "\
-                        "via conference numbers by giving # followed by "\
-                        "the conference or person number."), BR())
-
-        ## Search and remove submit
-        cont = Container()
-        cont.append(self._("Search for conference or person:"))
-        cont.append(Input(name="searchtext"))
-        cont.append(Input(type="hidden", name="view_presentation_search"))
-        cont.append(Input(type="submit", name="view_presentation_search",
+        F.append(self.search_help(want_pers=1, want_confs=1), BR(2))
+        F.append(self.gen_search_line())
+        F.append(Input(type="hidden", name="view_presentation_search"))
+        F.append(Input(type="submit", name="view_presentation_search",
                           value=self._("Search")), BR())
-        F.append(cont)                         
         
         searchtext = self.form.getvalue("searchtext", None)
         if searchtext:
             matches = self.sess.conn.lookup_name(searchtext, want_pers=1,
                                                  want_confs=1)
-            infotext = None
-            if len(matches) == 0:
-                infotext = self._("(Nothing matches %s)") % searchtext
-            elif len(matches) > 10:
-                infotext = self._("(Too many matches, "\
-                                  "search result truncated)")
-                
-            self.doc.append(self._("Search result:"), BR())
-            tab=[]
-            for (rcpt_num, rcpt_name) in matches[:10]:
-                presentation = self.get_presentation(rcpt_num)
-                if 0 == presentation:
-                    tab.append([rcpt_name+self._(" has no presentation")])
-                else:
-                    tab.append([self.action_href("viewtext&amp;textnum=" +\
-                                                 str(presentation),
-                                                 rcpt_name)])
 
-            if infotext:
-                tab.append([infotext, ""])
-                
-            self.doc.append(Table(body=tab,
-                                  cell_padding=2,
-                                  border=3, column1_align="left",
-                                  cell_align="right", width="100%"))
+            self.doc.append(self.gen_search_result_table(searchtext, matches,
+                                                         match_handler=self.match_handler))
+        return
 
-        return        
+    def match_handler(self, rcpt_num, rcpt_name):
+        presentation = self.get_presentation(rcpt_num)
+        if 0 == presentation:
+            return [rcpt_name+self._(" has no presentation")]
+        else:
+            return [self.action_href("viewtext&amp;textnum=" + str(presentation),
+                                     rcpt_name)]
+    
 
 class ChooseConfActions(Action):
     "Generate a page for choosing active conference"
@@ -2854,46 +2854,23 @@ class ChooseConfActions(Action):
         F.append(BR())
         F.append(Heading(2, self._("Choose working conference")))
         F.append(BR())
-        F.append(self._("Type in the beginning of the conference name. You can also search "
-                        "via conference numbers by giving # followed by the conference number."), BR())
-
-        ## Search and remove submit
-        cont = Container()
-        cont.append(self._("Search for conference:"))
-        cont.append(Input(name="searchtext"))
-        cont.append(Input(type="hidden", name="choose_conf_search"))
-        cont.append(Input(type="submit", name="choose_conf_search", value=self._("Search")), BR())
-        F.append(cont)
+        F.append(self.search_help(want_pers=0, want_confs=1), BR(2))
+        F.append(self.gen_search_line())
+        F.append(Input(type="submit", name="choose_conf_search", value=self._("Search")), BR())
         
-        ## Search result
-        # FIXME: Code duplicated.
         searchtext = self.form.getvalue("searchtext", None)
         if searchtext:
-            matches = self.sess.conn.lookup_name(searchtext, want_pers=0, want_confs=1)
-            member_matches = []
-            for match in matches:
-                if match[0] in self.sess.conn.member_confs:
-                    member_matches.append(match)
-            
-            infotext = None
-            if len(member_matches) == 0:
-                infotext = self._("(Nothing matches %s)") % searchtext
-            elif len(member_matches) > 10:
-                infotext = self._("(Too many matches, search result truncated)")
-                
-            self.doc.append(self._("Search result:"), BR())
-            tab=[]
-            for (rcpt_num, rcpt_name) in member_matches[:10]:
-                tab.append([self.action_href("goconf&amp;conf=" + str(rcpt_num),
-                                             webkom_escape(rcpt_name))])
-
-            if infotext:
-                tab.append([infotext, ""])
-                
-            self.doc.append(Table(body=tab, cell_padding=2, border=3, column1_align="left",
-                                  cell_align="right", width="100%"))
-
+            matches = self.do_search(searchtext, want_pers=0, want_confs=1)
+            # Only show member conferences
+            matches = filter(lambda match: match[0] in self.sess.conn.member_confs,
+                             matches)
+            self.doc.append(self.gen_search_result_table(searchtext, matches,
+                                                         match_handler=self.match_handler))
         return
+
+    def match_handler(self, rcpt_num, rcpt_name):
+        return [self.action_href("goconf&amp;conf=" + str(rcpt_num),
+                                 webkom_escape(rcpt_name))]
 
 
 
