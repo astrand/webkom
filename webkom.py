@@ -1880,14 +1880,15 @@ def actions(resp):
     action = response_type(resp)
     action.response()
 
-    # Add global shortcuts
-    resp.add_shortcut("v", action.base_session_url() + "&action=whoison")
-    resp.add_shortcut("b", action.base_session_url() + "&action=writeletter&rcpt=" + str(resp.sess.pers_num))
-    resp.add_shortcut("g", action.base_session_url() + "&action=choose_conf")
-
     # Add Javascript shortcuts
     if resp.shortcuts_active:
+        # Add global shortcuts
+        resp.add_shortcut("v", action.base_session_url() + "&action=whoison")
+        resp.add_shortcut("b", action.base_session_url() + "&action=writeletter&rcpt=" 
+                          + str(resp.sess.pers_num))
+        resp.add_shortcut("g", action.base_session_url() + "&action=choose_conf")
         AddShortCuts(resp).response()
+        
     return 
 
 
