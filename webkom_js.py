@@ -65,7 +65,7 @@ document.onkeypress=keyPress;
 if (is_nav4 && is_unix) {
     document.write("<form name='shortcut_form'>");
     document.write("<input name='shortcut_entry' type=text size=1>")
-    document.write("</form>")
+    document.write("<\/form>")
     document.captureEvents(Event.KEYPRESS);
     window.setTimeout(reFocus, 100);
 }
