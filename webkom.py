@@ -1056,6 +1056,7 @@ class ViewConfsActions(Action):
         std_cmd = Container()
         self.doc.append(self._("Default command: "), std_cmd)
         self.add_stdaction(std_cmd, self.resp, "goconf_with_unread", self._("Next conference with unread"))
+        self.resp.flush()
 
         # Information about number of unread
         self.doc.append(self.unread_info())
@@ -1182,6 +1183,15 @@ class GoConfActions(Action):
         # Standard action
         std_cmd = Container()
         self.doc.append(self._("Default command: "), std_cmd)
+        next_text = get_next_unread(self.sess.conn, self.sess.current_conf)
+        if next_text:
+            std_url = "viewtext&amp;textnum=" + str(next_text)
+            self.add_stdaction(std_cmd, self.resp, std_url, self._("Read next unread"))
+        else:
+            self.add_stdaction(std_cmd, self.resp, "goconf_with_unread", self._("Next conference with unread"))
+        del std_cmd
+        self.resp.flush()
+        
         # Information about number of unread
         self.doc.append(self.unread_info(self.sess.current_conf))
 
@@ -1296,13 +1306,6 @@ class GoConfActions(Action):
         tl.append(tr)
         self.doc.append(tl)
 
-        # Standard action
-        next_text = get_next_unread(self.sess.conn, self.sess.current_conf)
-        if next_text:
-            std_url = "viewtext&amp;textnum=" + str(next_text)
-            self.add_stdaction(std_cmd, self.resp, std_url, self._("Read next unread"))
-        else:
-            self.add_stdaction(std_cmd, self.resp, "goconf_with_unread", self._("Next conference with unread"))
             
 
 class ViewTextActions(Action):
@@ -1570,6 +1573,9 @@ class ViewTextActions(Action):
         cont.append(self.action_href("viewtext" + "&amp;textnum=" + str(global_num),
                                      webkom_escape(self.sess.conn.subjects[global_num])))
         self.doc.append(BR())
+        del cont
+        self.resp.flush()
+        
         lower_actions = Container()
         #
         # Upper actions
@@ -2030,6 +2036,8 @@ class WriteArticleActions(Action):
                          TOPLINK_SEPARATOR, thisconf, TOPLINK_SEPARATOR, writeart)
 
         self.append_std_top(cont)
+        del cont
+        self.resp.flush()
 
         submitbutton = Input(type="submit", name=submitname,
                              value=submitvalue)
@@ -2379,7 +2387,6 @@ class WhoIsOnActions(Action):
         self.doc.append(Heading(3, self._("Who is logged in")))
 
         self.doc.append(self._("Showing all sessions active within the last 30 minutes."), BR())
-
         self.resp.flush()
 
         try:
@@ -2424,8 +2431,8 @@ class JoinConfActions(Action):
         self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
         joinlink = self.action_href("joinconf", self._("Join conference"))
-        cont = Container(toplink, TOPLINK_SEPARATOR, joinlink)
-        self.append_std_top(cont)
+        self.append_std_top(Container(toplink, TOPLINK_SEPARATOR, joinlink))
+        self.resp.flush()
 
         F = Form(BASE_URL, name="joinconfform", submit="")
         self.doc.append(F)
@@ -2539,11 +2546,11 @@ class ViewMarkingsActions(Action):
         
         cont = Container(toplink)
         self.append_std_top(cont)
-
         cont.append(TOPLINK_SEPARATOR, self.action_href("view_markings",
                     self._("List marked articles")))
-
+        del cont
         self.doc.append(Header(2, self._("List marked articles")))
+        self.resp.flush()
 
         self.doc.append(Table(heading=headings, body=tab,
                               cell_padding=2,
@@ -2750,8 +2757,8 @@ class ViewPresentationActions(Action):
         toplink = Href(self.base_session_url(), "WebKOM")
         golink = self.action_href("view_presentation",
                                   self._("View presentation"))
-        cont = Container(toplink, ' : ', golink)
-        self.append_std_top(cont)
+        self.append_std_top(Container(toplink, ' : ', golink))
+        self.resp.flush()
 
         self.resp.shortcuts_active = 0 
 
@@ -2817,8 +2824,8 @@ class ChooseConfActions(Action):
         self.doc.onLoad = "document.choose_conf_form.searchtext.focus()"
         toplink = Href(self.base_session_url(), "WebKOM")
         golink = self.action_href("choose_conf", self._("Choose working conference"))
-        cont = Container(toplink, TOPLINK_SEPARATOR, golink)
-        self.append_std_top(cont)
+        self.append_std_top(Container(toplink, TOPLINK_SEPARATOR, golink))
+        self.resp.flush()
 
         F = Form(BASE_URL, name="choose_conf_form", submit="")
         self.doc.append(F)
