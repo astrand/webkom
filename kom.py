@@ -2120,10 +2120,14 @@ class CachedConnection(Connection):
         # uconferences[].highest_local_no gets invalid. 
         self.conferences.invalidate(msg.conf_no)
         self.uconferences.invalidate(msg.conf_no)
+        # textstats.misc_info_recipient_list gets invalid as well.
+        self.textstats.invalidate(msg.text_no)
 
     def cah_sub_recipient(self, msg, c):
         # Invalid conferences[].no_of_texts
         self.conferences.invalidate(msg.conf_no)
+        # textstats.misc_info_recipient_list gets invalid as well.
+        self.textstats.invalidate(msg.text_no)
 
     def cah_new_membership(self, msg, c):
         # Joining a conference makes conferences[].no_of_members invalid
