@@ -2186,7 +2186,7 @@ class WriteArticleActions(Action):
         submitbutton = Input(type="submit", name=submitname,
                              value=submitvalue)
         
-        F = Form(BASE_URL, name="writearticleform", submit=submitbutton)
+        F = Form(BASE_URL, name="writearticleform", submit="")
         self.doc.append(F)
         if presentationfor:
             F.append(Input(type="hidden", name="presentationfor",
@@ -2318,7 +2318,13 @@ class WriteArticleActions(Action):
         F.append(Textarea(rows=20, cols=70, text=text))
         F.append(BR())
         if comment_to_list and not presentationfor:
-            F.append(Input(type="submit", name="quotesubmit", value=self._("Quote")))
+            quotebutton = Input(type="submit", name="quotesubmit", value=self._("Quote"))
+        else:
+            quotebutton = ""
+
+        # Append table with quote and submit button
+        F.append(Table(body=[[quotebutton, submitbutton]], border=0,
+                       column1_align="left", cell_align="right", width="500"))
 
         self.doc.append(self._("If certain characters are hard to write with your keyword, "
                                "you can copy and paste from the line below:"), BR())
