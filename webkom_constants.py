@@ -72,7 +72,7 @@ MAX_SUBJ_PER_PAGE = 25
 MAX_CONFS_PER_PAGE = 15
 MAINTAINER_NAME = "Erik Forsberg"
 MAINTAINER_MAIL = "forsberg@lysator.liu.se"
-CONSOLE_SOCKET = "/tmp/webkom.console
+CONSOLE_SOCKET = "/tmp/webkom.console"
 
 MAX_CONFERENCE_LEN = 37
 # 12 hours auto-logout
