@@ -280,18 +280,18 @@ def unquote_specials(text):
     return text
 
 
-def webkom_escape(str):
-    str = del_8859_1_invalid_chars(str)
-    str = HTMLutil.latin1_escape(escape(str))
-    return str
+def webkom_escape(s):
+    s = del_8859_1_invalid_chars(s)
+    s = HTMLutil.latin1_escape(escape(s))
+    return s
 
 
-def webkom_escape_linkify(str):
-    str = del_8859_1_invalid_chars(str)
-    str = linkify_text(str)
-    str = HTMLutil.latin1_escape(escape(str))
-    str = unquote_specials(str)
-    return str
+def webkom_escape_linkify(s):
+    s = del_8859_1_invalid_chars(s)
+    s = linkify_text(s)
+    s = HTMLutil.latin1_escape(escape(s))
+    s = unquote_specials(s)
+    return s
 
 
 def reformat_text(text):
@@ -412,13 +412,13 @@ def get_ai_dict(ai_list):
     for ai in ai_list:
         d[ai.tag]
 
-def mime_content_type(str):
+def mime_content_type(s):
     """Get the type / subtype part of a MIME content type"""
-    return str.split(";")[0]
+    return s.split(";")[0]
 
-def mime_content_params(str):
+def mime_content_params(s):
     """Get parameters of a MIME content type, as a dictionary"""
-    fields = str.split(";")
+    fields = s.split(";")
     d = {}
     for param in fields[1:]:
         (name, value) = param.split("=")
