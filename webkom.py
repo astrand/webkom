@@ -2099,7 +2099,7 @@ def actions(resp):
     except KeyError:
         lang_string = ""
     
-    trans = translator_cache.get_translator(resp.env["HTTP_ACCEPT_LANGUAGE"]).gettext
+    trans = translator_cache.get_translator(lang_string).gettext
     
     if resp.form.has_key("loginsubmit"):
         LogInActions(resp, trans).response()
