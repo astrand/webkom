@@ -2249,12 +2249,14 @@ def actions(resp):
 
 def write_traceback(resp):
     # Something failed in response generation.
+    # FIXME: This code does not work! Why?
     try:
         lang_string = resp.env["HTTP_ACCEPT_LANGUAGE"]
     except KeyError:
         lang_string = ""
     
     _ = translator_cache.get_translator(lang_string).gettext
+    #_ = translator_cache.get_translator("en").gettext
     
     # Save a copy on disk
     import traceback
