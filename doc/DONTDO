@@ -5,4 +5,4 @@ Things I have thought of but now consider a bad idea
 wrapper-script. Bad, because it would not be possible to change path
 without restarting Apache.
 
-
+* Dont use __del__ finalizers, as they prevent the GC from doing it's job. 
