@@ -171,6 +171,11 @@ class Action:
     def get_conf_name(self, num):
         "Get conference name"
         # FIXME: Do linebreaks instead of truncating
+        return self.sess.conn.conf_name(num, default="Möte %d (finns inte)")[:MAX_CONFERENCE_LEN]
+
+    def get_pers_name(self, num):
+        "Get persons name"
+        # FIXME: Do linebreaks instead of truncating
         return self.sess.conn.conf_name(num, default="Person %d (finns inte)")[:MAX_CONFERENCE_LEN]
 
     def get_presentation(self, num):
@@ -251,7 +256,7 @@ class ViewPendingMessages(Action):
         while self.sess.pending_messages:
             msg = self.sess.pending_messages.pop(0)
             self.print_heading(msg)
-            sender_name = self.get_conf_name(msg.sender)
+            sender_name = self.get_pers_name(msg.sender)
             self.doc.append(Bold("Från: " + sender_name), BR())
             self.doc.append(Bold("Tid: " +
                                  time.strftime("%Y-%m-%d %H:%M", time.localtime(msg.time))))
@@ -816,7 +821,7 @@ class GoConfActions(Action):
             # Date
             date = self.sess.conn.textstats[global_num].creation_time.to_date_and_time()
             # Author
-            author = self.get_conf_name(ts.author)
+            author = self.get_pers_name(ts.author)
             # Subject
             subjtext = self.sess.conn.subjects[global_num]
             if not subjtext:
@@ -868,7 +873,7 @@ class ViewTextActions(Action):
             # Fetch info about commented text
             try:
                 c_ts = self.sess.conn.textstats[c.text_no]
-                c_authortext = " av " + self.get_conf_name(c_ts.author)
+                c_authortext = " av " + self.get_pers_name(c_ts.author)
             except:
                 c_authortext = ""
             if c.type == kom.MIC_FOOTNOTE:
@@ -884,7 +889,7 @@ class ViewTextActions(Action):
                 presentation = str(self.get_presentation(c.sent_by))
                 header.append(["Adderad av:",
                                self.action_href("viewtext&textnum=" + presentation, 
-                                                self.get_conf_name(c.sent_by), presentation)])
+                                                self.get_pers_name(c.sent_by), presentation)])
             if c.sent_at is not None:
                 header.append(["Adderad:", c.sent_at.to_date_and_time()])
 
@@ -901,7 +906,7 @@ class ViewTextActions(Action):
             
             if r.sent_by is not None:
                 leftcol = leftcol + "<br>Sänt av:"
-                rightcol = rightcol + "<br>" + self.get_conf_name(r.sent_by)
+                rightcol = rightcol + "<br>" + self.get_pers_name(r.sent_by)
             if r.sent_at is not None:
                 leftcol = leftcol + "<br>Sänt:"
                 rightcol = rightcol + "<br>" + r.sent_at.to_date_and_time()
@@ -934,7 +939,7 @@ class ViewTextActions(Action):
             # Fetch info about comment
             try:
                 c_ts = self.sess.conn.textstats[c.text_no]
-                c_authortext = " av " + self.get_conf_name(c_ts.author)
+                c_authortext = " av " + self.get_pers_name(c_ts.author)
             except:
                 c_authortext = ""
                 
@@ -1026,7 +1031,7 @@ class ViewTextActions(Action):
         presentation = str(self.get_presentation(ts.author))
         header.append(["Författare:",
                        self.action_href("viewtext&textnum=" + presentation,
-                                        self.get_conf_name(ts.author), presentation)])
+                                        self.get_pers_name(ts.author), presentation)])
 
         # Comments-to
         self.add_comments_to(ts, header)
@@ -1450,7 +1455,7 @@ class WhoIsOnActions(Action):
         
         for who in who_list:
             static = kom.ReqGetStaticSessionInfo(self.sess.conn, who.session).response()
-            name = self.get_conf_name(who.person)
+            name = self.get_pers_name(who.person)
             user_and_host = static.username + "@" + static.hostname
             conf_name = self.sess.conn.conf_name(who.working_conference,
                                                  default="Ej närvarande i något möte")[:MAX_CONFERENCE_LEN]
