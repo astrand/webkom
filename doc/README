@@ -28,7 +28,8 @@ debugging.
 
 webkom.py and fifoterm.py must be running on the same machine (because
 FIFOs are used for communication). All other components can run on
-different machines. 
+different machines. This instruction assumes that all components run
+om the same machine. 
 
 
 Requirements
