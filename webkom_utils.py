@@ -41,32 +41,6 @@ class Struct:
 
 # KOM utility functions
 
-# FIXME: Ugly return-API
-def kom_login(komserver, username, password):
-    "Login to KOM server. Return (connection, pers_no, errorstring)"
-    port = 4894
-    try:
-        conn = kom.CachedConnection(komserver, port)
-    except:
-        return (0, 0, "Kan inte ansluta till servern.")
-        
-    matches = conn.lookup_name(username, want_pers=1, want_confs=0)
-    if len(matches) == 0:
-        return (0, 0, "Användaren %s finns inte." % username)
-    elif len(matches) > 1:
-        return (0, 0, "Namnet %s är inte entydigt." % username)
-    else:
-        try:
-            kom.ReqLogin(conn, matches[0][0], password, invisible = 0).response()
-        except:
-            return (0, 0, "Felaktigt lösenord.")
-
-    kom.ReqSetClientVersion(conn, "WebKOM", VERSION).response()
-    kom.ReqAcceptAsync(conn, [kom.ASYNC_NEW_TEXT]).response()
-
-    # Note: matches[0][0] is an integer
-    return (conn, matches[0][0], None)
-
 
 def get_total_num_unread(conn, conf_list):
     total = 0
@@ -454,23 +428,6 @@ def mime_content_params(s):
         d[name] = value
     return d
 
-
-# FIXME: Unused function. 
-## def next_local_no(conn, ask_for, conf_num):
-##     more_to_fetch = 1
-##     while more_to_fetch:
-##         try:
-##             mapping = kom.ReqLocalToGlobal(conn, conf_num,
-##                                            ask_for, 5).response()
-##             for (local_num, global_num) in mapping.list:
-##                 if global_num:
-##                     return local_num
-##             ask_for = mapping.range_end
-##             more_to_fetch = mapping.later_texts_exists
-##         except kom.NoSuchLocalText:
-##             # No unread texts
-##             more_to_fetch = 0
-##     return 0
 
 def list2string(l):
     formatstring = "%s, " * len(l)
