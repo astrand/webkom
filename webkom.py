@@ -330,6 +330,7 @@ class Action:
         self.sess = resp.sess
         # Language
         self._ = resp.get_translator()
+        self.redirect_urls = not self.resp.env.has_key("HTTPS")
 
     def gen_error(self, *msg):
         "Generate error message in bold, with a BR following"
@@ -400,8 +401,9 @@ class Action:
             return Font(text, color=INACTIVE_LINK_COLOR)
 
     def external_href(self, url, text):
-        redirected_url = self.resp._get_url_base() + "?redirect=" + urllib.quote_plus(url)
-        return external_href(redirected_url, text)
+        if self.redirect_urls:
+            url = self.resp._get_url_base() + "?redirect=" + urllib.quote_plus(url)
+        return external_href(url, text)
 
     def webkom_escape_linkify(self, s):
         s = del_8859_1_invalid_chars(s)
@@ -421,12 +423,18 @@ class Action:
         # http URLs
         pat = re.compile("(?P<fullurl>(http://|(?=www\\.))(?P<url>[^\t \012\014\"<>|\\\]*[^\t \012\014\"<>|.,!(){}?'`:]))")
         # We quote the URL now, because it will be an argument to the ?redirect mechanism (added below)
-        repl = lambda m: '\001a href="http://' + urllib.quote_plus(m.group("url")) + '"\002' + m.group("fullurl") + '\001/a\002'
+        if self.redirect_urls:
+            repl = lambda m: '\001a href="http://' + urllib.quote_plus(m.group("url")) + '"\002' + m.group("fullurl") + '\001/a\002'
+        else:
+            repl = lambda m: '\001a href="http://' + m.group("url") + '"\002' + m.group("fullurl") + '\001/a\002'
         text = pat.sub(repl, text)
 
         # https URLs
         pat = re.compile("(?P<fullurl>(https://)(?P<url>[^\t \012\014\"<>|\\\]*[^\t \012\014\"<>|.,!(){}?'`:]))")
-        repl = lambda m: '\001a href="https://' + urllib.quote_plus(m.group("url")) + '"\002' + m.group("fullurl") + '\001/a\002'
+        if self.redirect_urls:
+            repl = lambda m: '\001a href="https://' + urllib.quote_plus(m.group("url")) + '"\002' + m.group("fullurl") + '\001/a\002'
+        else:
+            repl = lambda m: '\001a href="https://' + m.group("url") + '"\002' + m.group("fullurl") + '\001/a\002'
         text = pat.sub(repl, text)
 
         # ftp URLs
@@ -439,10 +447,11 @@ class Action:
         repl = '\001a href="file://\\g<url>"\002\\g<fullurl>\001/a\002'
         text = pat.sub(repl, text)
 
-        # Change all links to go through our redirection mechanism. 
-        redirect = self.resp._get_url_base() + "?redirect="
-        # Both for http and https. 
-        text = text.replace('\001a href="http', '\001a href="%shttp' % redirect)
+        if self.redirect_urls:
+            # Change all links to go through our redirection mechanism. 
+            redirect = self.resp._get_url_base() + "?redirect="
+            # Both for http and https. 
+            text = text.replace('\001a href="http', '\001a href="%shttp' % redirect)
         
         return text
 
