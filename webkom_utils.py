@@ -368,3 +368,16 @@ def gen_session_key():
         key = key + hex(random.randrange(sys.maxint))[2:]
     return key
 
+
+def get_installed_languages():
+    import os.path
+    import dircache
+
+    result = "en"
+    for lang in dircache.listdir(LOCALE_DIR):
+        if os.path.exists(LOCALE_DIR + lang + "/LC_MESSAGES/webkom.mo"):
+            result += ", " + lang 
+
+    return result
+
+
