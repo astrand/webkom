@@ -1296,6 +1296,9 @@ class ViewTextActions(Action):
 
     def check_content_type(self, ts):
         ai_ct = kom.first_aux_items_with_tag(ts.aux_items, kom.AI_CONTENT_TYPE)
+        if not ai_ct:
+            return
+            
         type_subtype = mime_content_type(ai_ct.data)
         if type_subtype not in ["text/x-kom-basic", "x-kom/basic", "x-kom/text"]:
             self.doc.append(Bold("Warning: article has unknown content type ",
@@ -1389,6 +1392,11 @@ class ViewTextActions(Action):
                                               confname)
             self.doc.append(self._("This text is FAQ for conference "),
                             conf_num_link, " ", conf_name_link, BR())
+
+    def print_creating_software(self, ts):
+        ai_cs = kom.first_aux_items_with_tag(ts.aux_items, kom.AI_CREATING_SOFTWARE)
+        if ai_cs:
+            self.doc.append(self._("Created with %s." % ai_cs.data), BR())
             
     def response(self):
         # Toplink
@@ -1579,6 +1587,9 @@ class ViewTextActions(Action):
 
         # if this text is FAQ for something, then tell so
         self.print_faq_info(ts)
+
+        # Creating software. Currently disabled. 
+        #self.print_creating_software(ts)
 
         # Add all comments.
         new_comments = []
@@ -2103,12 +2114,13 @@ class WriteArticleSubmit(Action):
         text = reformat_text(text)
         # Remove \m
         text = string.replace(text, "\015", "")
-        aux_items = []
+        creating_software = kom.AuxItem(tag=kom.AI_CREATING_SOFTWARE,
+                                        data="WebKOM %s" % VERSION)
 
         text_num = 0
         try:
             text_num = kom.ReqCreateText(self.sess.conn, subject + "\n" + text,
-                                         misc_info, aux_items).response()
+                                         misc_info, [creating_software]).response()
             # Mark as read
             ts = self.sess.conn.textstats[text_num]
             for r in ts.misc_info.recipient_list:
