@@ -75,7 +75,7 @@ def get_total_num_unread(conn, conf_list):
     return total
 
 
-def get_next_unread(conn, pers_num, conf_num):
+def get_next_unread(conn, conf_num):
     "Get next unread text in a conference and return as a global number"
     ms = conn.memberships[conf_num]
 
@@ -97,7 +97,7 @@ def get_next_unread(conn, pers_num, conf_num):
     return 0
 
 
-def get_texts(conn, pers_num, conf_num, max_num, lowest_local=None):
+def get_texts(conn, conf_num, max_num, lowest_local=None):
     "Get all unread texts. Return a list of tuples (local_num, global_num)"
     # Start list
     texts = []

@@ -1165,7 +1165,7 @@ class GoConfActions(Action):
         # Get unread texts
         # FIXME: error handling
         ms = self.sess.conn.memberships[conf_num]
-        texts = get_texts(self.sess.conn, self.sess.conn.get_user(), conf_num, MAX_SUBJ_PER_PAGE, ask_for)
+        texts = get_texts(self.sess.conn, conf_num, MAX_SUBJ_PER_PAGE, ask_for)
         
         # Prepare for links to earlier/later pages of texts
         first_local_num = self.sess.conn.conferences[conf_num].first_local_no
@@ -1256,8 +1256,7 @@ class GoConfActions(Action):
         self.doc.append(tl)
 
         # Standard action
-        next_text = get_next_unread(self.sess.conn, self.sess.conn.get_user(),
-                                    self.sess.current_conf)
+        next_text = get_next_unread(self.sess.conn, self.sess.current_conf)
         if next_text:
             std_url = "viewtext&amp;textnum=" + str(next_text)
             self.add_stdaction(std_cmd, self.resp, std_url, self._("Read next unread"))
@@ -1722,7 +1721,7 @@ class ViewTextActions(Action):
         self.doc.append(lower_actions)
 
         # Add links for reading next unread
-        next_text = get_next_unread(self.sess.conn, self.sess.conn.get_user(),
+        next_text = get_next_unread(self.sess.conn, 
                                     self.sess.current_conf)
         next_text_url = "viewtext&amp;textnum=" + str(next_text)
         lower_actions.append(self.action_href(next_text_url, self._("Read next unread"),
