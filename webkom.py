@@ -1571,6 +1571,7 @@ class JoinConfActions(Action):
         cont=Container()
         cont.append("Sök möte:")
         cont.append(Input(name="searchtext"))
+        cont.append(Input(type="hidden", name="searchconfsubmit"))
         cont.append(Input(type="submit", name="searchconfsubmit", value="Sök"), BR())
         F.append(cont)
         
