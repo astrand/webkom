@@ -239,6 +239,9 @@ msgstr "Upprepa nytt lösenord"
 msgid "Go to conference"
 msgstr "Gå till möte"
 
+msgid "Showing all sessions active within the last 30 minutes."
+msgstr "Visar alla sessioner som har varit aktiva de senaste 30 minuterna."
+
 msgid "Unable to set number of unread."
 msgstr "Kunde inte utföra endast."
 

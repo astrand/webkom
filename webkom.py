@@ -2031,14 +2031,11 @@ class WhoIsOnActions(Action):
         cont = Container(toplink, " : ", wholink)
         self.append_std_top(cont)
         self.doc.append(Heading(3, self._("Who is logged in")))
-        # FIXME: This function seems not to show sessions that have been active the
-        # last 30 minutes, but rather all sessions. Therefore, the comment below is
-        # invalid. Fix this function, and re-activate the statement below!
-        #self.doc.append("Nedan visas alla sessioner som har varit \
-        #aktiva de senaste 30 minuterna.", BR())
+
+        self.doc.append(self._("Showing all sessions active within the last 30 minutes."), BR())
 
         try:
-            who_list = kom.ReqWhoIsOnDynamic(self.sess.conn, active_last = 0).response()
+            who_list = kom.ReqWhoIsOnDynamic(self.sess.conn, active_last = 1800).response()
         except:
             self.doc.append(self._("Request failed"))
 
