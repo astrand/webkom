@@ -2,7 +2,7 @@
 Steps for making a new release
 ==============================
 
-* Change version number in webkom_constants.py
+* Change version number in webkom_constants.py and webkom.spec. 
 
 * Run fmt-* in po dir. 
 
