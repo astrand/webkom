@@ -227,6 +227,23 @@ def external_href(url, text):
     return Href(url, text + str(Image(src="/images/offsite.png", border=0,
                                       height=13, width=17, alt="[extern länk]")))
 
+
+def gen_8859_1_invalid_chars():
+    delchars = ""
+    # 0-31 and 127-159 are forbidden in ISO-8859-1
+    charset = range(0, 32) + range(127, 160)
+    for charnum in charset:
+        delchars += chr(charnum)
+    return delchars
+
+invalid_chars_trans = trans = string.maketrans("", "")
+invalid_chars_delchars = gen_8859_1_invalid_chars()
+
+def del_8859_1_invalid_chars(text):
+    "Delete all invalid ISO-8859-1 chars"
+    return string.translate(text, invalid_chars_trans, invalid_chars_delchars)
+    
+
 def linkify_text(text):
     # FIXME: Linkify everything that looks like an URL or mail adress. 
     # NOTE:
