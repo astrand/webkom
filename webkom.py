@@ -2048,10 +2048,13 @@ class JoinConfActions(Action):
 class JoinConfSubmit(Action):
     "Handles submits for joining a conference."
     def response(self):
+        # We add to a container instead of document, since we are going to redirect. 
+        result_cont = Container()
+
         toplink = Href(self.base_session_url(), "WebKOM")
         joinlink = self.action_href("joinconf", self._("Join conference"))
-        cont = Container(toplink, " : ", joinlink)
-        self.append_std_top(cont)
+        top_cont = Container(toplink, " : ", joinlink)
+        result_cont.append(self.gen_std_top(top_cont))
         
         conf = int(self.form.getvalue("new_conference"))
         type = kom.ConfType()
@@ -2059,13 +2062,15 @@ class JoinConfSubmit(Action):
             # FIXME: User settable priority
             kom.ReqAddMember(self.sess.conn, conf, self.sess.conn.get_user(), 100, 1000, type).response()
         except:
-            self.print_error(self._("Unable to join conference."))
+            result_cont.append(self.gen_error(self._("Unable to join conference.")))
+            self.submit_redir(result_cont)
             return
 
-        self.doc.append(Heading(3, self._("Ok")))
-        self.doc.append(self._("You are now a member of conference "))
-        self.doc.append(self.action_href("goconf&amp;conf=" + str(conf), self.get_conf_name(conf)))
-        self.doc.append(".")
+        result_cont.append(Heading(3, self._("Ok")))
+        result_cont.append(self._("You are now a member of conference "))
+        result_cont.append(self.action_href("goconf&amp;conf=" + str(conf), self.get_conf_name(conf)))
+        result_cont.append(".")
+        self.submit_redir(result_cont)
         
         return
 
