@@ -1048,7 +1048,7 @@ class GoConfActions(Action):
         self.doc.append(self.action_href("set_unread", self._("Set unread")), NBSP)
         self.doc.append(self.action_href("leaveconf", self._("Leave conference")), NBSP)
         
-        self.doc.append(BR(), Heading(3, self._("Article subjects")))
+        self.doc.append(BR(), Heading(3, self._("Articles")))
 
         # local_num is the first local_num we are interested in
         if self.form.has_key("local_num"):

@@ -82,6 +82,9 @@ msgstr "Namn"
 msgid "Error: "
 msgstr "Fel: "
 
+msgid "Articles"
+msgstr "Inlägg"
+
 msgid ""
 "Type in the beginning of the conference name. You can also search via "
 "conference numbers by giving # followed by the conference number."
@@ -230,9 +233,6 @@ msgstr "Alla möten inladdade. "
 
 msgid "Remove marked recipients"
 msgstr "Ta bort markerade mottagare"
-
-msgid "Article subjects"
-msgstr "Ärenden"
 
 msgid "Subject"
 msgstr "Ärende"
