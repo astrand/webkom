@@ -1,12 +1,24 @@
-"""Utilities needed to emulate Python's interactive interpreter.
 
-"""
-
+# WebKOM - a web based LysKOM client
+# 
+# Copyright (C) 2000 by Peter Åstrand
 #
-# Patched by Peter Åstrand <astrand@lysator.liu.se> to use FIFOs
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
 #
-# Inspired by similar code by Jeff Epler and Fredrik Lundh.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 
+
+"""Modified version of code.py, as distributed with Python 2.0"""
 
 import sys, os
 import string
