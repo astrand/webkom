@@ -2698,6 +2698,8 @@ class ViewPresentationActions(Action):
         cont = Container(toplink, ' : ', golink)
         self.append_std_top(cont)
 
+        self.resp.shortcuts_active = 0 
+
         F = Form(BASE_URL, name="view_pres_form", submit="")
         self.doc.append(F)
         F.append(self.hidden_key())
