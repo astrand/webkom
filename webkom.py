@@ -617,8 +617,8 @@ class AboutPageActions(Action):
         
         self.doc.append(Heading(3, self._("Bugs")))
         self.doc.append(self._("There is a "),
-                        external_href("bugs.html",
-                                      self._("list with known bugs")), ".")
+                        external_href("http://bugzilla.lysator.liu.se/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&email1=&emailtype1=substring&emailassigned_to1=1&email2=&emailtype2=substring&emailreporter2=1&bugidtype=include&bug_id=&changedin=&votes=&chfieldfrom=&chfieldto=Now&chfieldvalue=&product=WebKOM&short_desc=&short_desc_type=allwordssubstr&long_desc=&long_desc_type=allwordssubstr&bug_file_loc=&bug_file_loc_type=allwordssubstr&keywords=&keywords_type=anywords&field0-0-0=noop&type0-0-0=noop&value0-0-0=&cmdtype=doit&namedcmd=fufreg&newqueryname=&order=Reuse+same+sort+as+last+time",
+                                      self._("list with known bugs")), self._(" in the Bugzilla at Lysator"))
 
 
 class WhatsImplementedActions(Action):
