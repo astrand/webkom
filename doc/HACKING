@@ -21,3 +21,16 @@ Coding standards
 * Imports: Do not import modules with *. Exceptions to this rule is
   webkom_constants, HTMLgen and webkom_utils.
 
+
+Handling submits
+================
+The user should always be able to press reload in the browser, without
+risking posting articles twice etc. This works as follows: The classes
+that is responsible for submit response generation should either
+directly handle multiple submits, or use a special mechanism. It works
+as follows: Instead of appending directly to the response document,
+create an Container and append to it. Before returning, call
+self.submit_redir() with this container as argument. 
+
+Look at LeaveConfSubmit for an example of how to do this. 
+
