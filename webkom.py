@@ -2294,6 +2294,9 @@ def actions(resp):
     resp.sess = sessionset.get_session(resp.key)
     resp.sess.lock_sess()
 
+    # Set page title
+    resp.doc.title = "WebKOM: " + resp.sess.conn.conf_name(resp.sess.conn.get_user())[:MAX_CONFERENCE_LEN]
+
     # Tell the server the user is active
     resp.sess.user_is_active()
 
@@ -2325,8 +2328,6 @@ def actions(resp):
         resp.add_shortcut("g", action.base_session_url() + "&amp;action=choose_conf")
         AddShortCuts(resp, trans).response()
 
-    # Set page title
-    resp.doc.title = "WebKOM: " + resp.sess.conn.conf_name(resp.sess.conn.get_user())[:MAX_CONFERENCE_LEN]
 
     # For debugging 
     #resp.doc.append(str(resp.env))
