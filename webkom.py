@@ -2525,7 +2525,8 @@ class SetUnreadActions(Action):
         cont.append(" : ", self.action_href("goconf&amp;conf=" + str(conf_num),
                                             conf_name))
 
-        submitbutton = Input(type="submit", name="set_unread_submit", value="Utför")
+        submitbutton = Input(type="submit", name="set_unread_submit",
+                             value=self._("Submit"))
         F = Form(BASE_URL, name="set_unread_form", submit=submitbutton)
         self.doc.append(F)
         F.append(self.hidden_key())
@@ -2535,6 +2536,8 @@ class SetUnreadActions(Action):
         F.append(self._("Set read marks to "))
         F.append(Input(name="num_unread", size=4, value="20"))
         F.append(self._(" unread articles in this conference."), BR())
+        F.append(Input(type="hidden", name="set_unread_submit",
+                       value="foo"))
 
         return
 
@@ -2865,7 +2868,7 @@ def actions(resp):
             submits.append(keyword)
 
     actions = get_values_as_list(resp.form, "action")
-    
+
     # It's OK with two submits at the same time: Forms with textfields
     # may be submitted via ENTER and in that case a hidden variable
     # "<something>submit" is submitted. In addition, the form may have other
