@@ -2158,26 +2158,31 @@ class LeaveConfActions(Action):
 class LeaveConfSubmit(Action):
     "Handles submits for leaving a conference."
     def response(self):
+        # We add to a container instead of document, since we are going to redirect. 
+        result_cont = Container()
+        
         toplink = Href(self.base_session_url(), "WebKOM")
-        cont = Container(toplink, " : ", self.current_conflink())
-        self.append_std_top(cont)
+        top_cont = Container(toplink, " : ", self.current_conflink())
+        result_cont.append(self.gen_std_top(top_cont))
 
         conf_num = self.sess.current_conf
         conf_name = self.get_conf_name(conf_num)
-        cont.append(" : ", conf_name)
+        top_cont.append(" : ", conf_name)
 
         try:
             kom.ReqSubMember(self.sess.conn, conf_num, self.sess.conn.get_user()).response()
         except:
-            self.print_error(self._("Unable to leave conference."))
+            result_cont.append(self.gen_error(self._("Unable to leave conference.")))
+            self.submit_redir(result_cont)
             return
 
         # Note:
         # We don't need to invalidate any caches, since a async
         # message should do that for us. 
         
-        self.doc.append(Heading(3, self._("Ok")))
-        self.doc.append(self._("You are no longer a member of conference ") + conf_name + ".")
+        result_cont.append(Heading(3, self._("Ok")))
+        result_cont.append(self._("You are no longer a member of conference ") + conf_name + ".")
+        self.submit_redir(result_cont)
         
         return
 
