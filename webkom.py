@@ -324,7 +324,7 @@ class LoginPageActions(Action):
         toplink = Href(BASE_URL, "WebKOM")
         cont = Container(toplink, ": Inloggning")
         self.append_std_top(cont)
-        submitbutton = Center(Input(type="submit", name="loginsubmit", value="Logga in"))
+        submitbutton = Input(type="submit", name="loginsubmit", value="Logga in")
 
         # Ugly focus-hack to work around broken Netscape
         # Non-JS capable browsers should ignore this
@@ -344,13 +344,14 @@ class LoginPageActions(Action):
         F_komserver = Form(BASE_URL, name="komserver_form", submit="")
         F_username = Form(BASE_URL, name="username_form", submit="")
         F_password = Form(BASE_URL, name="password_form", submit="")
-        F_submit = Form(BASE_URL, name="submit_form", submit=submitbutton)
+        F_submit = Form(BASE_URL, name="submit_form", submit="")
+        F_submit.append(submitbutton)
 
         formtable = [("Server", F_komserver),
                      ("Användarnamn", F_username),
-                     ("Lösenord", F_password),
-                     ("", F_submit)]
+                     ("Lösenord", F_password) ]
         js_cont.append(InputTable(formtable))
+        js_cont.append(F_submit)
         
         # komserver_form
         F_komserver.append(Input(name="komserver", size=20, value=DEFAULT_KOM_SERVER, onChange="onchange_komserver(this)"))
@@ -385,13 +386,15 @@ class LoginPageActions(Action):
         # Non-JS version
         #
         nonjs_cont = Container()
-        submitbutton = Center(Input(type="submit", name="loginsubmit", value="Logga in"))
-        F = Form(BASE_URL, name="loginform", submit=submitbutton)
+        F = Form(BASE_URL, name="loginform", submit="")
+
         nonjs_cont.append(F)
         logintable = [("Server", Input(name="komserver", size=20, value=DEFAULT_KOM_SERVER)),
                       ("Användarnamn", Input(name="username",size=20)),
                       ("Lösenord", Input(type="password",name="password",size=20)) ]
+
         F.append(Center(InputTable(logintable)))
+        F.append(Center(submitbutton))
 
         
         # Write out Javascript version
