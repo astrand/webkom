@@ -36,7 +36,7 @@ class SZ_FCGI:
 	# If it wouldn't, req.__del__ might be called and it that case
 	# we would need a lock. 
 	del self.handles[th_id]
-	req.Finish()
+	req.finish()
 	del req
 	thread.exit()	
 
@@ -56,7 +56,7 @@ class SZ_FCGI:
 
 	try:
 	    req.out.write(out_string)
-	    req.out.flush()
+            req.flush()
 	except:
 	    pass
 
