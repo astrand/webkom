@@ -177,6 +177,10 @@ class Session:
         self.submit_result = {}
 
     def __del__(self):
+        try:
+            kom.ReqDisconnect(self.sess.conn, 0)
+        except:
+            pass
         self.resp.sess.conn.socket.close()
         
     def lock_sess(self):
@@ -2532,7 +2536,7 @@ class Logger:
 
         
 # Interaction via FIFO
-def run_console(self, *args):
+def run_console(*args):
     import fifoconsole
     try:
         fifoconsole.interact(local=globals(), fifoprefix="testwebkom")
@@ -2541,7 +2545,7 @@ def run_console(self, *args):
         traceback.print_exc(file = f)
         f.close()
 
-def run_maintenance(self, *args):
+def run_maintenance(*args):
     while 1:
         time.sleep(60)
         sessionset.del_inactive()
