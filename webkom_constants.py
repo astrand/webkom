@@ -84,3 +84,4 @@ COPYPASTE_CHARACTERS = "å Å ä Ä ö Ö ü Ü ! \" @ $ % & / { } [ ] ( ) \ ? ~ < > |"
 KNOWN_BUGS_URL = "http://bugzilla.lysator.liu.se/buglist.cgi" \
                  "?bug_status=NEW&bug_status=ASSIGNED" \
                  "&bug_status=REOPENED&product=WebKOM"
+CUSTOM_RIGHT_FOOTER = ""

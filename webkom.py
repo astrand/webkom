@@ -2997,6 +2997,8 @@ def actions(resp):
     # Add link to W3C validator
     div = Div(align = "right")
     resp.doc.append(div)
+    div.append(str(CUSTOM_RIGHT_FOOTER))
+    div.append(NBSP*4)
     image = Image(src="/webkom/images/check.png", border=0, height=17, width=22,
                   alt="[check HTML validity]")
     div.append(Href("http://validator.w3.org/check/referer", str(image)))
