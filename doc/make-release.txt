@@ -1,0 +1,33 @@
+
+Steps for making a new release
+==============================
+
+* Change version number in webkom_constants.py
+
+* Run fmt-* in po dir. 
+
+* CVS tag: cvs tag webkom-0-<release>
+
+* Run make-dist.sh to create tarball. 
+
+* Run rpm -ta <tarball> to create RPM package. 
+
+* (Optional) Run:
+
+  cvs log -r'<oldtag>:<newtag>' 
+
+  to check which changes were done. 
+
+
+Steps for upgrading a running installation
+==========================================
+
+* (Optional) Start the interactive terminal and run:
+
+ sessionset.notify_all_users("The server is going down bla bla")
+
+* Stop web server
+
+* Upgrade WebKOM
+
+* Start web server
