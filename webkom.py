@@ -156,6 +156,7 @@ class Session:
         # Holds pending messages
         self.pending_messages = []
         self.whoami = kom.ReqWhoAmI(self.conn).response()
+        self.last_active = 0
         
     def lock_sess(self):
         "Lock session"
@@ -174,6 +175,11 @@ class Session:
             sessionset.log_me_out(self)
             raise RemotelyLoggedOutException
 
+    def user_is_active(self):
+        now = time.time()
+        if now - self.last_active > 30:
+            kom.ReqUserActive(self.conn).response()
+            self.last_active = now
 
 
 class Response:
@@ -2287,6 +2293,9 @@ def actions(resp):
     action = response_type(resp, trans)
     # Generate page
     action.response()
+
+    # Tell the server the user is active
+    resp.sess.user_is_active()
 
     # Add link to W3C validator
     div = Div(align = "right")
