@@ -619,6 +619,12 @@ class LogInActions(Action):
         # Handle messages
         conn.add_async_handler(kom.ASYNC_SEND_MESSAGE, self.resp.sess.async_message)
 
+        # Pre-fetch information about half of the conferences
+        prefetch_num = len(conn.member_confs)/2
+        conf_list = conn.member_confs[0:prefetch_num]
+        for conf_num in conf_list:
+            conn.no_unread[conf_num]
+
         MainPageActions(self.resp).response()
         
 
