@@ -1863,7 +1863,7 @@ class CreateUserActions(Action):
         self.append_std_top(cont)
 
         default_kom_server = DEFAULT_KOM_SERVER
-        if self.form.has_key("komserver"):
+        if self.form.has_key("komserver") and not LOCK_KOM_SERVER:
             default_kom_server = self.form["komserver"].value
         
         submitbutton = Center(Input(type="submit", name="create_user_submit", value=self._("Create new user")))
@@ -1874,10 +1874,18 @@ class CreateUserActions(Action):
         F.append(BR(2))
         F.append(Center(Heading(2, self._("Create new user"))))
         F.append(BR(2))
-        logintable = [(self._("Server"), Input(name="komserver", size=20, value=default_kom_server)),
-                      (self._("Username"), Input(name="username", size=20)),
-                      (self._("Password"), Input(type="password", name="password1", size=20)), 
-                      (self._("Repeat password"), Input(type="password", name="password2", size=20)) ]
+
+        logintable = []
+
+        if LOCK_KOM_SERVER:
+            logintable.append((self._("Server"), default_kom_server))
+            F.append(Input(type="hidden", name="komserver", value=default_kom_server))
+        else:
+            logintable.append((self._("Server"), Input(name="komserver", size=20, value=default_kom_server)))
+
+        logintable.append((self._("Username"), Input(name="username", size=20)))
+        logintable.append((self._("Password"), Input(type="password", name="password1", size=20)),)
+        logintable.append((self._("Repeat password"), Input(type="password", name="password2", size=20)))
         
         F.append(Center(Formtools.InputTable(logintable)))
         F.append(Center(submitbutton))
