@@ -577,8 +577,8 @@ class MainPageActions(Action):
 
         cont = Container()
         cont.append(Heading(2, self._("Main Page")))
-        cont.append(Heading(3, self.action_href("viewconfs", self._("List conferences"))))
         cont.append(Heading(3, self.action_href("viewconfs_unread", self._("List conferences with unread"))))
+        cont.append(Heading(3, self.action_href("viewconfs", self._("List all conferences you are a member of"))))
         cont.append(Heading(3, self.action_href("writeletter&rcpt=" + str(self.sess.conn.get_user()),
                                                 self._("Write letter"))))
         cont.append(Heading(3, self.action_href("joinconf", self._("Join conference"))))
