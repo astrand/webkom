@@ -2470,8 +2470,11 @@ def print_not_implemented(resp):
     resp.doc.append(cont)
     resp.sess = None
 
-
-# Main action routine
+# Main action routine. This function is critical and must obey these rules:
+# fcg.finish() should always be executed. If it failes, a manual thread.exit()
+# should be done.
+# SystemExit from fcg.finish() should be handled. 
+# unlock_sess() should always be executed, even after tracebacks. 
 def handle_req(fcg, env, form):
     try: # Exceptions within this clause are critical and not sent to browser.
         resp = Response(env, form)
