@@ -30,4 +30,6 @@ Steps for upgrading a running installation
 
 * Upgrade WebKOM
 
+* Review configuration file. 
+
 * Start web server
