@@ -157,6 +157,9 @@ class Session:
         self.pending_messages = []
         self.whoami = kom.ReqWhoAmI(self.conn).response()
         self.last_active = 0
+        # Result of submission. There is no problem when two submits are done
+        # at the same time from one session, since the session is locked. 
+        self.submit_result = {}
         
     def lock_sess(self):
         "Lock session"
@@ -200,7 +203,7 @@ class Response:
                            "Expires: 0\r\n" \
                            "\r\n"
 
-    def redir(self, url_text):
+    def set_redir(self, url_text):
         # Do not print shortcuts code after redirection, this leads to internal error. 
         self.shortcuts_active = 0
         server_name = self.env["HTTP_HOST"]
@@ -228,11 +231,15 @@ class Action:
         self.sess = resp.sess
         # Language
         self._ = translator
-        
+
+    def gen_error(self, msg):
+        "Generate error message in bold, with a BR following"
+        return Container(BR(), Bold(self._("Error: ") + msg), BR())
+
     def print_error(self, msg):
         "Print error message"
-        self.doc.append(Bold(self._("Error: ") + msg), BR())
-
+        self.doc.append(self.gen_error(msg))
+        
     #
     # Small and frequently-used KOM utility methods. The rest in webkom_utils.py
     def change_conf(self, conf_num):
@@ -314,15 +321,18 @@ class Action:
         "Return a hidden key, to be used in a form"
         return Input(type="hidden", name="sessionkey", value=self.key)
     
-    def append_std_top(self, leftobj):
-        "Append a standard top header to the document, including about-link"
+    def gen_std_top(self, leftobj):
+        "Create an standard top header table, including about-link"
         if self.key:
             aboutlink = self.action_href("about", self._("About WebKOM"))
         else:
             aboutlink = Href(BASE_URL + "?action=about", self._("About WebKOM"))
         tab=[[leftobj, aboutlink]]
-        self.doc.append(Table(body=tab, border=0, cell_padding=0,
-                              column1_align="left", cell_align="right", width="100%"))
+        return Table(body=tab, border=0, cell_padding=0,
+                     column1_align="left", cell_align="right", width="100%")
+
+    def append_std_top(self, leftobj):
+        self.doc.append(self.gen_std_top(leftobj))
 
 
 class ViewPendingMessages(Action):
@@ -653,7 +663,7 @@ class LogOutActions(Action):
         self.resp.shortcuts_active = 0
 
         # Redirect to loginpage
-        self.resp.redir("")
+        self.resp.set_redir("")
         return 
 
 
@@ -790,7 +800,7 @@ class LogInActions(Action):
             conn.no_unread[conf_num]
 
         # Redirect to mainpage
-        self.resp.redir("?sessionkey=" + self.resp.key)
+        self.resp.set_redir("?sessionkey=" + self.resp.key)
 
 
 class InvalidSessionPageActions(Action):
@@ -1449,6 +1459,11 @@ class ChangePwActions(Action):
 
 class ChangePwSubmit(Action):
     "Change LysKOM password"
+    def redir(self, submit_result):
+        self.sess.submit_result = submit_result
+        # Redirect to result page. Note: Since this is not HTML, do not escape "&"
+        self.resp.set_redir("?sessionkey=" + self.resp.key + "&action=submit_result")
+
     def response(self):
         assert(self.form.has_key("oldpw") and self.form.has_key("newpw1")
                and self.form.has_key("newpw2"))
@@ -1459,21 +1474,29 @@ class ChangePwSubmit(Action):
 
         toplink = Href(self.base_session_url(), "WebKOM")
         changepwlink = self.action_href("changepw", self._("Change password"))
-        self.doc.append(Container(toplink, " : ", changepwlink), BR(2))
 
+        std_top = self.gen_std_top(Container(toplink, " : ", changepwlink))
+        result_cont = Container(std_top)
+        
         if newpw1 != newpw2:
-            self.print_error(self._("The two new passwords didn't match."))
+            result_cont.append(self.gen_error(self._("The two new passwords didn't match.")))
+            self.redir(result_cont)
             return
 
         try:
             kom.ReqSetPasswd(self.sess.conn, self.sess.conn.get_user(), oldpw, newpw1).response()
         except:
-            self.print_error(self._("The server rejected your password change request"))
+            result_cont.append(self.gen_error(self._("The server rejected your password change request")))
+            self.redir(result_cont)
             return
-        
-        self.doc.append(Heading(3, self._("Ok")))
-        self.doc.append(self._("Your password has been changed"))
 
+
+        # No problems, it seems. 
+        result_cont.append(Heading(3, self._("Ok")))
+        result_cont.append(self._("Your password has been changed"))
+        self.redir(result_cont)
+        return
+                           
 
 
 class CreateUserActions(Action):
@@ -2200,6 +2223,16 @@ class ChooseConfActions(Action):
         return
 
 
+
+class SubmitResultActions(Action):
+    "Generate a page with result of submission. All submissions are redirected"
+    "to this page, to prevent re-submission via browser reload etc."
+    def response(self):
+        self.doc.append(self.sess.submit_result)
+        self.sess.submit_result = None
+        return
+    
+
 def actions(resp):
     "Do requested actions based on CGI keywords"
     try:
@@ -2259,7 +2292,8 @@ def actions(resp):
                        "leaveconf" : LeaveConfActions,
                        "about" : AboutPageActions,
                        "set_unread" : SetUnreadActions,
-                       "logoutothersessions" : LogoutOtherSessionsActions }
+                       "logoutothersessions" : LogoutOtherSessionsActions,
+                       "submit_result" : SubmitResultActions }
 
     if not sessionset.valid_session(resp.key):
         InvalidSessionPageActions(resp, trans).response()
