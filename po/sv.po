@@ -299,6 +299,9 @@ msgstr "Kommentar till:"
 msgid "WebKOM is free software, licensed under GPL."
 msgstr "WebKOM är fri mjukvara, licensierad under GPL."
 
+msgid "(like John Doe, ACM)"
+msgstr "(t ex Eskil Block, FOI)"
+
 msgid "View presentation"
 msgstr "Visa presentation"
 
