@@ -637,7 +637,11 @@ class LoginPageActions(Action):
         else:
             logintable.append((self._("Server"), Input(name="komserver", size=20, value=default_kom_server)))
 
-        logintable.append((self._("Username"), Input(name="username",size=20)))
+        logintable.append((self._("Username"),
+                           Container(Input(name="username",size=20),
+                                     Input(type="checkbox", name="searchconf_komconvention",
+                                           checked=self.form.getvalue("searchconf_komconvention")),
+                                     self._("KOM matching"))))
         logintable.append((self._("Password"), Input(type="password",name="password",size=20)))
 
         F.append(Center(Formtools.InputTable(logintable)))
@@ -987,7 +991,10 @@ class LogInActions(Action):
         if not self.form.has_key("skipmotd"):
             if self.print_motd(conn): return
 
-        matches = conn.lookup_name(self.username, want_pers=1, want_confs=0)
+        if self.form.getvalue("searchconf_komconvention"):
+            matches = conn.lookup_name(self.username, want_pers=1, want_confs=0)
+        else:
+            matches = conn.regexp_lookup(self.username, want_pers=1, want_confs=0)
 
         # Check number of matches
         if len(matches) == 0:
