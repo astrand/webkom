@@ -2174,7 +2174,7 @@ class LeaveConfActions(Action):
         cont.append(" : ", self.action_href("goconf&amp;conf=" + str(conf_num),
                                             conf_name))
 
-        submitbutton = Input(type="submit", name="leaveconfsubmit", value="Yes, leave conference")
+        submitbutton = Input(type="submit", name="leaveconfsubmit", value=self._("Yes, leave conference"))
         F = Form(BASE_URL, name="set_unread_form", submit=submitbutton)
         self.doc.append(F)
         F.append(self.hidden_key())
