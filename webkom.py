@@ -269,6 +269,16 @@ class Action:
             retval = retval + str(total) 
         return retval + str(BR())
 
+    def current_conflink(self):
+        "Return a link to current conference with correct caption, depending on"
+        "whether there are unread articles in this conference or not"
+        if self.sess.conn.no_unread[self.sess.current_conf]:
+            # We are in a conference with unread articles
+            return self.action_href("viewconfs_unread", self._("Conferences (with unread)"))
+        else:
+            # No unread articles in this conference
+            return self.action_href("viewconfs", self._("Conferences (you are a member of)"))
+        
     # Only used on pages with forms
     def hidden_key(self):
         "Return a hidden key, to be used in a form"
@@ -771,7 +781,7 @@ class ViewConfsActions(Action):
             conflink = self.action_href(action_url, title)
         else:
             action_url = "viewconfs"
-            title = self._("Conferences (you are are member of)")
+            title = self._("Conferences (you are a member of)")
             conflink = self.action_href(action_url, title)
 
         cont = Container(toplink, " : ", conflink)
@@ -857,7 +867,7 @@ class GoConfWithUnreadActions(Action):
             GoConfActions(self.resp, self._).response(next_conf)
         else:
             toplink = Href(self.base_session_url(), "WebKOM")
-            conflink = self.action_href("viewconfs", self._("Conferences"))
+            conflink = self.action_href("viewconfs", self._("Conferences (you are a member of)"))
             cont = Container(toplink, " : ", conflink)
             self.append_std_top(cont)
             self.doc.append(Heading(3, self._("No unread")))
@@ -886,8 +896,8 @@ class GoConfActions(Action):
         conf_name = self.get_conf_name(conf_num)
         
         toplink = Href(self.base_session_url(), "WebKOM")
-        conflink = self.action_href("viewconfs", self._("Conferences"))
-        cont = Container(toplink, " : ", conflink)
+        
+        cont = Container(toplink, " : ", self.current_conflink())
         self.append_std_top(cont)
 
         cont.append(" : ", self.action_href("goconf&conf=" + str(conf_num),
@@ -1129,8 +1139,7 @@ class ViewTextActions(Action):
         # Toplink
         toplink = Href(self.base_session_url(), "WebKOM")
         # Link to conferences
-        conflink = self.action_href("viewconfs", self._("Conferences"))
-        cont = Container(toplink, " : ", conflink)
+        cont = Container(toplink, " : ", self.current_conflink())
         self.append_std_top(cont)
 
         # Local and global text number
@@ -1530,7 +1539,6 @@ class WriteArticleActions(Action):
         conf_name = self.get_conf_name(conf_num)
         
         toplink = Href(self.base_session_url(), "WebKOM")
-        conflink = self.action_href("viewconfs", self._("Conferences"))
         thisconf = self.action_href("goconf&conf=" + str(conf_num), conf_name)
 
         comment_to_list = get_values_as_list(self.form, "comment_to")
@@ -1554,7 +1562,8 @@ class WriteArticleActions(Action):
 
         writeart = self.action_href("writearticle", page_heading)
         
-        cont = Container(toplink, " : ", conflink, " : ", thisconf, " : ", writeart)
+        cont = Container(toplink, " : ", self.sess.current_conflink(), " : ", thisconf, " : ", writeart)
+
         self.append_std_top(cont)
 
         submitbutton = Input(type="submit", name=submitname,
@@ -1724,11 +1733,10 @@ class WriteArticleSubmit(Action):
         conf_name = self.get_conf_name(conf_num)
         
         toplink = Href(self.base_session_url(), "WebKOM")
-        conflink = self.action_href("viewconfs", self._("Conferences"))
         thisconf = self.action_href("goconf&conf=" + str(conf_num), conf_name)
         writeart = self.action_href("writearticle", self._("Write article"))
         
-        cont = Container(toplink, " : ", conflink, " : ", thisconf, " : ", writeart)
+        cont = Container(toplink, " : ", self.sess.current_conflink(), " : ", thisconf, " : ", writeart)
         self.append_std_top(cont)
 
         self.doc.append(Heading(2, self._("Write article")))
@@ -1957,8 +1965,7 @@ class SetUnreadActions(Action):
     def response(self):
         self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
-        conflink = self.action_href("viewconfs", self._("Conferences"))
-        cont = Container(toplink, " : ", conflink)
+        cont = Container(toplink, " : ", self.sess.current_conflink())
         self.append_std_top(cont)
 
         conf_num = self.sess.current_conf
@@ -1984,8 +1991,7 @@ class SetUnreadSubmit(Action):
     "Handles submits for joining a conference."
     def response(self):
         toplink = Href(self.base_session_url(), "WebKOM")
-        conflink = self.action_href("viewconfs", self._("Conferences"))
-        cont = Container(toplink, " : ", conflink)
+        cont = Container(toplink, " : ", self.sess.current_conflink())
         self.append_std_top(cont)
 
         conf_num = self.sess.current_conf
@@ -2017,8 +2023,7 @@ class LeaveConfActions(Action):
     def response(self):
         self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
-        conflink = self.action_href("viewconfs", "Möten")
-        cont = Container(toplink, " : ", conflink)
+        cont = Container(toplink, " : ", self.sess.current_conflink())
         self.append_std_top(cont)
 
         conf_num = self.sess.current_conf
@@ -2040,8 +2045,7 @@ class LeaveConfSubmit(Action):
     "Handles submits for leaving a conference."
     def response(self):
         toplink = Href(self.base_session_url(), "WebKOM")
-        conflink = self.action_href("viewconfs", self._("Conferences"))
-        cont = Container(toplink, " : ", conflink)
+        cont = Container(toplink, " : ", self.sess.current_conflink())
         self.append_std_top(cont)
 
         conf_num = self.sess.current_conf
