@@ -208,7 +208,7 @@ class Response:
         self.shortcuts_active = 1
 
         # Default HTTP header. 
-        self.http_header = "Content-type: text/html\r\n" \
+        self.http_header = "Content-type: text/html; charset=iso-8859-1\r\n" \
                            "Cache-Control: no-cache\r\n" \
                            "Pragma: no-cache\r\n" \
                            "Expires: 0\r\n" \
