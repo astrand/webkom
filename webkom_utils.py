@@ -4,7 +4,8 @@ from HTMLcolors import *
 from webkom_constants import *
 import re
 import string
-
+import random
+import sys
 
 NBSP = "&nbsp;"
 
@@ -314,5 +315,14 @@ def existing_locals(conn, conf_num, ask_for, highest_local):
 ##             # No unread texts
 ##             more_to_fetch = 0
 ##     return 0
+
+
+def gen_session_key():
+    key = ""
+    for foo in range(0, 4):
+        key = key + hex(random.randrange(sys.maxint))[2:]
+    return key
+
+
 
 
