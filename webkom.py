@@ -767,17 +767,20 @@ class ViewConfsActions(Action):
         toplink = Href(self.base_session_url(), "WebKOM")
         if only_unread:
             action_url = "viewconfs_unread"
+            title = self._("Conferences (with unread)")
+            conflink = self.action_href(action_url, title)
         else:
             action_url = "viewconfs"
+            title = self._("Conferences (you are are member of)")
+            conflink = self.action_href(action_url, title)
 
-        conflink = self.action_href(action_url, self._("Conferences"))
         cont = Container(toplink, " : ", conflink)
         self.append_std_top(cont)
 
         if only_unread:
-            self.doc.append(Heading(2, self._("Conferences (with unread)")))
+            self.doc.append(Heading(2, title))
         else:
-            self.doc.append(Heading(2, self._("Conferences (you are are member of)")))
+            self.doc.append(Heading(2, title))
 
         std_cmd = Container()
         self.doc.append(self._("Default command: "), std_cmd)
