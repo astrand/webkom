@@ -531,7 +531,6 @@ class LoginPageActions(Action):
         cont.append(BR(2))
 
         F = Form(BASE_URL, name="loginform", submit="")
-
         cont.append(F)
         logintable = [(self._("Server"), Input(name="komserver", size=20, value=default_kom_server)),
                       (self._("Username"), Input(name="username",size=20)),
@@ -837,6 +836,39 @@ class LogInActions(Action):
         except:
             self.error_message(self._("Cannot connect to server."))
             return
+
+        if not self.form.has_key("skipmotd"):
+            info = kom.ReqGetInfo(conn).response()
+            if info.motd_of_lyskom:
+                self.doc.append(Heading(2, self._("Message Of The Day")))
+                self.doc.append(Heading(3, self._("This server have a message of the day:")))
+                
+                text = kom.ReqGetText(conn, info.motd_of_lyskom).response()
+                (subject, body) = string.split(text, "\n", 1)
+                conn.socket.close()
+
+                self.doc.append(Bold(webkom_escape(subject)))
+                self.doc.append(BR())
+                body = webkom_escape_linkify(body)
+                body = string.replace(body, "\n","<br>\n")
+                self.doc.append(body)
+                self.doc.append(HR())
+
+                F = Form(BASE_URL, name="loginform", submit="")
+                self.doc.append(F)
+                F.append(Input(type="hidden", name="komserver",
+                               value=self.komserver))
+                F.append(Input(type="hidden", name="username",
+                               value=self.username))
+                F.append(Input(type="hidden", name="password",
+                               value=self.password))
+                F.append(Input(type="hidden", name="skipmotd",
+                               value="yes"))
+                         
+                submitbutton = Input(type="submit", name="loginsubmit", value=self._("Continue Logging in"))
+                
+                F.append(submitbutton)
+                return
 
         matches = conn.lookup_name(self.username, want_pers=1, want_confs=0)
 
@@ -1584,7 +1616,6 @@ class ViewTextActions(Action):
         # FIXME: Reformatting according to protocol A.
         body = webkom_escape_linkify(body)
         body = string.replace(body, "\n","<br>\n")
-
         bodycont = Container()
 
         # Add formatting style
