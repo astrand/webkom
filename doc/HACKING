@@ -7,4 +7,7 @@ Coding standards
 
 * Variable names like this: some_nice_variable.
 
+* Variables representing numbers should have "num" as a part their
+  names rather than "no". Example: conf_num (conference number). NOTE:
+  kom.py uses "no". 
 
