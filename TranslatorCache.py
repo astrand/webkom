@@ -1,10 +1,9 @@
 
 import gettext
 import string
-from webkom_constants import *
 
 class TranslatorCache:
-    def __init__(self):
+    def __init__(self, domain, locale_dir):
         self.known_languages = {}
         self.known_languages["en"] = gettext.NullTranslations()
 
@@ -36,7 +35,7 @@ class TranslatorCache:
             # This is a language new to us. 
             try:
                 # Try to initalize this new language
-                new_translator = gettext.translation("webkom", LOCALE_DIR, languages=[lang])
+                new_translator = gettext.translation(domain, locale_dir, languages=[lang])
             except:
                 # The translator files was not found or something.
                 new_translator = None
