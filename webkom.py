@@ -102,10 +102,6 @@ class SessionSet:
         curtime = time.time()
         for key in self.sessionset.keys():
             if self.sessionset[key].timestamp + SESSION_TIMEOUT < curtime:
-                try:
-                    kom.ReqLogout(self.sessionset[key].conn).response()
-                except:
-                    pass
                 self.write_log("Deleting inactive session", key)
                 del self.sessionset[key]
 
