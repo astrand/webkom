@@ -564,7 +564,7 @@ class AboutPageActions(Action):
         self.append_std_top(cont)
         
         self.doc.append(Heading(2, self._("About WebKOM")))
-        last_changed = time.strftime("%Y-%m-%d-%H:%M", time.localtime(os.stat(BASE_URL)[9]))
+        last_changed = time.strftime("%Y-%m-%d-%H:%M", time.localtime(os.stat(sys.argv[0])[9]))
         self.doc.append(self._("Version running: ") + VERSION + self._(" (last modified ") + last_changed + ")")
 
         self.doc.append(Heading(3, self._("Overview")))
