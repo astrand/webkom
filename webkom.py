@@ -145,7 +145,7 @@ class RemotelyLoggedOutException(Exception):
 
 class Session:
     "A session class. Lives as long as the session (and connection)"
-    def __init__(self, conn):
+    def __init__(self, conn, pers_no):
         self.conn = conn
         self.current_conf = 0
         self.comment_tree = []
@@ -156,6 +156,7 @@ class Session:
         # Holds pending messages
         self.pending_messages = []
         self.whoami = kom.ReqWhoAmI(self.conn).response()
+        self.pers_no = pers_no
         
     def lock_sess(self):
         "Lock session"
@@ -618,6 +619,8 @@ class MainPageActions(Action):
         cont.append(Heading(3, self.action_href("writepresentation" + "&amp;presentationfor="
                                                 + str(self.sess.conn.get_user()), self._("Write presentation"))))
         cont.append(Heading(3, self.action_href("logout", self._("Logout"))))
+        cont.append(Heading(3, self.action_href("logoutothersessions",
+                                                self._("Logout my other sessions"))))
         cont.append(BR(), Heading(3, self.action_href("whats_implemented",
                                                       self._("What can WebKOM do?"))))
 
@@ -756,7 +759,7 @@ class LogInActions(Action):
         # If the sessionkey is valid, someone else is using it. 
         while sessionset.valid_session(sessionkey):
             sessionkey = gen_session_key()
-        self.resp.sess = Session(conn)
+        self.resp.sess = Session(conn, pers_num)
         # Add to sessionset
         sessionset.new_session(sessionkey, self.resp.sess)
         self.resp.key = sessionkey
@@ -1864,6 +1867,35 @@ class WritePresentationSubmit(Action):
             self.sess.conn.conferences.invalidate(presentation_for)
 
 
+class LogoutOtherSessionsActions(Action):
+    "Logout other sessions"
+    def response(self):
+        toplink = Href(self.base_session_url(), "WebKOM")
+        loslink = self.action_href("logoutothersessions", self._("Logout my other sessions"))
+        cont = Container(toplink, " : ", loslink)
+        self.append_std_top(cont)
+        try:
+            who_list = kom.ReqWhoIsOnDynamic(self.sess.conn,
+                                             want_invisible = 1,
+                                             active_last = 0).response()
+        except:
+            self.doc.append(self._("Request failed"))
+        killring = []
+        for who in who_list:
+            if self.sess.pers_no == who.person and self.sess.whoami != who.session:
+                killring.append(who.session)
+        if 0 == len(killring):
+            self.doc.append(Header(3, self._("You do not have any other sessions with this server")))
+            return
+        self.doc.append(Header(3, self._("Killed the following session(s):")))
+        self.doc.append(P())
+        for session in killring:
+            static = kom.ReqGetStaticSessionInfo(self.sess.conn, session).response()
+            kom.ReqDisconnect(self.sess.conn, session).response()
+            self.doc.append(static.username + "@" + static.hostname)
+            self.doc.append(BR())
+            
+    
 
 class WhoIsOnActions(Action):
     "Generate a page with active LysKOM users"
@@ -2213,7 +2245,8 @@ def actions(resp):
                        "joinconf" : JoinConfActions,
                        "leaveconf" : LeaveConfActions,
                        "about" : AboutPageActions,
-                       "set_unread" : SetUnreadActions }
+                       "set_unread" : SetUnreadActions,
+                       "logoutothersessions" : LogoutOtherSessionsActions }
 
     if not sessionset.valid_session(resp.key):
         InvalidSessionPageActions(resp, trans).response()
