@@ -2300,7 +2300,7 @@ thread.start_new_thread(run_console,(0,0))
 thread.start_new_thread(run_maintenance,(0,0))
 
 # Create instance of translator
-translator_cache = TranslatorCache.TranslatorCache("webkom", LOCALE_DIR)
+translator_cache = TranslatorCache.TranslatorCache("webkom", LOCALE_DIR, DEFAULT_LANG)
 
 # Create an instance of our FCGI wrapper
 fcgi = sz_fcgi.SZ_FCGI(func)
