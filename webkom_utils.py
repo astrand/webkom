@@ -33,6 +33,10 @@ INACTIVE_LINK_COLOR = HTMLcolors.GREY6
 class Struct:
     pass
 
+# Data types
+Integer = type(1)
+String = type("")
+List = type([])
 
 # KOM utility functions
 
