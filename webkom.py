@@ -545,7 +545,14 @@ class LogOutActions(Action):
         self.resp.sess = None
 
         self.resp.shortcuts_active = 0
-        LoginPageActions(self.resp).response()
+        
+        # Redirect to loginpage
+        server_name = self.resp.env["HTTP_HOST"]
+        if not server_name:
+            server_name = self.resp.env["SERVER_NAME"]
+        script_name = self.resp.env["SCRIPT_NAME"]
+        self.resp.http_header = "Location: http://" + server_name + script_name + "\n\n"
+        
         return 
 
 
