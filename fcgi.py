@@ -34,6 +34,10 @@
 #
 #------------------------------------------------------------------------
 
+# TODO:
+# Move multithreading functionality from sz_fcgi into this module?
+
+
 
 import  os, sys, string, socket, errno
 from    cStringIO   import StringIO
@@ -42,13 +46,13 @@ import  cgi
 # Set various FastCGI constants
 # Maximum number of requests that can be handled
 FCGI_MAX_REQS = 1
-FCGI_MAX_CONNS = 1
+FCGI_MAX_CONNS = 100
 
 # Supported version of the FastCGI protocol
 FCGI_VERSION_1 = 1
 
 # Boolean: can this application multiplex connections?
-FCGI_MPXS_CONNS = 0
+FCGI_MPXS_CONNS = 1
 
 # Record types
 FCGI_BEGIN_REQUEST = 1 ; FCGI_ABORT_REQUEST = 2 ; FCGI_END_REQUEST   = 3
