@@ -31,6 +31,7 @@ import cgi
 import sz_fcgi
 import kom
 from HTMLgen import *
+from HTMLcolors import *
 import HTMLutil
 import Formtools
 import random, time
@@ -1069,13 +1070,23 @@ class ViewTextActions(Action):
                 c_authortext = ""
                 
             if c.type == kom.MIC_FOOTNOTE:
-                header.append([self._("Footnote in article:"),
-                               str(self.action_href("viewtext&textnum=" + str(c.text_no), str(c.text_no))) \
-                               + c_authortext])
+                if "" != c_authortext:
+                    header.append([self._("Footnote in article:"),
+                                   str(self.action_href("viewtext&textnum=" + str(c.text_no), str(c.text_no))) \
+                                   + c_authortext])
+                else:
+                    header.append([self._("Footnote in article:"),
+                                   Strike(str(c.text_no)),
+                                   Emphasis(self._("(Not readable)"))])
             else:
-                header.append([self._("Comment in article:"),
-                               str(self.action_href("viewtext&textnum=" + str(c.text_no), str(c.text_no))) \
-                               + c_authortext])
+                if "" != c_authortext:
+                    header.append([self._("Comment in article:"),
+                                   str(self.action_href("viewtext&textnum=" + str(c.text_no), str(c.text_no))) \
+                                   + c_authortext])
+                else:
+                    header.append([self._("Comment in article:"),
+                                   Strike(str(c.text_no)),
+                                   Emphasis(self._("(Not readable)"))])
                 
                 # The text seems to exist. Maybe add it to comment_tree. 
                 if c_authortext:
