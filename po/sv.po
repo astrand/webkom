@@ -32,7 +32,7 @@ msgid "Author"
 msgstr "Författare"
 
 msgid "Set/remove notes on letterbox"
-msgstr ""
+msgstr "Sätta/ta bort lappar på brevlådan"
 
 msgid "Your password has been changed"
 msgstr "Ditt lösenord har ändrats"
@@ -62,7 +62,7 @@ msgid "No unread"
 msgstr "Inga olästa"
 
 msgid "Add recipients and comments to existing articles"
-msgstr ""
+msgstr "Lägga till mottagare och kommentarer till existerande inlägg"
 
 msgid "Try again!"
 msgstr "Försök igen!"
@@ -125,7 +125,7 @@ msgid "Do you really want to leave conference "
 msgstr "Vill du verkligen utträda ur möte "
 
 msgid "Request personal answer"
-msgstr ""
+msgstr "Begära personligt svar"
 
 msgid "Please wait while your conference list is loading..."
 msgstr "Vänta medan din möteslista laddas in..."
@@ -164,7 +164,7 @@ msgid "You are no longer a member of conference "
 msgstr "Du är inte längre medlem i mötet "
 
 msgid "View sessionstatus for persons"
-msgstr ""
+msgstr "Visa sessionsstatus för person"
 
 msgid "Someone (probably you) ended this session remotely"
 msgstr "Någon (antagligen du) loggade ut den här sessionen på distans"
@@ -364,7 +364,7 @@ msgid "Footnote to:"
 msgstr "Fotnot till:"
 
 msgid "Jump"
-msgstr ""
+msgstr "Hoppa"
 
 msgid "Sent by:"
 msgstr "Sänt av:"
@@ -532,7 +532,7 @@ msgid "Person"
 msgstr "Person"
 
 msgid "Read article by specifying global article number"
-msgstr ""
+msgstr "Läsa inlägga via inläggsnummer"
 
 msgid "Remove marked recipients"
 msgstr "Ta bort markerade mottagare"
@@ -650,10 +650,10 @@ msgid "User<br>From"
 msgstr "Användare<br>Från"
 
 msgid "Write"
-msgstr ""
+msgstr "Skriv"
 
 msgid "Other"
-msgstr ""
+msgstr "Annat"
 
 msgid "What can WebKOM do?"
 msgstr "Vad kan WebKOM göra?"
@@ -695,7 +695,7 @@ msgid "Read"
 msgstr "Läsa"
 
 msgid "Quote"
-msgstr ""
+msgstr "Citera"
 
 msgid "Personal message"
 msgstr "Personligt meddelande"
@@ -761,7 +761,7 @@ msgid "Logout my other sessions"
 msgstr "Logga ut mina andra sessioner"
 
 msgid "Write personal letters"
-msgstr "Skriv brev"
+msgstr "Skriva brev"
 
 msgid "User name"
 msgstr "Användarnamn"
