@@ -642,50 +642,41 @@ class WhatsImplementedActions(Action):
         self.append_std_top(cont)
         
         self.doc.append(Heading(2, self._("What can WebKOM do?")))
-        page = """
-        <h3>Implemented</h3>
-        <ul>
-        <li>Check who is logged in</li>
-        <li>List unread articles</li>
-        <li>Write articles</li>
-        <li>Write comments</li>
-        <li>Write personal letters</li>
-        <li>Read presentation</li>
-        <li>Change password</li>
-        <li>Read comments in depth-first order</li>
-        <li>Join conference</li>
-        <li>Set unread</li>
-        <li>Leave conference</li>
-        <li>Mark/unmark articles</li>
-        <li>Read marked articles</li>
-        </ul>
 
-        <h3>May be implemented in a near future</h3>
-        <ul>
-        <li>Read article by specifying global article number</li>
-        <li>Write footnotes</li>
-        </ul>
+        self.doc.append(Heading(3, self._("Implemented")))
+        self.doc.append(List([
+            self._("Check who is logged in"),
+            self._("List unread articles"),
+            self._("Write articles"),
+            self._("Write comments"),
+            self._("Write personal letters"),
+            self._("Read presentation"),
+            self._("Change password"),
+            self._("Read comments"),
+            self._("Join conference"),
+            self._("Set unread"),
+            self._("Leave conference"),
+            self._("Mark/unmark articles"),
+            self._("Read marked articles")]))
 
-        <h3>Things that probably won't be implemented soon</h3>
-        <ul>
-        <li>Send messages</li>
-        <li>Set/remove notes on letterbox</li>
-        <li>Prioritize conferences</li>
-        <li>Create conferences</li>
-        <li>Jump</li>
-        <li>View sessionstatus for persons</li>
-        <li>Change name</li>
-        <li>Delete articles</li>
-        <li>Status for conference/persons</li>
-        <li>Add recipients and comments to existing articles</li>
-        <li>Move articles between conferences</li>
-        <li>Prevent comments</li>
-        <li>Request personal answer</li>
-        <li>Request read confirmation</li>
-        </ul>
-
-        """
-        self.doc.append(page)
+        self.doc.append(Heading(3, self._("Not Implemented")))
+        self.doc.append(List([
+            self._("Read article by specifying global article number"),
+            self._("Write footnotes"),
+            self._("Send messages"),
+            self._("Set/remove notes on letterbox"),
+            self._("Prioritize conferences"),
+            self._("Create conferences"),
+            self._("Jump"),
+            self._("View sessionstatus for persons"),
+            self._("Change name"),
+            self._("Delete articles"),
+            self._("Status for conference/persons"),
+            self._("Add recipients and comments to existing articles"),
+            self._("Move articles between conferences"),
+            self._("Prevent comments"),
+            self._("Request personal answer"),
+            self._("Request read confirmation")]))
 
 
 class MainPageActions(Action):
