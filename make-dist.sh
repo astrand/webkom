@@ -28,7 +28,7 @@ DISTFILES=`find webkom-${VERSION} \
  -not -path '*CVS*' -and \
  -not -name .cvsignore -and \
  -not -path .\ -and \
- -not -name misc \
+ -not -path '*/misc/*' \
  -type f`
 tar zcvf ${TOPDIR}/webkom-${VERSION}.tgz ${DISTFILES}
 
