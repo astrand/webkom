@@ -9,99 +9,99 @@ msgstr ""
 "Content-Transfer-Encoding: 8-bit\n"
 "Generated-By: pygettext.py 1.1\n"
 
-#: ../webkom.py:1219 ../webkom.py:1223
+#: ../webkom.py:1220 ../webkom.py:1224
 msgid "Comment in article:"
 msgstr "Kommentar i inlägg:"
 
-#: ../webkom.py:2516
+#: ../webkom.py:2517
 msgid "Server call not implemented"
 msgstr "Serveranropet är ej implementerat"
 
-#: ../webkom.py:2172
+#: ../webkom.py:2173
 msgid "Set read marks to "
 msgstr "Sätt läsmarkeringar så att"
 
-#: ../webkom.py:399
+#: ../webkom.py:400
 msgid "Group message to "
 msgstr "Gruppmeddelande till "
 
-#: ../webkom.py:1056
+#: ../webkom.py:1057
 msgid "Earlier articles"
 msgstr "Tidigare inlägg"
 
-#: ../webkom.py:475
+#: ../webkom.py:476
 msgid "WebKOM login"
 msgstr "WebKOM inloggning"
 
-#: ../webkom.py:1572
+#: ../webkom.py:1573
 msgid "Repeat password"
 msgstr "Upprepa lösenord"
 
-#: ../webkom.py:971
+#: ../webkom.py:972
 msgid "There are no unread articles."
 msgstr "Det finns inga olästa inlägg."
 
-#: ../webkom.py:1910
+#: ../webkom.py:1911
 msgid "%s: %d -- text not found"
 msgstr "%s: %d -- inlägget finns inte"
 
-#: ../webkom.py:297
+#: ../webkom.py:298
 msgid "Conference %d (does not exist)"
 msgstr "Möte %d (existerar inte)"
 
-#: ../webkom.py:392
+#: ../webkom.py:393
 msgid "WebKOM server message"
 msgstr "Meddelande från WebKOM-servern"
 
-#: ../webkom.py:681
+#: ../webkom.py:682
 msgid "List all conferences you are a member of"
 msgstr "Lista alla möten som du är medlem i"
 
-#: ../webkom.py:594
+#: ../webkom.py:595
 msgid "Eva Isaksson (finnish translation)"
 msgstr "Eva Isaksson (finsk översättning)"
 
-#: ../webkom.py:2082
+#: ../webkom.py:2083
 msgid "Search result will be limited to "
 msgstr "Sökresultatet kommer att begränsas till "
 
-#: ../webkom.py:679
+#: ../webkom.py:680
 msgid "Main Page"
 msgstr "Huvudsida"
 
-#: ../webkom.py:460 ../webkom.py:465 ../webkom.py:721 ../webkom.py:729
+#: ../webkom.py:461 ../webkom.py:466 ../webkom.py:722 ../webkom.py:730
 msgid "Login"
 msgstr "Logga in"
 
-#: ../webkom.py:2131
+#: ../webkom.py:2132
 msgid "No conference selected."
 msgstr "Inget möte valt."
 
-#: ../webkom.py:582
+#: ../webkom.py:583
 msgid "Authors"
 msgstr "Författare"
 
-#: ../webkom.py:692 ../webkom.py:1974
+#: ../webkom.py:693 ../webkom.py:1975
 msgid "Logout my other sessions"
 msgstr "Logga ut mina andra sessioner"
 
-#: ../webkom.py:579
+#: ../webkom.py:580
 msgid "License"
 msgstr "Licens"
 
-#: ../webkom.py:1774
+#: ../webkom.py:1775
 msgid "Name"
 msgstr "Namn"
 
-#: ../webkom.py:362 ../webkom.py:881 ../webkom.py:967
+#: ../webkom.py:363 ../webkom.py:882 ../webkom.py:968
 msgid "Conferences (you are a member of)"
 msgstr "Möten (som du är medlem i)"
 
-#: ../webkom.py:277
+#: ../webkom.py:278
 msgid "Error: "
 msgstr "Fel: "
 
-#: ../webkom.py:2076 ../webkom.py:2288
+#: ../webkom.py:2077 ../webkom.py:2289
 msgid ""
 "Type in the beginning of the conference name. You can also search via "
 "conference numbers by giving # followed by the conference number."
@@ -109,329 +109,337 @@ msgstr ""
 "Mata in början av mötesnamnet. Du kan också söka via mötesnummer genom att "
 "ange # följt av mötets nummer."
 
-#: ../webkom.py:2027
+#: ../webkom.py:2028
 msgid "No working conference"
 msgstr "Inget aktuellt möte"
 
-#: ../webkom.py:490 ../webkom.py:533 ../webkom.py:1571
+#: ../webkom.py:491 ../webkom.py:534 ../webkom.py:1572
 msgid "Password"
 msgstr "Lösenord"
 
-#: ../webkom.py:1780
+#: ../webkom.py:1781
 msgid "Search for new recipient:"
 msgstr "Sök ny mottagare:"
 
-#: ../webkom.py:372 ../webkom.py:374 ../webkom.py:562 ../webkom.py:565
-#: ../webkom.py:570
+#: ../webkom.py:373 ../webkom.py:375 ../webkom.py:563 ../webkom.py:566
+#: ../webkom.py:571
 msgid "About WebKOM"
 msgstr "Om WebKOM"
 
-#: ../webkom.py:686 ../webkom.py:2004 ../webkom.py:2007
+#: ../webkom.py:687 ../webkom.py:2005 ../webkom.py:2008
 msgid "Who is logged in"
 msgstr "Vilka är inloggade"
 
-#: ../webkom.py:894 ../webkom.py:954 ../webkom.py:1105 ../webkom.py:1115
-#: ../webkom.py:1288 ../webkom.py:1461
+#: ../webkom.py:895 ../webkom.py:955 ../webkom.py:1106 ../webkom.py:1116
+#: ../webkom.py:1289 ../webkom.py:1462
 msgid "Next conference with unread"
 msgstr "Nästa möte med olästa"
 
-#: ../webkom.py:1982 ../webkom.py:2017
+#: ../webkom.py:1983 ../webkom.py:2018
 msgid "Request failed"
 msgstr "Anropet misslyckades"
 
-#: ../webkom.py:2277 ../webkom.py:2286
+#: ../webkom.py:2278 ../webkom.py:2287
 msgid "Choose working conference"
 msgstr "Gå till mötet"
 
-#: ../webkom.py:736
+#: ../webkom.py:737
 msgid "Choose user:"
 msgstr "Välj användare:"
 
-#: ../webkom.py:396
+#: ../webkom.py:397
 msgid "Personal message"
 msgstr "Personligt meddelande"
 
-#: ../webkom.py:583
+#: ../webkom.py:584
 msgid "The following people have in one way or another contributed to WebKOM:"
 msgstr "Följande personer har på ett eller annat sätt bidragit till WebKOM:"
 
-#: ../webkom.py:1619
+#: ../webkom.py:1620
 msgid "Invalid password"
 msgstr "Felaktigt lösenord"
 
-#: ../webkom.py:2254
+#: ../webkom.py:2255
 msgid "Unable to leave conference."
 msgstr "Kunde inte utträda ur möte."
 
-#: ../webkom.py:1613
+#: ../webkom.py:1614
 msgid "You lack permissions to create new users"
 msgstr "Du har inte rättigheter till att skapa nya användare"
 
-#: ../webkom.py:572
+#: ../webkom.py:573
 msgid " (last modified "
 msgstr " (senast ändrad "
 
-#: ../webkom.py:1809
+#: ../webkom.py:1810
 msgid "Add marked"
 msgstr "Lägg till markerade"
 
-#: ../webkom.py:617 ../webkom.py:621 ../webkom.py:694
+#: ../webkom.py:618 ../webkom.py:622 ../webkom.py:695
 msgid "What can WebKOM do?"
 msgstr "Vad kan WebKOM göra?"
 
-#: ../webkom.py:1669
+#: ../webkom.py:1670
 msgid "Submit"
 msgstr "Skicka in"
 
-#: ../webkom.py:597
+#: ../webkom.py:598
 msgid "WebKOM is written in Python and is a persistent, threaded "
 msgstr "WebKOM är skriven i Python och är en persistent, trådad "
 
-#: ../webkom.py:2494
+#: ../webkom.py:2495
 msgid "Attach the error message below."
 msgstr "Bifoga felmeddelandet nedan."
 
-#: ../webkom.py:572
+#: ../webkom.py:573
 msgid "Version running: "
 msgstr "Version i drift: "
 
-#: ../webkom.py:414
+#: ../webkom_utils.py:201
+msgid "Carbon copy"
+msgstr "Extra kopiemottagare"
+
+#: ../webkom.py:415
 msgid "From: "
 msgstr "Från:"
 
-#: ../webkom.py:1795 ../webkom.py:2097 ../webkom.py:2312
+#: ../webkom.py:1796 ../webkom.py:2098 ../webkom.py:2313
 msgid "(Too many matches, search result truncated)"
 msgstr "(För många träffar, sökresultatet har trunkerats)"
 
-#: ../webkom.py:687 ../webkom.py:1495 ../webkom.py:1503 ../webkom.py:1523
+#: ../webkom.py:688 ../webkom.py:1496 ../webkom.py:1504 ../webkom.py:1524
 msgid "Change password"
 msgstr "Ändra lösenord"
 
-#: ../webkom.py:951
+#: ../webkom.py:952
 msgid "Next page"
 msgstr "Nästa sida"
 
-#: ../webkom.py:1988
+#: ../webkom.py:1989
 msgid "You do not have any other sessions with this server"
 msgstr "Du har inga andra sessioner på den här servern"
 
-#: ../webkom.py:2490
+#: ../webkom.py:2491
 msgid "If it doesn't, please report this problem to"
 msgstr "Om inte, rapportera detta fel till"
 
-#: ../webkom.py:2019
+#: ../webkom.py:2020
 msgid "Working conference<br>Is doing"
 msgstr "Aktuellt möte<br>Gör"
 
-#: ../webkom.py:1058
+#: ../webkom.py:1059
 msgid "Unread"
 msgstr "Oläst"
 
-#: ../webkom.py:580
+#: ../webkom.py:581
 msgid "WebKOM is free software, licensed under GPL."
 msgstr "WebKOM är fri mjukvara, licensierad under GPL."
 
-#: ../webkom.py:1616
+#: ../webkom_utils.py:203
+msgid "Blind carbon copy"
+msgstr "För kännedom"
+
+#: ../webkom.py:1617
 msgid "An user with this name exists."
 msgstr "En användare med det namnet finns redan."
 
-#: ../webkom.py:2505
+#: ../webkom.py:2506
 msgid "Logged out remotely"
 msgstr "Utloggad på distans"
 
-#: ../webkom.py:1058
+#: ../webkom.py:1059
 msgid "Number"
 msgstr "Nummer"
 
-#: ../webkom.py:1113 ../webkom.py:1438 ../webkom.py:1459
+#: ../webkom.py:1114 ../webkom.py:1439 ../webkom.py:1460
 msgid "Read next unread"
 msgstr "Läs nästa olästa"
 
-#: ../webkom.py:1797 ../webkom.py:2099 ../webkom.py:2314
+#: ../webkom.py:1798 ../webkom.py:2100 ../webkom.py:2315
 msgid "Search result:"
 msgstr "Sökresultat"
 
-#: ../webkom.py:2488
+#: ../webkom.py:2489
 msgid "Check if this bug is listed on"
 msgstr "Kontrollera ifall den här buggen finns med på"
 
-#: ../webkom.py:1953
+#: ../webkom.py:1954
 msgid "Article submitted"
 msgstr "Inlägget skickat"
 
-#: ../webkom.py:2232
+#: ../webkom.py:2233
 msgid "Do you really want to leave conference "
 msgstr "Vill du verktligen utträda ur möte "
 
-#: ../webkom.py:1774
+#: ../webkom.py:1775
 msgid "Remove?"
 msgstr "Ta bort?"
 
-#: ../webkom.py:1377 ../webkom.py:1813
+#: ../webkom.py:1378 ../webkom.py:1814
 msgid "Subject:"
 msgstr "Ärende:"
 
-#: ../webkom.py:1990
+#: ../webkom.py:1991
 msgid "Killed the following session(s):"
 msgstr "Följande session(er) loggades ut:"
 
-#: ../webkom.py:1784
+#: ../webkom.py:1785
 msgid "Remove marked recipients"
 msgstr "Ta bort markerade mottagare"
 
-#: ../webkom.py:1021
+#: ../webkom.py:1022
 msgid "Article subjects"
 msgstr "Ärenden"
 
-#: ../webkom.py:1058
+#: ../webkom.py:1059
 msgid "Subject"
 msgstr "Ärende"
 
-#: ../webkom.py:1152
+#: ../webkom.py:1153
 msgid "Added:"
 msgstr "Adderad"
 
-#: ../webkom.py:1507
+#: ../webkom.py:1508
 msgid "Repeat new password"
 msgstr "Upprepa nytt lösenord"
 
-#: ../webkom.py:685
+#: ../webkom.py:686
 msgid "Go to conference"
 msgstr "Gå till möte"
 
-#: ../webkom.py:2198
+#: ../webkom.py:2199
 msgid "Unable to set number of unread."
 msgstr "Kunde inte utföra endast."
 
-#: ../webkom.py:1019 ../webkom.py:2231
+#: ../webkom.py:1020 ../webkom.py:2232
 msgid "Leave conference"
 msgstr "Utträd ur möte"
 
-#: ../webkom.py:1782 ../webkom.py:2080 ../webkom.py:2296
+#: ../webkom.py:1783 ../webkom.py:2081 ../webkom.py:2297
 msgid "Search"
 msgstr "Sök"
 
-#: ../webkom.py:2174
+#: ../webkom.py:2175
 msgid " unread articles in this conference."
 msgstr " olästa inlägg i detta möte."
 
-#: ../webkom.py:818
+#: ../webkom.py:819
 msgid "The user %s does not exist."
 msgstr "Användaren %s finns inte."
 
-#: ../webkom.py:302
+#: ../webkom.py:303
 msgid "Person %d (does not exist)"
 msgstr "Person %d (finns inte)"
 
-#: ../webkom.py:1793 ../webkom.py:2095 ../webkom.py:2310
+#: ../webkom.py:1794 ../webkom.py:2096 ../webkom.py:2311
 msgid "(Nothing matches %s)"
 msgstr "(Inget matchar %s)"
 
-#: ../webkom.py:1148
+#: ../webkom.py:1149
 msgid "Added by:"
 msgstr "Adderad av:"
 
-#: ../webkom.py:1058
+#: ../webkom.py:1059
 msgid "Date"
 msgstr "Datum"
 
-#: ../webkom.py:1356
+#: ../webkom.py:1357
 msgid "External carbon copy:"
 msgstr "Extern kopiemottagare:"
 
-#: ../webkom.py:690
+#: ../webkom.py:691
 msgid "Logout"
 msgstr "Logga ut"
 
-#: ../webkom.py:2081
+#: ../webkom.py:2082
 msgid "View all conferences"
 msgstr "Visa alla möten"
 
-#: ../webkom.py:761
+#: ../webkom.py:762
 msgid "No server given."
 msgstr "Ingen server angiven."
 
-#: ../webkom.py:683
+#: ../webkom.py:684
 msgid "Write letter"
 msgstr "Skriv brev"
 
-#: ../webkom.py:1471
+#: ../webkom.py:1472
 msgid "View in normal style"
 msgstr "Visa i normalstil"
 
-#: ../webkom.py:1175
+#: ../webkom.py:1176
 msgid "Received:"
 msgstr "Mottaget"
 
-#: ../webkom.py:577
+#: ../webkom.py:578
 msgid "The goal is a simple, easy-to-use client."
 msgstr "Målet är en enkel klient som är lätt att lära sig."
 
-#: ../webkom.py:1919
+#: ../webkom.py:1920
 msgid "No recipients!"
 msgstr "Inga mottagare!"
 
-#: ../webkom.py:1672
+#: ../webkom.py:1673
 msgid "Set as presentation"
 msgstr "Sätt som presentation"
 
-#: ../webkom.py:1342
+#: ../webkom.py:1343
 msgid "Imported:"
 msgstr "Importerad:"
 
-#: ../webkom.py:1474
+#: ../webkom.py:1475
 msgid "View in code style"
 msgstr "Visa i kodstil"
 
-#: ../webkom.py:1210 ../webkom.py:1214
+#: ../webkom.py:1211 ../webkom.py:1215
 msgid "Footnote in article:"
 msgstr "Fotnot i inlägg:"
 
-#: ../webkom.py:1452 ../webkom.py:1457
+#: ../webkom.py:1453 ../webkom.py:1458
 msgid "Read next comment"
 msgstr "Läsa nästa kommentar"
 
-#: ../webkom.py:684 ../webkom.py:2050 ../webkom.py:2059 ../webkom.py:2125
+#: ../webkom.py:685 ../webkom.py:2051 ../webkom.py:2060 ../webkom.py:2126
 msgid "Join conference"
 msgstr "Gå med i möte"
 
-#: ../webkom.py:1351
+#: ../webkom.py:1352
 msgid "External recipient:"
 msgstr "Extern mottagare:"
 
-#: ../webkom.py:1914
+#: ../webkom.py:1915
 msgid "%s: %s -- bad text number"
 msgstr "%s: %s -- felaktigt inläggsnummer"
 
-#: ../webkom.py:609
+#: ../webkom.py:610
 msgid "There is a "
 msgstr "Det finns en"
 
-#: ../webkom.py:586
+#: ../webkom.py:587
 msgid "Peter Åstrand (project starter, most of implementation)"
 msgstr "Peter Åstrand (initativtagare, implementerat det mesta)"
 
-#: ../webkom.py:596
+#: ../webkom.py:597
 msgid "Technology"
 msgstr "Teknik"
 
-#: ../webkom.py:599
+#: ../webkom.py:600
 msgid "The HTML code is generated by "
 msgstr "HTML-koden genereras av "
 
-#: ../webkom.py:1018 ../webkom.py:2170
+#: ../webkom.py:1019 ../webkom.py:2171
 msgid "Set unread"
 msgstr "Endast"
 
-#: ../webkom.py:1949
+#: ../webkom.py:1950
 msgid "Unable to create article."
 msgstr "Det gick inte att skapa inlägget"
 
-#: ../webkom.py:2019
+#: ../webkom.py:2020
 msgid "Session"
 msgstr "Session"
 
-#: ../webkom.py:2517
+#: ../webkom.py:2518
 msgid ""
 "WebKOM made a server call that this server did not understand. WebKOM only "
 "works with LysKOM servers with version 2.0 or higher"
@@ -440,312 +448,315 @@ msgstr ""
 "fungerar\n"
 "bara med LysKOM-servrar med versionsnummer 2.0 eller senare"
 
-#: ../webkom.py:1169
+#: ../webkom.py:1170
 msgid "Sent by:"
 msgstr "Sänt av:"
 
-#: ../webkom.py:1138
+#: ../webkom.py:1139
 msgid "Footnote to:"
 msgstr "Fotnot till:"
 
-#: ../webkom.py:1543
+#: ../webkom.py:1544
 msgid "Your password has been changed"
 msgstr "Ditt lösenord har ändrats"
 
-#: ../webkom.py:1536
+#: ../webkom.py:1537
 msgid "The server rejected your password change request"
 msgstr "Servern accepterade ej lösenordsändringen"
 
-#: ../webkom.py:1255
+#: ../webkom.py:1256
 msgid "The article does not exist."
 msgstr "Inlägget existerar inte."
 
-#: ../webkom.py:2495
+#: ../webkom.py:2496
 msgid "The server time was: "
 msgstr "Serverns tid var: "
 
-#: ../webkom.py:1016
+#: ../webkom.py:1017
 msgid "View presentation"
 msgstr "Visa presentation"
 
-#: ../webkom.py:1142
+#: ../webkom.py:1143
 msgid "Comment to:"
 msgstr "Kommentar till:"
 
-#: ../webkom.py:1102
+#: ../webkom.py:1103
 msgid "Later articles"
 msgstr "Senare inlägg"
 
-#: ../webkom.py:942
+#: ../webkom.py:943
 msgid "none"
 msgstr "ingen"
 
-#: ../webkom.py:552 ../webkom.py:1553 ../webkom.py:1561 ../webkom.py:1567
-#: ../webkom.py:1590
+#: ../webkom.py:553 ../webkom.py:1554 ../webkom.py:1562 ../webkom.py:1568
+#: ../webkom.py:1591
 msgid "Create new user"
 msgstr "Skapa ny användare"
 
-#: ../webkom.py:1623
+#: ../webkom.py:1624
 msgid "User created."
 msgstr "Användaren skapad."
 
-#: ../webkom.py:1506
+#: ../webkom.py:1507
 msgid "New password"
 msgstr "Nytt lösenord"
 
-#: ../webkom.py:488 ../webkom.py:531 ../webkom.py:1569
+#: ../webkom.py:489 ../webkom.py:532 ../webkom.py:1570
 msgid "Server"
 msgstr "Server"
 
-#: ../webkom.py:605
+#: ../webkom.py:606
 msgid "The following translations are installed on this system:"
 msgstr "Följande översättningar finns installerade på det här systemet:"
 
-#: ../webkom.py:1012 ../webkom.py:1678 ../webkom.py:1858 ../webkom.py:1862
+#: ../webkom.py:1013 ../webkom.py:1679 ../webkom.py:1859 ../webkom.py:1863
 msgid "Write article"
 msgstr "Skriv inlägg"
 
-#: ../webkom.py:893 ../webkom.py:1007
+#: ../webkom.py:894 ../webkom.py:1008
 msgid "Default command: "
 msgstr "Standardkommando: "
 
-#: ../webkom.py:2145
+#: ../webkom.py:2146
 msgid "You are now a member of conference "
 msgstr "Du är nu medlem i mötet "
 
-#: ../webkom.py:2207
+#: ../webkom.py:2208
 msgid "The number of unread articles is now "
 msgstr "Antalet olästa inlägg är nu "
 
-#: ../webkom.py:603
+#: ../webkom.py:604
 msgid "Translations"
 msgstr "Översättningar"
 
-#: ../webkom.py:1258
+#: ../webkom.py:1259
 msgid "An error occured when fetching article information."
 msgstr "Ett fel uppstod när inläggen skulle hämtas."
 
-#: ../webkom.py:489 ../webkom.py:532 ../webkom.py:1570
+#: ../webkom.py:490 ../webkom.py:533 ../webkom.py:1571
 msgid "Username"
 msgstr "Användarnamn"
 
-#: ../webkom.py:2034
+#: ../webkom.py:2035
 msgid "A total of %s active users."
 msgstr "Totalt %s aktiva användare."
 
-#: ../webkom.py:1774
+#: ../webkom.py:1775
 msgid "Type"
 msgstr "Typ"
 
-#: ../webkom.py:927
+#: ../webkom.py:928
 msgid "Number of unread"
 msgstr "Antal olästa"
 
-#: ../webkom.py:359 ../webkom.py:877
+#: ../webkom.py:360 ../webkom.py:878
 msgid "Conferences (with unread)"
 msgstr "Möten (med olästa)"
 
-#: ../webkom.py:1134 ../webkom.py:1204 ../webkom.py:1344
+#: ../webkom.py:1135 ../webkom.py:1205 ../webkom.py:1345
 msgid " by "
 msgstr " av "
 
-#: ../webkom.py:811 ../webkom.py:1602
+#: ../webkom.py:812 ../webkom.py:1603
 msgid "Cannot connect to server."
 msgstr "Kan inte ansluta till servern."
 
-#: ../webkom.py:769
+#: ../webkom.py:770
 msgid "Password variable is missing."
 msgstr "Lösenordsvariabeln fattas."
 
-#: ../webkom.py:2227
+#: ../webkom.py:2228
 msgid "Yes, leave conference"
 msgstr "Ja, utträd ur möte"
 
-#: ../webkom.py:1326 ../webkom.py:1329
+#: ../webkom.py:1327 ../webkom.py:1330
 msgid "Date:"
 msgstr "Datum:"
 
-#: ../webkom.py:1375
+#: ../webkom.py:1376
 msgid "Marks:"
 msgstr "Markeringar:"
 
-#: ../webkom.py:927
+#: ../webkom.py:928
 msgid "Conference name"
 msgstr "Mötesnamn"
 
-#: ../webkom.py:292
+#: ../webkom.py:293
 msgid "Unable to change current conference."
 msgstr "Kunde inte ändra aktuellt möte"
 
-#: ../webkom.py:1338 ../webkom.py:1361
+#: ../webkom.py:1339 ../webkom.py:1362
 msgid "Author:"
 msgstr "Författare:"
 
-#: ../webkom.py:1296
+#: ../webkom.py:1297
 msgid "An error occured when fetching article."
 msgstr "Ett fel uppstod när inlägget skulle hämtas"
 
-#: ../webkom.py:740
+#: ../webkom.py:741
 msgid "(To many hits, the table is truncated)"
 msgstr "(För många träffar, sökresultatet har trunkerats)"
 
-#: ../webkom.py:2489
+#: ../webkom.py:2490
 msgid "the list with known bugs"
 msgstr "listan med kända buggar"
 
-#: ../webkom.py:2506
+#: ../webkom.py:2507
 msgid "Someone (probably you) ended this session remotely"
 msgstr "Någon (antagligen du) loggade ut den här sessionen på distans"
 
-#: ../webkom.py:830
+#: ../webkom.py:831
 msgid "Wrong password."
 msgstr "Felaktigt lösenord"
 
-#: ../webkom.py:1172
+#: ../webkom.py:1173
 msgid "Sent:"
 msgstr "Skickat:"
 
-#: ../webkom.py:2263
+#: ../webkom.py:2264
 msgid "You are no longer a member of conference "
 msgstr "Du är inte längre medlem i mötet "
 
-#: ../webkom.py:1467 ../webkom.py:1676
+#: ../webkom.py:1468 ../webkom.py:1677
 msgid "Write comment"
 msgstr "Skriv kommentar"
 
-#: ../webkom.py:575
+#: ../webkom.py:576
 msgid "WebKOM is a WWW-interface for "
 msgstr "WebKOM är ett WWW-gränssnitt till"
 
-#: ../webkom.py:2508 ../webkom.py:2521
+#: ../webkom.py:2509 ../webkom.py:2522
 msgid "Login again"
 msgstr "Logga in igen"
 
-#: ../webkom.py:574
+#: ../webkom.py:575
 msgid "Overview"
 msgstr "Översikt"
 
-#: ../webkom.py:598
+#: ../webkom.py:599
 msgid " application."
 msgstr " applikation"
 
-#: ../webkom.py:2083
+#: ../webkom.py:2084
 msgid " conferences."
 msgstr "möten."
 
-#: ../webkom.py:611
+#: ../webkom.py:612
 msgid "list with known bugs"
 msgstr "lista med kända buggar"
 
-#: ../webkom.py:689 ../webkom.py:1673
+#: ../webkom.py:690 ../webkom.py:1674
 msgid "Write presentation"
 msgstr "Skriv presentation"
 
-#: ../webkom.py:1529 ../webkom.py:1595
+#: ../webkom.py:1530 ../webkom.py:1596
 msgid "The two new passwords didn't match."
 msgstr "De två nya lösenorden var ej lika."
 
-#: ../webkom.py:2293
+#: ../webkom.py:2294
 msgid "Search for conference:"
 msgstr "Sök efter möte:"
 
-#: ../webkom.py:1542 ../webkom.py:2144 ../webkom.py:2206 ../webkom.py:2262
+#: ../webkom.py:1543 ../webkom.py:2145 ../webkom.py:2207 ../webkom.py:2263
 msgid "Ok"
 msgstr "Ok"
 
-#: ../webkom.py:730
+#: ../webkom.py:731
 msgid "The username is ambigious"
 msgstr "Användarnamnet är ej entydigt"
 
-#: ../webkom.py:765
+#: ../webkom.py:766
 msgid "No username given."
 msgstr "Inget användarnamn angivet."
 
-#: ../webkom.py:394
+#: ../webkom.py:395
 msgid "Alarm message"
 msgstr "Alarmmeddelande"
 
-#: ../webkom.py:1610
+#: ../webkom.py:1611
 msgid "The server requires login before new users can be created"
 msgstr "Servern kräver inloggning innan nya användare kan skapas"
 
-#: ../webkom.py:863
+#: ../webkom.py:864
 msgid " and login again."
 msgstr " och logga in igen."
 
-#: ../webkom.py:2019
+#: ../webkom.py:2020
 msgid "User<br>From"
 msgstr "Användare<br>Från"
 
-#: ../webkom.py:680
+#: ../webkom.py:681
 msgid "List conferences with unread"
 msgstr "Lista möten med olästa"
 
-#: ../webkom.py:924
+#: ../webkom.py:925
 msgid "Previous page"
 msgstr "Föregående sida"
 
-#: ../webkom.py:346
+#: ../webkom.py:347
 msgid "Unread: "
 msgstr "Olästa:"
 
-#: ../webkom.py:1505
+#: ../webkom.py:1506
 msgid "Old password"
 msgstr "Gammalt lösenord:"
 
-#: ../webkom.py:862
+#: ../webkom.py:863
 msgid "the login page"
 msgstr "inloggningssidan"
 
-#: ../webkom.py:1216 ../webkom.py:1225
+#: ../webkom.py:1217 ../webkom.py:1226
 msgid "(Not readable)"
 msgstr "(Ej läsbar)"
 
-#: ../webkom.py:608
+#: ../webkom.py:609
 msgid "Bugs"
 msgstr "Buggar"
 
-#: ../webkom.py:970
+#: ../webkom.py:971
 msgid "No unread"
 msgstr "Inga olästa"
 
-#: ../webkom.py:2111
+#: ../webkom.py:2112
 msgid "Join marked conference"
 msgstr "Gå med i markerat möte"
 
-#: ../webkom.py:1318
+#: ../webkom_utils.py:199
+msgid "Recipient"
+msgstr "Mottagare"
+
+#: ../webkom.py:1319
 msgid "Article number:"
 msgstr "Inläggsnummer"
 
-#: ../webkom.py:415
+#: ../webkom.py:416
 msgid "Time: "
 msgstr "Tid:"
 
-#: ../webkom.py:722
+#: ../webkom.py:723
 msgid "Login failed"
 msgstr "Inloggningen misslyckades"
 
-#: ../webkom.py:862
+#: ../webkom.py:863
 msgid "Go to "
 msgstr "Gå till "
 
-#: ../webkom.py:604
+#: ../webkom.py:605
 msgid "Translations are provided by the GNU gettext library."
 msgstr "Översättningarna görs med biblioteket GNU gettext."
 
-#: ../webkom.py:861
+#: ../webkom.py:862
 msgid "Not logged in"
 msgstr "Ej inloggad."
 
-#: ../webkom.py:1058
+#: ../webkom.py:1059
 msgid "Author"
 msgstr "Författare"
 
-#: ../webkom.py:2140
+#: ../webkom.py:2141
 msgid "Unable to join conference."
 msgstr "Kan inte gå med i möte."
 
-#: ../webkom.py:752
+#: ../webkom.py:753
 msgid "Login with selected user"
 msgstr "Logga in med vald användare"
-
