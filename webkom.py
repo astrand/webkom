@@ -1306,7 +1306,7 @@ class ViewTextActions(Action):
         for r in ts.misc_info.recipient_list:
             leftcol = mir2caption(self, r.type)
             presentation = str(self.get_presentation(r.recpt))
-            # Recepient, with hyperlink to presentation
+            # Recipient, with hyperlink to presentation
             rightcol = str(self.action_href("viewtext&amp;textnum=" + presentation, 
                                             self.get_conf_name(r.recpt), presentation))
             # Prepare comment-url
@@ -1752,6 +1752,16 @@ class ViewTextActions(Action):
         comment_url = comment_url + "&amp;comment_to=" + str(global_num)
         lower_actions.append(self.action_href("writearticle" + comment_url,
                                               self._("Write comment")), NBSP)
+
+        personal_comment_url = "&amp;rcpt=%d&amp;rcpt=%d&amp;comment_to=%d" % \
+                               (ts.author,
+                                self.sess.conn.get_user(),
+                                global_num)
+
+        lower_actions.append(self.action_href("writearticle" +\
+                                              personal_comment_url,
+                                              self._("Write personal "\
+                                                     "comment")), NBSP)
         # Add keyboard shortcut
         self.action_shortcut("k", "writearticle" + comment_url)
 
