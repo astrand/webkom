@@ -326,8 +326,10 @@ class LoginPageActions(Action):
         self.append_std_top(cont)
         submitbutton = Center(Input(type="submit", name="loginsubmit", value="Logga in"))
 
+        # Ugly focus-hack to work around broken Netscape
         # Non-JS capable browsers should ignore this
-        self.doc.onLoad = "document.username_form.username.focus()"
+        self.doc.script = webkom_js.code_begin + webkom_js.focus_username + webkom_js.code_end
+        self.doc.onLoad = "setTimeout('focus_username()', 10)"
         
         cont = Container()
         self.doc.append(Center(cont))
@@ -398,13 +400,13 @@ class LoginPageActions(Action):
         self.doc.append(webkom_js.onchange_komserver)
         self.doc.append(webkom_js.onchange_username)
         self.doc.append(webkom_js.onchange_password)
-        self.doc.append("document.username_form.username.focus()")
         self.doc.append(webkom_js.code_end)
 
         # Write non-JS version
         self.doc.append(webkom_js.noscript_begin)
         self.doc.append(nonjs_cont)
         self.doc.append(webkom_js.noscript_end)
+
         return
 
 
