@@ -1883,11 +1883,12 @@ class CreateUserActions(Action):
         else:
             logintable.append((self._("Server"), Input(name="komserver", size=20, value=default_kom_server)))
 
-        logintable.append((self._("Username"), Input(name="username", size=20)))
+        logintable.append((self._("Username"), Input(name="username", size=20),
+                           self._("(like John Doe, ACM)")))
         logintable.append((self._("Password"), Input(type="password", name="password1", size=20)),)
         logintable.append((self._("Repeat password"), Input(type="password", name="password2", size=20)))
         
-        F.append(Center(Formtools.InputTable(logintable)))
+        F.append(Center(Formtools.InputTable(logintable, notecolor=BLACK)))
         F.append(Center(submitbutton))
 
         return
