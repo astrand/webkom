@@ -1,5 +1,7 @@
 #!/home/astrand/webkom/python/bin/python
 
+from webkom_constants import *
+
 # Environment issues
 import sys
 sys.path.append(MODULES_PATH)
@@ -16,7 +18,7 @@ from Formtools import *
 import random, time
 import thread
 from webkom_utils import *
-from webkom_constants import *
+
 
 class SessionSet:
     "A set of active sessions"

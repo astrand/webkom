@@ -8,6 +8,7 @@ import random
 import sys
 
 NBSP = "&nbsp;"
+INACTIVE_LINK_COLOR = GREY6
 
 # Magic!
 class Struct:
