@@ -674,6 +674,7 @@ class LoginPageActions(Action):
     "Generate the login page"
     def response(self):
         self.resp.shortcuts_active = 0
+        self.doc.onLoad = "document.loginform.username.focus()"
         toplink = Href(BASE_URL, "WebKOM")
         cont = Container(toplink, TOPLINK_SEPARATOR + self._("Login"))
         self.append_std_top(cont)
@@ -2042,6 +2043,7 @@ class ChangePwActions(Action):
     "Generate a page for changing LysKOM password"
     def response(self):
         self.resp.shortcuts_active = 0
+        self.doc.onLoad = "document.changepwform.oldpw.focus()"
         toplink = Href(self.base_session_url(), "WebKOM")
         cont = Container(toplink, TOPLINK_SEPARATOR + self._("Change password"))
         self.append_std_top(cont)
@@ -2101,6 +2103,7 @@ class ChangePwSubmit(Action):
 class CreateUserActions(Action):
     "Generate a page for creating a new LysKOM user"
     def response(self):
+        self.doc.onLoad = "document.create_user_form.username.focus()"
         toplink = Href(BASE_URL, "WebKOM")
         create_user_link = Href(BASE_URL + "?action=create_user", self._("Create new user"))
         cont = Container(toplink, TOPLINK_SEPARATOR, create_user_link)
@@ -2209,6 +2212,7 @@ class WriteArticleActions(Action):
     "Generate a page for writing or commenting an article"
     def response(self, presentationfor = None, presconf = None):
         self.resp.shortcuts_active = 0
+        self.doc.onLoad = "document.writearticleform.articlesubject.focus()"
         # Fetch conference name
         conf_num = self.sess.current_conf
 #        cs = self.sess.conn.conferences[conf_num]
@@ -2253,7 +2257,7 @@ class WriteArticleActions(Action):
 
         submitbutton = Input(type="submit", name=submitname,
                              value=submitvalue)
-        
+
         F = Form(BASE_URL, name="writearticleform", submit="")
         self.doc.append(F)
         if presentationfor:
@@ -2629,6 +2633,7 @@ class JoinConfActions(Action):
 
     def search_page(self):
         self.resp.shortcuts_active = 0
+        self.doc.onLoad = "document.joinconfform.searchtext.focus()"
         toplink = Href(self.base_session_url(), "WebKOM")
         joinlink = self.action_href("joinconf", self._("Join conference"))
         self.append_std_top(Container(toplink, TOPLINK_SEPARATOR, joinlink))
@@ -2808,6 +2813,7 @@ class SetUnreadActions(Action):
     "Generate a page for setting unread"
     def response(self):
         self.resp.shortcuts_active = 0
+        self.doc.onLoad = "document.set_unread_form.num_unread.focus()"
         toplink = Href(self.base_session_url(), "WebKOM")
         cont = Container(toplink, TOPLINK_SEPARATOR, self.current_conflink())
         self.append_std_top(cont)
@@ -2937,14 +2943,14 @@ class LeaveConfSubmit(Action):
 
 class ViewPresentationActions(Action):
     def response(self):
+        self.resp.shortcuts_active = 0 
+        self.doc.onLoad = "document.view_pres_form.searchtext.focus()"
         toplink = Href(self.base_session_url(), "WebKOM")
         golink = self.action_href("view_presentation",
                                   self._("View presentation"))
         self.append_std_top(Container(toplink, ' : ', golink))
         self.resp.flush()
-
-        self.resp.shortcuts_active = 0 
-
+        
         F = Form(BASE_URL, name="view_pres_form", submit="")
         self.doc.append(F)
         F.append(self.hidden_key())
@@ -2981,7 +2987,6 @@ class ChooseConfActions(Action):
     "Generate a page for choosing active conference"
     def response(self):
         self.resp.shortcuts_active = 0
-        # Non-JS capable browsers should ignore this
         self.doc.onLoad = "document.choose_conf_form.searchtext.focus()"
         toplink = Href(self.base_session_url(), "WebKOM")
         golink = self.action_href("choose_conf", self._("Choose working conference"))
@@ -3052,6 +3057,7 @@ class ReadConfirmationActions(Action):
 class SearchActions(Action):
     def response(self):
         self.resp.shortcuts_active = 0
+        self.doc.onLoad = "document.search_form.searchtext.focus()"
         toplink = Href(self.base_session_url(), "WebKOM")
         cont = Container(toplink)
         
