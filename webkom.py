@@ -82,8 +82,8 @@ class SessionSet:
         key = self.gen_uniq_key()
         self.sessionset_lock.acquire()
         self.sessionset[key] = session
-        self.write_log("Creating session", key)
         self.sessionset_lock.release()
+        self.write_log("Creating session", key)
         return key
 
     def del_session(self, key):
