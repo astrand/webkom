@@ -934,7 +934,18 @@ class GoConfActions(Action):
             # Date
             date = self.sess.conn.textstats[global_num].creation_time.to_date_and_time()
             # Author
-            author = self.get_pers_name(ts.author)
+            ai_from = kom.first_aux_items_with_tag(ts.aux_items,
+                                                   kom.AI_MX_FROM)
+            author = ""
+            if ai_from:
+                ai_author =  ai_author = kom.first_aux_items_with_tag(ts.aux_items,
+                                                                      kom.AI_MX_AUTHOR)
+                if ai_author:
+                    author = ai_author.data + " "
+                author = author + str(Href("mailto:" + ai_from.data,
+                                       ai_from.data))
+            else:
+                author = self.get_pers_name(ts.author)
             # Subject
             subjtext = self.sess.conn.subjects[global_num]
             if not subjtext:
