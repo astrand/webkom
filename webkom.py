@@ -648,7 +648,7 @@ class LoginPageActions(Action):
                                          serverlist_href)))
 
         logintable.append((self._("Username"),
-                           Container(Input(name="username",size=20),
+                           Container(Input(name="username", size=20, value=self.form.getvalue("username")),
                                      Input(type="checkbox", name="searchconf_komconvention",
                                            checked=self.form.getvalue("searchconf_komconvention")),
                                      self._("KOM matching"))))
@@ -874,7 +874,11 @@ class LogInActions(Action):
         toplink = Href(BASE_URL, "WebKOM")
         self.doc.append(Container(toplink, TOPLINK_SEPARATOR + self._("Login")))
         self.doc.append(Heading(2, self._("Login failed")))
-        self.doc.append(webkom_escape(errmsg))
+        self.doc.append(webkom_escape(errmsg), BR(2))
+        komserver = self.form.getvalue("komserver")
+        username = self.form.getvalue("username")
+        self.doc.append(Href(BASE_URL + "?komserver=%s&amp;username=%s" % (komserver, username),
+                             "Go back"))
 
     def gen_table(self, matches):
         # Ambiguity
