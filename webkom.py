@@ -578,8 +578,8 @@ class AboutPageActions(Action):
         self.doc.append("Per Cederqvist (LysKOM server etc.)", BR())
         self.doc.append(external_href("http://www.lysator.liu.se/~forsberg/",
                                       "Erik Forsberg (implementation)"), BR())
-        self.doc.append("Kjell Enblom (miscellaneous)", BR())
-        self.doc.append("Niklas Lindgren (miscellaneous)", BR())
+        self.doc.append("Kjell Enblom", BR())
+        self.doc.append("Niklas Lindgren", BR())
         self.doc.append(external_href("http://www.helsinki.fi/~eisaksso/",
                                       self._("Eva Isaksson (finnish translation)")), BR())
 
