@@ -1300,7 +1300,8 @@ class ViewTextActions(Action):
             return
             
         type_subtype = mime_content_type(ai_ct.data)
-        if type_subtype not in ["text/x-kom-basic", "x-kom/basic", "x-kom/text"]:
+        if type_subtype not in ["text/x-kom-basic", "x-kom/basic",
+                                "x-kom/text", "text/plain"]:
             self.doc.append(Bold("Warning: article has unknown content type ",
                                  webkom_escape(type_subtype), BR()))
         
