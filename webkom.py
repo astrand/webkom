@@ -700,7 +700,7 @@ class LogInActions(Action):
         
         for (pers_num, pers_name) in matches[:15]:
             tab.append([pers_name,
-                        Input(type="radio", name="login_persno", value=str(pers_num))])
+                        Input(type="radio", name="username", value="#" + str(pers_num))])
         if infotext:
             tab.append([infotext, ""])
 
@@ -715,22 +715,33 @@ class LogInActions(Action):
         return
 
 
+    def valid_parameters(self):
+        if not self.form.getvalue("komserver"):
+            self.error_message(self._("No server given."))
+            return FALSE
+
+        if not self.form.getvalue("username"):
+            self.error_message(self._("No username given."))
+            return FALSE
+
+        if not self.form.getvalue("password"):
+            self.error_message(self._("No password given."))
+            return FALSE
+
+        return TRUE
+
+
     def response(self):
         self.resp.shortcuts_active = 0
-        # If some keyword is missing, view main page.
-        if (not (self.form.has_key("komserver") and
-                 (self.form.has_key("username") or self.form.has_key("login_persno"))
-                 and self.form.has_key("password"))):
-            LoginPageActions(self.resp, self._).response()
+        
+        if not self.valid_parameters():
             return
 
-        if not self.form["username"].value:
-            self.error_message(self._("No username specified."))
-            return
-        
         self.komserver = self.form["komserver"].value
+        self.username = self.form["username"].value
         self.password = self.form["password"].value
 
+        # The remote_host is only used as part of the user name sent at login
         try:
             remote_addr = self.resp.env["REMOTE_ADDR"]
             remote_host = socket.gethostbyaddr(remote_addr)[0]
@@ -755,13 +766,7 @@ class LogInActions(Action):
             self.error_message(self._("Cannot connect to server."))
             return
 
-        # Via number?
-        login_persno = self.form.getvalue("login_persno")
-        if login_persno:
-            matches=[(int(login_persno), "")]
-        else:
-            username = self.form["username"].value
-            matches = conn.lookup_name(username, want_pers=1, want_confs=0)
+        matches = conn.lookup_name(self.username, want_pers=1, want_confs=0)
 
         # Check number of matches
         if len(matches) == 0:
