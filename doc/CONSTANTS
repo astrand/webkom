@@ -1,0 +1,66 @@
+Configuration constants in webkom_constants.py
+==============================================
+
+Note: All paths *must* include an trailing "/". 
+
+* LOG_DIR
+
+The directory where log files, tracebacks etc should go. 
+
+* MODULES_PATH
+
+The directory where additional python modules are searched. You should
+put kom.py, HTMLgen.py etc here. 
+
+* LOCALE_DIR
+
+The directory tree where GNU gettext translation files are
+searched. Many systems use /usr/share/locale for these files, but you
+do not have to place WebKOM translation files in the same tree as the
+rest of your system. 
+
+* VERSION
+
+Version of WebKOM. Do not change unless you have made changes. 
+
+* BASE_URL
+
+The name of the application. 
+
+* DEFAULT_KOM_SERVER
+
+Default value for the server field in the login page.
+
+* MAX_SUBJ_PER_PAGE
+
+Maximum number of articles per page in conference pages. 
+
+* MAX_CONFS_PER_PAGE
+
+Maximum number of conferences per page. 
+
+* MAINTAINER_NAME
+
+The name of the maintainer of this WebKOM installation. This is
+probably you. 
+
+* MAINTAINER_MAIL
+
+The e-mail adress of the maintainer. Should probably be your mail
+address. 
+
+* MAX_CONFERENCE_LEN
+
+Maximum number of chars in conference names. Longer names will be
+truncated. 
+
+* SESSION_TIMEOUT
+
+The number of seconds a session can be inactive before the user is
+automatically logged out. 
+
+* DEFAULT_LANG
+
+The default language, if the browser does not specify
+HTTP_ACCEPT_LANGUAGE. 
+
