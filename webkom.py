@@ -231,9 +231,17 @@ class Response:
         self.shortcuts.append((key, url))
 
 
+    def get_translator(self):
+        try:
+            lang_string = self.env["HTTP_ACCEPT_LANGUAGE"]
+        except KeyError:
+            lang_string = ""
+
+        return translator_cache.get_translator(lang_string).gettext
+
 class Action:
     "Abstract class for actions. Action- and Submit-methods inherits this class."
-    def __init__(self, resp, translator):
+    def __init__(self, resp):
         self.resp = resp
         # Shortcuts
         self.doc = resp.doc
@@ -241,7 +249,7 @@ class Action:
         self.key = resp.key
         self.sess = resp.sess
         # Language
-        self._ = translator
+        self._ = resp.get_translator()
 
     def gen_error(self, msg):
         "Generate error message in bold, with a BR following"
@@ -2281,26 +2289,24 @@ def actions(resp):
     except KeyError:
         lang_string = ""
     
-    trans = translator_cache.get_translator(lang_string).gettext
-    
     if resp.form.has_key("loginsubmit"):
-        LogInActions(resp, trans).response()
+        LogInActions(resp).response()
         return
 
     if resp.form.has_key("sessionkey"):
         resp.key = resp.form["sessionkey"].value
     elif resp.form.has_key("action") and (resp.form["action"].value == "about"):
         # It's possible to view about page withour being logged in
-        AboutPageActions(resp, trans).response()
+        AboutPageActions(resp).response()
         return
     elif resp.form.has_key("action") and (resp.form["action"].value == "create_user"):
-        CreateUserActions(resp, trans).response()
+        CreateUserActions(resp).response()
         return
     elif resp.form.has_key("create_user_submit"):
-        CreateUserSubmit(resp, trans).response()
+        CreateUserSubmit(resp).response()
         return
     else:
-        LoginPageActions(resp, trans).response()
+        LoginPageActions(resp).response()
         return 
     
     # "loginsubmit" and "about" excluded
@@ -2337,7 +2343,7 @@ def actions(resp):
                        "submit_result" : SubmitResultActions }
 
     if not sessionset.valid_session(resp.key):
-        InvalidSessionPageActions(resp, trans).response()
+        InvalidSessionPageActions(resp).response()
         return 
 
     # Submits
@@ -2380,10 +2386,10 @@ def actions(resp):
     resp.sess.conn.parse_present_data()
 
     # View messages
-    ViewPendingMessages(resp, trans).response()
+    ViewPendingMessages(resp).response()
 
     # Create an instance of apropriate class and let it generate response
-    action = response_type(resp, trans)
+    action = response_type(resp)
     # Generate page. Note: if this is the logout page, resp.sess will be cleared. 
     action.response()
 
@@ -2401,7 +2407,7 @@ def actions(resp):
         resp.add_shortcut("b", action.base_session_url() + "&amp;action=writeletter&amp;rcpt=" 
                           + str(resp.sess.conn.get_user()))
         resp.add_shortcut("g", action.base_session_url() + "&amp;action=choose_conf")
-        AddShortCuts(resp, trans).response()
+        AddShortCuts(resp).response()
 
 
     # For debugging 
@@ -2412,12 +2418,7 @@ def actions(resp):
 
 def write_traceback(resp):
     # Something failed in response generation.
-    try:
-        lang_string = resp.env["HTTP_ACCEPT_LANGUAGE"]
-    except KeyError:
-        lang_string = ""
-    
-    _ = translator_cache.get_translator(lang_string).gettext
+    _ = resp.get_translator()
     
     # Save a copy on disk
     import time
@@ -2445,7 +2446,7 @@ def write_traceback(resp):
 
 
 def print_logged_out_response(resp):
-    _ = translator_cache.get_translator("en").gettext
+    _ = resp.get_translator()
     cont = Container(Href(BASE_URL, "WebKOM"))
     cont.append(Heading(3, _("Logged out remotely")))
     cont.append(_("Someone (probably you) ended this session remotely"))
@@ -2456,7 +2457,7 @@ def print_logged_out_response(resp):
 
 
 def print_not_implemented(resp):
-    _ = translator_cache.get_translator("en").gettext
+    _ = resp.get_translator()
     cont = Container(Href(BASE_URL, "WebKOM"))
     cont.append(Heading(3, _("Server call not implemented")))
     cont.append(_("WebKOM made a server call that this server did not "
