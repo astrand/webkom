@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python2.1
 
 # WebKOM - a web based LysKOM client
 # 
@@ -2533,7 +2533,7 @@ class ChooseConfActions(Action):
         # Non-JS capable browsers should ignore this
         self.doc.onLoad = "document.choose_conf_form.searchtext.focus()"
         toplink = Href(self.base_session_url(), "WebKOM")
-        golink = self.action_href("joinconf", self._("Choose working conference"))
+        golink = self.action_href("choose_conf", self._("Choose working conference"))
         cont = Container(toplink, " : ", golink)
         self.append_std_top(cont)
 
