@@ -245,24 +245,25 @@ def del_8859_1_invalid_chars(text):
     
 
 def linkify_text(text):
-    # FIXME: Linkify everything that looks like an URL or mail adress. 
+    # FIXME: Linkify everything that looks like an URL or mail adress.
+    # Do a better job. 
     # NOTE:
     # < = \001
     # > = \002
     # This is because otherwise these are quoted by HTMLgen.escape. 
     
     # http URLs
-    pat = re.compile("(?P<fullurl>(http://|(?=www\\.))(?P<url>\\S*\\w))")
+    pat = re.compile("(?P<fullurl>(http://|(?=www\\.))(?P<url>[^\t \012\014\"<>|\\\]*[^\t \012\014\"<>|.,!(){}?'`:]))")
     repl = '\001a href="http://\\g<url>"\002\\g<fullurl>\001/a\002'
     text = pat.sub(repl, text)
 
     # ftp URLs
-    pat = re.compile("(?P<fullurl>(ftp://|(?=ftp\\.))(?P<url>\\S*\\w))")
+    pat = re.compile("(?P<fullurl>(ftp://|(?=ftp\\.))(?P<url>[^\t \012\014\"<>|\\\]*[^\t \012\014\"<>|.,!(){}?'`:]))")
     repl = '\001a href="ftp://\\g<url>"\002\\g<fullurl>\001/a\002'
     text = pat.sub(repl, text)
 
     # file URLs
-    pat = re.compile("(?P<fullurl>(file://)(?P<url>\\S*\\w))")
+    pat = re.compile("(?P<fullurl>(file://)(?P<url>[^\t \012\014\"<>|\\\]*[^\t \012\014\"<>|.,!(){}?'`:]))")
     repl = '\001a href="file://\\g<url>"\002\\g<fullurl>\001/a\002'
     text = pat.sub(repl, text)
     return text
