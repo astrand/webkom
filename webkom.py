@@ -341,12 +341,12 @@ class LoginPageActions(Action):
     def response(self):
         self.resp.shortcuts_active = 0
         toplink = Href(BASE_URL, "WebKOM")
-        cont = Container(toplink, self._(": Login"))
+        cont = Container(toplink, self._(" : " + "Login"))
         self.append_std_top(cont)
         default_kom_server = DEFAULT_KOM_SERVER
         if self.form.has_key("komserver"):
             default_kom_server = self.form["komserver"].value
-        submitbutton = Input(type="submit", name="loginsubmit", value=self._("Logga in"))
+        submitbutton = Input(type="submit", name="loginsubmit", value=self._("Login"))
 
         # Ugly focus-hack to work around broken Netscape
         # Non-JS capable browsers should ignore this
@@ -432,7 +432,7 @@ class LoginPageActions(Action):
         self.doc.append(nonjs_cont)
         self.doc.append(webkom_js.noscript_end)
 
-        self.doc.append(Href(BASE_URL + "?action=create_user", self._("Create new user...")))
+        self.doc.append(Href(BASE_URL + "?action=create_user", self._("Create new user") + "..."))
 
         return
 
@@ -463,8 +463,8 @@ class AboutPageActions(Action):
         self.doc.append(self._("WebKOM is free software, licensed under GPL."))
         
         self.doc.append(Heading(3, self._("Authors")))
-        self.doc.append(self._("The following people have in one way or another \
-        contributed to WebKOM:"), BR(2))
+        self.doc.append(self._("The following people have in one way or another "
+                               "contributed to WebKOM:"), BR(2))
         self.doc.append(external_href("http://www.lysator.liu.se/~astrand/",
                                       self._("Peter Åstrand (project starter)")), BR())
         self.doc.append("Kent Engström", BR())
@@ -495,7 +495,7 @@ class WhatsImplementedActions(Action):
     "Generate a page with implementation details"
     def response(self):
         toplink = Href(self.base_session_url(), "WebKOM")
-        wilink = self.action_href("whats_implemented", self._("Vad kan WebKOM göra?"))
+        wilink = self.action_href("whats_implemented", self._("What can WebKOM do?"))
         cont = Container(toplink, " : ", wilink)
         self.append_std_top(cont)
         
@@ -1790,7 +1790,7 @@ class WriteArticleSubmit(Action):
                     update_membership(self.sess.conn, r.recpt, r.loc_no)
                 
         except kom.Error:
-            self.print_error(self._("Unable to create article"))
+            self.print_error(self._("Unable to create article."))
 
         return text_num
 
@@ -2061,8 +2061,8 @@ class ChooseConfActions(Action):
         F.append(BR())
         F.append(Heading(2, self._("Choose working conference")))
         F.append(BR())
-        F.append(self._("Type in the beginning of the conference name. You can also search "))
-        F.append(self._("via conference numbers by giving # followed by the conference number."), BR())
+        F.append(self._("Type in the beginning of the conference name. You can also search "
+                        "via conference numbers by giving # followed by the conference number."), BR())
 
         ## Search and remove submit
         cont=Container()
