@@ -6,6 +6,7 @@ import socket
 import time
 import string
 import select
+import sys
 
 #
 # Constants
@@ -1087,7 +1088,7 @@ class Time:
             self.minutes = 0
             self.hours = 0 
             self.day = 0
-            self.month = 0 # 0 .. 11 
+            self.month = 0 # 1 ... 12
             self.year = 0 # no of years since 1900
             self.day_of_week = 0 # 0 = Sunday ... 6 = Saturday
             self.day_of_year = 0 # 0 ... 365
@@ -1743,6 +1744,7 @@ class Connection:
     # INITIALIZATION ETC.
 
     def __init__(self, host, port = 4894, user = ""):
+
         # Create socket and connect
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((host, port))
@@ -2058,6 +2060,14 @@ class CachedConnection(Connection):
         self.add_async_handler(ASYNC_NEW_RECIPIENT, self.cah_new_recipient)
         self.add_async_handler(ASYNC_SUB_RECIPIENT, self.cah_sub_recipient)
         self.add_async_handler(ASYNC_NEW_MEMBERSHIP, self.cah_new_membership)
+
+    def destroy(self):
+        del self.uconferences
+        del self.conferences
+        del self.persons
+        del self.textstats
+        del self.subjects
+        del self.async_handlers
 
     # Fetching functions (internal use)
     def fetch_uconference(self, no):
