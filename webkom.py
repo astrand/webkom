@@ -916,7 +916,7 @@ class LogInActions(Action):
             return
 
         # Set user_no in connection
-        conn.set_user(pers_num)
+        conn.set_user(pers_num, set_member_confs=0)
         kom.ReqSetClientVersion(conn, "WebKOM", VERSION)
 
         if LOGOUT_OTHER_SESSIONS:
@@ -965,7 +965,9 @@ SPAN.countdownfinished {
         self.doc.append(self._("Please wait while your conference list is loading..."), BR())
         self.doc.append(self._("Number of conferences loaded:"))
         self.resp.req.out.write(self.doc.flush_doc_contents())
+        self.resp.req.flush_out()
 
+        self.sess.conn.set_member_confs()
         last_update = 0
 
         # Pre-fetch information about conferences & unread
