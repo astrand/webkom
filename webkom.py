@@ -811,6 +811,7 @@ class MainPageActions(Action):
 
         tab=[[cont]]
         self.doc.append(Table(body=tab, border=0, cell_padding=50, width="100%"))
+        self.action_shortcut(" ", "viewconfs_unread")
 
         return
 
@@ -2390,7 +2391,7 @@ class WriteArticleSubmit(Action):
                                                 self._("Go back to the "\
                                                        "article you "\
                                                        "footnoted")))
-            
+        
         self.submit_redir(result_cont)
 
         return text_num 
