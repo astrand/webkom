@@ -739,8 +739,9 @@ class AboutPageActions(Action):
                         external_href(webkom_escape(KNOWN_BUGS_URL), self._("list with known bugs")),
                         self._(" in the Bugzilla at Lysator. "))
         self.doc.append(self._("It should be used for bug reports, feature requests and general feedback."))
-        
-        self.append_right_footer()
+
+        if not self.key:
+            self.append_right_footer()
 
 
 class SelectServerPageActions(Action):
@@ -825,6 +826,7 @@ class MainPageActions(Action):
             self.action_href("viewconfs_unread", self._("List conferences with unread")),
             self.action_href("viewconfs", self._("List all conferences you are a member of")),
             self.action_href("view_markings", self._("List marked articles"))]))
+            # self.action_href("specify_article_number", self._("View article with specified number"))]))
 
         cont.append(Heading(3, self._("Write")))
         cont.append(List([
@@ -1430,7 +1432,24 @@ class GoConfActions(Action):
         tl.append(tr)
         self.doc.append(tl)
 
-            
+
+
+## class SpecifyArticleNumberPageActions(Action):
+##     """Specify article number to view"""
+##     def response(self):
+##         toplink = Href(self.base_session_url(), "WebKOM")
+##         thispage = self.action_href("specify_article_number", self._("View article with specified number"))
+##         cont = Container(toplink, TOPLINK_SEPARATOR, thispage)
+##         self.append_std_top(cont)
+##         self.doc.append(Heading(2, self._("View article with specified number")))
+
+##         submitbutton = Input(type="submit", name="viewarticlesubmit",
+##                              value=self._("View article"))
+##         F = Form(BASE_URL, name="specify_article_form", submit=submitbutton)
+##         self.doc.append(F)
+##         F.append(self.hidden_key())
+##         F.append(Input(name="textnum", value="123"))
+
 
 class ViewTextActions(Action):
     "Generate a page with a requested article"
@@ -3016,7 +3035,8 @@ def actions(resp):
                        "unmark_text" : UnmarkTextActions,
                        "mark_text" : MarkTextActions,
                        "view_markings" : ViewMarkingsActions,
-                       "internal_error": TriggerInternalErrorActions }
+                       "internal_error": TriggerInternalErrorActions}
+                       # "specify_article_number" : SpecifyArticleNumberPageActions}
 
     if not sessionset.valid_session(resp.key):
         InvalidSessionPageActions(resp).response()
