@@ -349,8 +349,9 @@ class Action:
         # Tell KOM-server that we have changed conference
         try:
             kom.ReqChangeConference(self.sess.conn, conf_num).response()
+            return 1
         except:
-            self.print_error(self._("Unable to change current conference."))
+            return 0
     
     def get_conf_name(self, num):
         "Get conference name"
@@ -1356,20 +1357,24 @@ class GoConfActions(Action):
             conf_num = int(self.form["conf"].value)
 
         # Change conference
-        self.change_conf(conf_num)
+        ismember =  self.change_conf(conf_num)
+        
         # Fetch conference name
         conf_name = self.get_conf_name(conf_num)
-        
         toplink = Href(self.base_session_url(), "WebKOM")
-        
         cont = Container(toplink, TOPLINK_SEPARATOR, self.current_conflink())
         self.append_std_top(cont)
-
         cont.append(TOPLINK_SEPARATOR, self.action_href("goconf&amp;conf=" + str(conf_num),
                                             conf_name))
-
         self.doc.append(Heading(2, conf_name))
 
+        if not ismember:
+            self.doc.append("You must",
+                            self.action_href("joinconfsubmit&amp;selected_conf=" + str(conf_num),
+                                             self._("join this conference")),
+                            "before you can read articles.")
+            return
+        
         # Standard action
         std_cmd = Container()
         self.doc.append(self._("Default command: "), std_cmd)
@@ -1520,6 +1525,7 @@ class SpecifyArticleNumberPageActions(Action):
         self.doc.append(F)
         F.append(self.hidden_key())
         F.append(Input(name="textnum"))
+        self.sess.current_conf = 0
 
 
 class ViewTextActions(Action):
@@ -3206,6 +3212,7 @@ def actions(resp):
                        "writepresentation" : WritePresentationActions,
                        "whats_implemented" : WhatsImplementedActions,
                        "joinconf" : JoinConfActions,
+                       "joinconfsubmit" : JoinConfSubmit,
                        "leaveconf" : LeaveConfActions,
                        "about" : AboutPageActions,
                        "set_unread" : SetUnreadActions,
