@@ -1719,10 +1719,11 @@ class WriteArticleActions(Action):
                                  % self.sess.conn.conferences[presentationfor].presentation)
                 
         F.append("Article text:", BR())
-        # F.append(Textarea(text, rows=20, cols=70))
-        # NOTE: This is non-standardized way to get linewrapping. Then why use it?
-        # Because there are no way to achieve this without Javascript etc. 
+        # NOTE: This produces *invalid*HTML*. I'm really sorry to have to do this. 
+        # The reason is that Netscape <= 4.X does not wrap lines by default. It should.
+        # FIXME: Change this as soon as Netscape <= 4.X becomes uncommon. 
         F.append("\n<textarea name=\"text_area\" rows=20 cols=70 wrap=\"virtual\">")
+
         F.append(text)
         F.append("</textarea>")
         F.append(BR())
@@ -2232,8 +2233,12 @@ def actions(resp):
     # Generate page
     action.response()
 
-    # Add foot
-    resp.doc.append("<div align=right>fdsfdsfdsdf</div>")
+    # Add link to W3C validator
+    div = Div(align = "right")
+    resp.doc.append(div)
+    image = Image(src="/images/check.png", border=0, height=17, width=22,
+                  alt="[check HTML validity]")
+    div.append(Href("http://validator.w3.org/check/referer", str(image)))
 
     # Add Javascript shortcuts
     if resp.shortcuts_active:
