@@ -1,3 +1,4 @@
+
 msgid ""
 msgstr ""
 "Project-Id-Version: WebKOM 0.20\n"
@@ -29,6 +30,9 @@ msgstr "Författare"
 
 msgid "Set/remove notes on letterbox"
 msgstr "Sätta/ta bort lappar på brevlådan"
+
+msgid "KOM matching"
+msgstr "KOM-matchning"
 
 msgid "Your password has been changed"
 msgstr "Ditt lösenord har ändrats"
@@ -159,8 +163,8 @@ msgstr "Tid: "
 msgid "You are no longer a member of conference "
 msgstr "Du är inte längre medlem i mötet "
 
-msgid "View sessionstatus for persons"
-msgstr "Visa sessionsstatus för person"
+msgid "Move articles between conferences"
+msgstr "Flytta inlägg mellan möten"
 
 msgid "Someone (probably you) ended this session remotely"
 msgstr "Någon (antagligen du) loggade ut den här sessionen på distans"
@@ -176,13 +180,6 @@ msgstr "Författare:"
 
 msgid "Send messages"
 msgstr "Skicka meddelanden"
-
-msgid ""
-"Type in the beginning of the conference name. You can also search via "
-"conference numbers by giving # followed by the conference number."
-msgstr ""
-"Mata in början av mötesnamnet. Du kan också söka via mötesnummer genom att "
-"ange # följt av mötets nummer."
 
 msgid "Conference name"
 msgstr "Mötesnamn"
@@ -247,6 +244,9 @@ msgstr "Dold kopia"
 msgid "Sent:"
 msgstr "Skickat:"
 
+msgid "Type in a part of a conference name to search for. "
+msgstr "Skriv in del av mötesnamnet du vill söka efter. "
+
 msgid "Continue Logging in"
 msgstr "Fortsätt inloggningen"
 
@@ -273,6 +273,9 @@ msgstr "Du är nu medlem i mötet "
 
 msgid "Default command: "
 msgstr "Standardkommando: "
+
+msgid "Article text:"
+msgstr "Inläggsnummer:"
 
 msgid ", not marked by you. "
 msgstr ", ej markerad av dig. "
@@ -316,8 +319,8 @@ msgstr "Ej implementerat"
 msgid "Later articles"
 msgstr "Senare inlägg"
 
-msgid "Comment to:"
-msgstr "Kommentar till:"
+msgid "User name"
+msgstr "Användarnamn"
 
 msgid ", %(days)d days, %(hours)d hours and %(minutes)d minutes ago"
 msgstr ", %(days)d dagar, %(hours)d timmar och %(minutes)d minuter sedan"
@@ -386,8 +389,8 @@ msgstr "Kunde inte ändra aktuellt möte."
 msgid "Technology"
 msgstr "Teknik"
 
-msgid "Main Page"
-msgstr "Huvudsida"
+msgid "Peter Åstrand (project starter, most of implementation)"
+msgstr "Peter Åstrand (initiativtagare, implementerat det mesta)"
 
 msgid "There is a "
 msgstr "Det finns en "
@@ -403,6 +406,9 @@ msgstr "Möte"
 
 msgid "Join conference"
 msgstr "Gå med i möte"
+
+msgid "Regular expressions are allowed, unless the checkbox below is on."
+msgstr "Reguljära uttryck tillåts, såvida kryssrutan nedan ej är ikryssad. "
 
 msgid "The author requests private replies only."
 msgstr "Författaren har begärt endast personliga svar."
@@ -424,13 +430,6 @@ msgstr "Ej inloggad"
 
 msgid "Imported:"
 msgstr "Importerad:"
-
-msgid ""
-"Type in the beginning of a conference or person. You can also search via "
-"conference numbers by giving # followed by the conference or person number."
-msgstr ""
-"Mata in början av mötes- eller personnamnet. Du kan också söka via "
-"mötesnummer genom att ange # följt av mötes- eller personnumret."
 
 msgid "Invalid input"
 msgstr "Felaktig inmatning"
@@ -468,6 +467,9 @@ msgstr "Skapa möten"
 msgid "Logout"
 msgstr "Logga ut"
 
+msgid "Comment to:"
+msgstr "Kommentar till:"
+
 msgid "If it isn't, please report this problem to"
 msgstr "Om inte, rapportera detta fel till"
 
@@ -477,8 +479,8 @@ msgstr "Datum"
 msgid "Added by:"
 msgstr "Adderad av:"
 
-msgid "Read presentation"
-msgstr "Läsa presentationer"
+msgid "(Nothing matches %s)"
+msgstr "(Inget matchar %s)"
 
 msgid "Person %d (does not exist)"
 msgstr "Person %d (finns inte)"
@@ -503,6 +505,9 @@ msgstr "Visar alla sessioner som har varit aktiva de senaste 30 minuterna."
 
 msgid "Go to conference"
 msgstr "Gå till möte"
+
+msgid "Type in a part of a person to search for. "
+msgstr "Skriv in del av av personens namn som du vill söka efter. "
 
 msgid "Wrong password."
 msgstr "Felaktigt lösenord"
@@ -554,17 +559,14 @@ msgstr "(För många träffar, sökresultatet har trunkerats)"
 msgid "none"
 msgstr "ingen"
 
-msgid "Search for conference or person:"
-msgstr "Sök efter möte eller person:"
-
 msgid "Try again!"
 msgstr "Försök igen!"
 
 msgid "Check if this bug is listed on"
 msgstr "Kontrollera ifall den här buggen finns med på"
 
-msgid "Move articles between conferences"
-msgstr "Flytta inlägg mellan möten"
+msgid "View sessionstatus for persons"
+msgstr "Visa sessionsstatus för person"
 
 msgid "Search result:"
 msgstr "Sökresultat:"
@@ -588,8 +590,8 @@ msgstr "Nummer"
 msgid "Logged out remotely"
 msgstr "Utloggad på distans"
 
-msgid "(Nothing matches %s)"
-msgstr "(Inget matchar %s)"
+msgid "Read presentation"
+msgstr "Läsa presentationer"
 
 msgid "Status for conference/persons"
 msgstr "Status för möte/person"
@@ -706,7 +708,7 @@ msgid "A total of %s active users."
 msgstr "Totalt %s aktiva användare."
 
 msgid "Choose working conference"
-msgstr "Gå till mötet"
+msgstr "Gå till möte"
 
 msgid "Session"
 msgstr "Session"
@@ -716,9 +718,6 @@ msgstr "Anropet misslyckades"
 
 msgid "Next conference with unread"
 msgstr "Nästa möte med olästa"
-
-msgid "Search for conference:"
-msgstr "Sök efter möte:"
 
 msgid "Who is logged in"
 msgstr "Vilka är inloggade"
@@ -765,11 +764,14 @@ msgstr "Logga ut mina andra sessioner"
 msgid "Write personal letters"
 msgstr "Skriva brev"
 
-msgid "User name"
-msgstr "Användarnamn"
+msgid "Type in a part of a conference name or person to search for. "
+msgstr "Skriv in del av mötesnamnet eller personen som du vill söka efter. "
 
 msgid "The server requires login before new users can be created"
 msgstr "Servern kräver inloggning innan nya användare kan skapas"
+
+msgid "The search is not case sensitive. "
+msgstr "Sökningen är ej skiftlägeskänslig. "
 
 msgid "Article submitted."
 msgstr "Inlägget skickat"
@@ -810,8 +812,8 @@ msgstr "%s: %d -- inlägget finns inte"
 msgid "There are no unread articles."
 msgstr "Det finns inga olästa inlägg."
 
-msgid "Peter Åstrand (project starter, most of implementation)"
-msgstr "Peter Åstrand (initiativtagare, implementerat det mesta)"
+msgid "Main Page"
+msgstr "Huvudsida"
 
 msgid "WebKOM login"
 msgstr "WebKOM inloggning"
