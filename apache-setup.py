@@ -57,7 +57,6 @@ def get_origin_dir(argv0=sys.argv[0]):
 def get_httpd_config():
     p = popen2.Popen3("httpd -V", 1)
     server_config_file = None
-    http_root = None
     
     while 1:
         err = p.childerr.read()
