@@ -497,7 +497,7 @@ class WhatsImplementedActions(Action):
         cont = Container(toplink, " : ", wilink)
         self.append_std_top(cont)
         
-        self.doc.append(Heading(2, self._("Vad kan WebKOM göra?")))
+        self.doc.append(Heading(2, self._("Vad kan WebKOM göra? (only available in Swedish)")))
         page = """
         <h3>Implementerat</h3>
         <ul>
