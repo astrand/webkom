@@ -274,6 +274,11 @@ class Response:
             self.req.out.write(self.doc.get_doc_start())
             self.docstart_written = 1
 
+    def flush(self):
+        self.write_docstart()
+        self.req.out.write(self.doc.flush_doc_contents())
+        self.req.flush_out()
+
     def _get_url_base(self):
         server_name = self.env["HTTP_HOST"]
         if not server_name:
@@ -2374,6 +2379,8 @@ class WhoIsOnActions(Action):
         self.doc.append(Heading(3, self._("Who is logged in")))
 
         self.doc.append(self._("Showing all sessions active within the last 30 minutes."), BR())
+
+        self.resp.flush()
 
         try:
             who_list = kom.ReqWhoIsOnDynamic(self.sess.conn, active_last = 1800).response()
