@@ -94,7 +94,7 @@ end_switch = """
 disable_shortcuts = """
     case 'z':
         active = false;
-        alert("Snabbtangenter avslagna.");
+        alert("Shortcuts disabled.");
         break;
 """
                     
