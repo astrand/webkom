@@ -2938,7 +2938,7 @@ def write_traceback(resp):
     # Then tell me!)
     resp.doc.append(Heading(3, "Internal server error"))
     resp.doc.append(_("Check if this bug is listed on"))
-    resp.doc.append(Href("../bugs.html", _("the list with known bugs")))
+    resp.doc.append(external_href("http://bugzilla.lysator.liu.se/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&email1=&emailtype1=substring&emailassigned_to1=1&email2=&emailtype2=substring&emailreporter2=1&bugidtype=include&bug_id=&changedin=&votes=&chfieldfrom=&chfieldto=Now&chfieldvalue=&product=WebKOM&short_desc=&short_desc_type=allwordssubstr&long_desc=&long_desc_type=allwordssubstr&bug_file_loc=&bug_file_loc_type=allwordssubstr&keywords=&keywords_type=anywords&field0-0-0=noop&type0-0-0=noop&value0-0-0=&cmdtype=doit&namedcmd=fufreg&newqueryname=&order=Reuse+same+sort+as+last+time", _("the list with known bugs")))
     resp.doc.append(_("If it doesn't, please report this problem to"))
     resp.doc.append(MAINTAINER_NAME)
     resp.doc.append(Href("mailto: " + MAINTAINER_MAIL, MAINTAINER_MAIL + "."))
