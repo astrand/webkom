@@ -3,7 +3,7 @@ import gettext
 import string
 
 class TranslatorCache:
-    def __init__(self, domain, locale_dir):
+    def __init__(self, domain, locale_dir, default_lang):
         self.known_languages = {}
         self.known_languages["en"] = gettext.NullTranslations()
 
@@ -20,7 +20,7 @@ class TranslatorCache:
             if translator:
                 return translator
 
-        translator = self.try_lang(DEFAULT_LANG)
+        translator = self.try_lang(default_lang)
         if translator:
             return translator
 
