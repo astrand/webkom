@@ -515,7 +515,7 @@ class LoginPageActions(Action):
     def response(self):
         self.resp.shortcuts_active = 0
         toplink = Href(BASE_URL, "WebKOM")
-        cont = Container(toplink, " : " + self._("Login"))
+        cont = Container(toplink, TOPLINK_SEPARATOR + self._("Login"))
         self.append_std_top(cont)
         default_kom_server = DEFAULT_KOM_SERVER
         if self.form.has_key("komserver") and not LOCK_KOM_SERVER:
@@ -561,7 +561,7 @@ class AboutPageActions(Action):
             toplink = Href(BASE_URL, "WebKOM")
             aboutlink = Href(BASE_URL + "?action=about", self._("About WebKOM"))
             
-        cont = Container(toplink, " : ", aboutlink)
+        cont = Container(toplink, TOPLINK_SEPARATOR, aboutlink)
         self.append_std_top(cont)
         
         self.doc.append(Heading(2, self._("About WebKOM")))
@@ -629,7 +629,7 @@ class WhatsImplementedActions(Action):
     def response(self):
         toplink = Href(self.base_session_url(), "WebKOM")
         wilink = self.action_href("whats_implemented", self._("What can WebKOM do?"))
-        cont = Container(toplink, " : ", wilink)
+        cont = Container(toplink, TOPLINK_SEPARATOR, wilink)
         self.append_std_top(cont)
         
         self.doc.append(Heading(2, self._("What can WebKOM do?")))
@@ -684,7 +684,6 @@ class MainPageActions(Action):
     def response(self):
         toplink = Href(self.base_session_url(), "WebKOM")
         cont = Container(toplink)
-        cont.append(" : ")
         self.append_std_top(cont)
 
         cont = Container()
@@ -737,7 +736,7 @@ class LogInActions(Action):
     "Do login actions"
     def error_message(self, errmsg):
         toplink = Href(BASE_URL, "WebKOM")
-        self.doc.append(Container(toplink, " : " + self._("Login")))
+        self.doc.append(Container(toplink, TOPLINK_SEPARATOR + self._("Login")))
         self.doc.append(Heading(2, self._("Login failed")))
         self.doc.append(errmsg)
 
@@ -745,7 +744,7 @@ class LogInActions(Action):
         # Ambiguity
         # Create top
         toplink = Href(BASE_URL, "WebKOM")
-        self.doc.append(Container(toplink, " : " + self._("Login")))
+        self.doc.append(Container(toplink, TOPLINK_SEPARATOR + self._("Login")))
         self.doc.append(Heading(2, self._("The username is ambiguous")))
 
         F = Form(BASE_URL, name="loginform", submit="")
@@ -1021,7 +1020,7 @@ class ViewConfsActions(Action):
             title = self._("Conferences (you are a member of)")
             conflink = self.action_href(action_url, title)
 
-        cont = Container(toplink, " : ", conflink)
+        cont = Container(toplink, TOPLINK_SEPARATOR, conflink)
         self.append_std_top(cont)
 
         if only_unread:
@@ -1105,7 +1104,7 @@ class GoConfWithUnreadActions(Action):
         else:
             toplink = Href(self.base_session_url(), "WebKOM")
             conflink = self.action_href("viewconfs", self._("Conferences (you are a member of)"))
-            cont = Container(toplink, " : ", conflink)
+            cont = Container(toplink, TOPLINK_SEPARATOR, conflink)
             self.append_std_top(cont)
             self.doc.append(Heading(3, self._("No unread")))
             self.doc.append(self._("There are no unread articles."))
@@ -1147,10 +1146,10 @@ class GoConfActions(Action):
         
         toplink = Href(self.base_session_url(), "WebKOM")
         
-        cont = Container(toplink, " : ", self.current_conflink())
+        cont = Container(toplink, TOPLINK_SEPARATOR, self.current_conflink())
         self.append_std_top(cont)
 
-        cont.append(" : ", self.action_href("goconf&amp;conf=" + str(conf_num),
+        cont.append(TOPLINK_SEPARATOR, self.action_href("goconf&amp;conf=" + str(conf_num),
                                             conf_name))
 
         self.doc.append(Heading(2, conf_name))
@@ -1520,7 +1519,7 @@ class ViewTextActions(Action):
         # Toplink
         toplink = Href(self.base_session_url(), "WebKOM")
         # Link to conferences
-        cont = Container(toplink, " : ", self.current_conflink())
+        cont = Container(toplink, TOPLINK_SEPARATOR, self.current_conflink())
         self.append_std_top(cont)
 
         # Valid article?
@@ -1538,11 +1537,11 @@ class ViewTextActions(Action):
         # Link to current conference
         # Note: It's possible to view texts from other conferences,
         # while still staying in another conference
-        cont.append(" : ")
+        cont.append(TOPLINK_SEPARATOR)
         cont.append(self.action_href("goconf&amp;conf=" + str(self.sess.current_conf),
                                      self.get_conf_name(self.sess.current_conf)))
         # Link to this page
-        cont.append(" : ")
+        cont.append(TOPLINK_SEPARATOR)
         cont.append(self.action_href("viewtext" + "&amp;textnum=" + str(global_num),
                                      webkom_escape(self.sess.conn.subjects[global_num])))
         self.doc.append(BR())
@@ -1810,7 +1809,7 @@ class ChangePwActions(Action):
     def response(self):
         self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
-        cont = Container(toplink, " : " + self._("Change password"))
+        cont = Container(toplink, TOPLINK_SEPARATOR + self._("Change password"))
         self.append_std_top(cont)
         submitbutton = Center(Input(type="submit", name="changepwsubmit",
                                     value=self._("Change password")))
@@ -1841,7 +1840,7 @@ class ChangePwSubmit(Action):
         toplink = Href(self.base_session_url(), "WebKOM")
         changepwlink = self.action_href("changepw", self._("Change password"))
 
-        std_top = self.gen_std_top(Container(toplink, " : ", changepwlink))
+        std_top = self.gen_std_top(Container(toplink, TOPLINK_SEPARATOR, changepwlink))
         result_cont = Container(std_top)
         
         if newpw1 != newpw2:
@@ -1870,7 +1869,7 @@ class CreateUserActions(Action):
     def response(self):
         toplink = Href(BASE_URL, "WebKOM")
         create_user_link = Href(BASE_URL + "?action=create_user", self._("Create new user"))
-        cont = Container(toplink, " : ", create_user_link)
+        cont = Container(toplink, TOPLINK_SEPARATOR, create_user_link)
         self.append_std_top(cont)
 
         default_kom_server = DEFAULT_KOM_SERVER
@@ -1916,7 +1915,7 @@ class CreateUserSubmit(Action):
 
         toplink = Href(BASE_URL, "WebKOM")
         create_user_link = Href(BASE_URL + "?action=create_user", self._("Create new user"))
-        cont = Container(toplink, " : ", create_user_link)
+        cont = Container(toplink, TOPLINK_SEPARATOR, create_user_link)
         self.append_std_top(cont)
 
         if password1 != password2:
@@ -2010,7 +2009,8 @@ class WriteArticleActions(Action):
 
         writeart = self.action_href("writearticle", page_heading)
         
-        cont = Container(toplink, " : ", self.current_conflink(), " : ", thisconf, " : ", writeart)
+        cont = Container(toplink, TOPLINK_SEPARATOR, self.current_conflink(),
+                         TOPLINK_SEPARATOR, thisconf, TOPLINK_SEPARATOR, writeart)
 
         self.append_std_top(cont)
 
@@ -2201,7 +2201,8 @@ class WriteArticleSubmit(Action):
         thisconf = self.action_href("goconf&amp;conf=" + str(conf_num), conf_name)
         writeart = self.action_href("writearticle", self._("Write article"))
         
-        top_cont = Container(toplink, " : ", self.current_conflink(), " : ", thisconf, " : ", writeart)
+        top_cont = Container(toplink, TOPLINK_SEPARATOR, self.current_conflink(),
+                             TOPLINK_SEPARATOR, thisconf, TOPLINK_SEPARATOR, writeart)
         result_cont.append(self.gen_std_top(top_cont))
         result_cont.append(Heading(2, self._("Write article")))
         
@@ -2336,7 +2337,7 @@ class LogoutOtherSessionsActions(Action):
         toplink = Href(self.base_session_url(), "WebKOM")
         loslink = self.action_href("logoutothersessions",
                                    self._("Logout my other sessions"))
-        cont = Container(toplink, " : ", loslink)
+        cont = Container(toplink, TOPLINK_SEPARATOR, loslink)
         self.append_std_top(cont)
         try:
             who_list = kom.ReqWhoIsOnDynamic(self.sess.conn,
@@ -2368,7 +2369,7 @@ class WhoIsOnActions(Action):
     def response(self):
         toplink = Href(self.base_session_url(), "WebKOM")
         wholink = self.action_href("whoison", self._("Who is logged in"))
-        cont = Container(toplink, " : ", wholink)
+        cont = Container(toplink, TOPLINK_SEPARATOR, wholink)
         self.append_std_top(cont)
         self.doc.append(Heading(3, self._("Who is logged in")))
 
@@ -2416,7 +2417,7 @@ class JoinConfActions(Action):
         self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
         joinlink = self.action_href("joinconf", self._("Join conference"))
-        cont = Container(toplink, " : ", joinlink)
+        cont = Container(toplink, TOPLINK_SEPARATOR, joinlink)
         self.append_std_top(cont)
 
         F = Form(BASE_URL, name="joinconfform", submit="")
@@ -2491,7 +2492,7 @@ class JoinConfSubmit(Action):
 
         toplink = Href(self.base_session_url(), "WebKOM")
         joinlink = self.action_href("joinconf", self._("Join conference"))
-        top_cont = Container(toplink, " : ", joinlink)
+        top_cont = Container(toplink, TOPLINK_SEPARATOR, joinlink)
         result_cont.append(self.gen_std_top(top_cont))
 
         if not self.form.getvalue("new_conference"):
@@ -2532,7 +2533,7 @@ class ViewMarkingsActions(Action):
         cont = Container(toplink)
         self.append_std_top(cont)
 
-        cont.append(" : ", self.action_href("view_markings",
+        cont.append(TOPLINK_SEPARATOR, self.action_href("view_markings",
                     self._("View marked articles")))
 
         self.doc.append(Header(2, self._("View marked articles")))
@@ -2615,12 +2616,12 @@ class SetUnreadActions(Action):
     def response(self):
         self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
-        cont = Container(toplink, " : ", self.current_conflink())
+        cont = Container(toplink, TOPLINK_SEPARATOR, self.current_conflink())
         self.append_std_top(cont)
 
         conf_num = self.sess.current_conf
         conf_name = self.get_conf_name(conf_num)
-        cont.append(" : ", self.action_href("goconf&amp;conf=" + str(conf_num),
+        cont.append(TOPLINK_SEPARATOR, self.action_href("goconf&amp;conf=" + str(conf_num),
                                             conf_name))
 
         submitbutton = Input(type="submit", name="set_unread_submit",
@@ -2645,12 +2646,12 @@ class SetUnreadSubmit(Action):
         # We add to a container instead of document, since we are going to redirect. 
         result_cont = Container()
         toplink = Href(self.base_session_url(), "WebKOM")
-        top_cont = Container(toplink, " : ", self.current_conflink())
+        top_cont = Container(toplink, TOPLINK_SEPARATOR, self.current_conflink())
         result_cont.append(self.gen_std_top(top_cont))
 
         conf_num = self.sess.current_conf
         conf_name = self.get_conf_name(conf_num)
-        top_cont.append(" : ", self.action_href("goconf&amp;conf=" + str(conf_num),
+        top_cont.append(TOPLINK_SEPARATOR, self.action_href("goconf&amp;conf=" + str(conf_num),
                                                 conf_name))
         
         try:
@@ -2687,12 +2688,12 @@ class LeaveConfActions(Action):
     def response(self):
         self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
-        cont = Container(toplink, " : ", self.current_conflink())
+        cont = Container(toplink, TOPLINK_SEPARATOR, self.current_conflink())
         self.append_std_top(cont)
 
         conf_num = self.sess.current_conf
         conf_name = self.get_conf_name(conf_num)
-        cont.append(" : ", self.action_href("goconf&amp;conf=" + str(conf_num),
+        cont.append(TOPLINK_SEPARATOR, self.action_href("goconf&amp;conf=" + str(conf_num),
                                             conf_name))
 
         submitbutton = Input(type="submit", name="leaveconfsubmit", value=self._("Yes, leave conference"))
@@ -2712,12 +2713,12 @@ class LeaveConfSubmit(Action):
         result_cont = Container()
         
         toplink = Href(self.base_session_url(), "WebKOM")
-        top_cont = Container(toplink, " : ", self.current_conflink())
+        top_cont = Container(toplink, TOPLINK_SEPARATOR, self.current_conflink())
         result_cont.append(self.gen_std_top(top_cont))
 
         conf_num = self.sess.current_conf
         conf_name = self.get_conf_name(conf_num)
-        top_cont.append(" : ", conf_name)
+        top_cont.append(TOPLINK_SEPARATOR, conf_name)
 
         try:
             kom.ReqSubMember(self.sess.conn, conf_num, self.sess.conn.get_user()).response()
@@ -2808,7 +2809,7 @@ class ChooseConfActions(Action):
         self.doc.onLoad = "document.choose_conf_form.searchtext.focus()"
         toplink = Href(self.base_session_url(), "WebKOM")
         golink = self.action_href("choose_conf", self._("Choose working conference"))
-        cont = Container(toplink, " : ", golink)
+        cont = Container(toplink, TOPLINK_SEPARATOR, golink)
         self.append_std_top(cont)
 
         F = Form(BASE_URL, name="choose_conf_form", submit="")
@@ -2873,7 +2874,8 @@ class ReadConfirmationActions(Action):
         conf_name = self.get_conf_name(conf_num)
         toplink = Href(self.base_session_url(), "WebKOM")
         thisconf = self.action_href("goconf&amp;conf=" + str(conf_num), conf_name)
-        cont = Container(toplink, " : ", self.current_conflink(), " : ", thisconf, " : ", "Confirm reading")
+        cont = Container(toplink, TOPLINK_SEPARATOR, self.current_conflink(),
+                         TOPLINK_SEPARATOR, thisconf, TOPLINK_SEPARATOR, "Confirm reading")
         self.append_std_top(cont)
 
         self.doc.append(Heading(2, "Read confirmation"))
