@@ -3122,7 +3122,10 @@ class SearchActions(Action):
                 continue
             # FIXME: Support AI_MX_FROM
             author = self.get_pers_name(ts.author)
-            subject = webkom_escape(self.sess.conn.subjects[match])
+            # FIXME: Might want to print a NBSP if subject is empty. 
+            subject = self.action_href("viewtext&amp;textnum="+\
+                                       str(match),
+                                       webkom_escape(self.sess.conn.subjects[match]))
             textnum = self.action_href("viewtext&amp;textnum="+\
                                        str(match),
                                        str(match))
