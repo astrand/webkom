@@ -431,6 +431,7 @@ class LoginPageActions(Action):
         # FIXME: Use string.join instead. 
         form_code = ""
         for line in string.split(str(Center(js_cont)), '\n'):
+            line = string.replace(line, "</", "<\/")
             form_code = form_code + "document.write('" + line + "');\n"
             
         #
