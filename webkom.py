@@ -1552,7 +1552,8 @@ class WritePresentationActions(Action):
             WriteArticleActions(self.resp, self._).response(presentationfor = int(presfor), presconf = serverinfo.pers_pres_conf)
         else:
             self.change_conf(serverinfo.conf_pres_conf)
-            WriteArticleActions(self.resp, self._).response(presentationfor = int(presfor), presconf=serverinfo.pers_pres_conf)
+            # FIXME: Shouldn't it be presconf = serverinfo.conf_pres_conf?
+            WriteArticleActions(self.resp, self._).response(presentationfor = int(presfor), presconf = serverinfo.pers_pres_conf)
 
 
 class WriteLetterActions(Action):
