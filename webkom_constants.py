@@ -18,9 +18,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 
 
-LOG_DIR = "/home/astrand/webkom/webkom/logs/"
-MODULES_PATH = "/home/astrand/webkom/python-modules/"
-LOCALE_DIR = "/home/astrand/webkom/locale/"
+LOG_DIR = "/home/astrand/webkom/webkom/logs"
+MODULES_PATH = "/home/astrand/webkom/python-modules"
+LOCALE_DIR = "/home/astrand/webkom/locale"
 VERSION = "0.14"
 BASE_URL = "webkom.py"
 DEFAULT_KOM_SERVER = "kom.lysator.liu.se"

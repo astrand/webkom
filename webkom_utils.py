@@ -397,7 +397,7 @@ def get_installed_languages():
 
     result = "en"
     for lang in dircache.listdir(LOCALE_DIR):
-        if os.path.exists(LOCALE_DIR + lang + "/LC_MESSAGES/webkom.mo"):
+        if os.path.exists(os.path.join(LOCALE_DIR, lang, "LC_MESSAGES/webkom.mo")):
             result += ", " + lang 
 
     return result

@@ -2477,7 +2477,7 @@ def write_traceback(resp):
     # Save a copy on disk
     import time
     timetext = time.strftime("%y%m%d-%H%M", time.localtime(time.time()))                
-    f = open(LOG_DIR + "traceback-" + timetext, "w")
+    f = open(os.path.join(LOG_DIR, "traceback-" + timetext), "w")
     traceback.print_exc(file = f)
     f.close()
     
@@ -2494,7 +2494,7 @@ def write_traceback(resp):
     resp.doc.append(_("Attach the error message below."))
     resp.doc.append(_("The server time was: ") + \
                     time.strftime("%Y%m%d-%H:%M", time.localtime(time.time())))
-    f = open(LOG_DIR + "traceback-" + timetext, "r")
+    f = open(os.path.join(LOG_DIR, "traceback-" + timetext), "r")
     resp.doc.append(Pre(str(f.read())))
     f.close()
 
@@ -2553,7 +2553,7 @@ def handle_req(fcg, env, form):
     # Something went wrong when creating Response instance or
     # printing response doc. 
     except:
-        f = open(LOG_DIR + "traceback.req", "w")
+        f = open(os.path.join(LOG_DIR, "traceback.req"), "w")
         traceback.print_exc(file = f)
         f.close()
 
@@ -2563,7 +2563,7 @@ def handle_req(fcg, env, form):
     except SystemExit:
         pass
     except:
-        f = open(LOG_DIR + "traceback.finish", "w")
+        f = open(os.path.join(LOG_DIR, "traceback.finish"), "w")
         traceback.print_exc(file = f)
         f.close()
 
@@ -2587,7 +2587,7 @@ def run_console(*args):
     try:
         fifoconsole.interact(local=globals(), fifoprefix="testwebkom")
     except:
-        f=open(LOG_DIR + "traceback.fifoconsole", "w")
+        f=open(os.path.join(LOG_DIR, "traceback.fifoconsole"), "w")
         traceback.print_exc(file = f)
         f.close()
 
@@ -2601,7 +2601,7 @@ def run_fcgi():
     try:
         fcgi.run()
     except:
-        f = open(LOG_DIR + "traceback.main", "w")
+        f = open(os.path.join(LOG_DIR, "traceback.main"), "w")
         traceback.print_exc(file = f)
         f.close()
 
@@ -2609,13 +2609,13 @@ def run_fcgi():
 # MAIN
 #
 # Global log file
-system_log = Logger(LOG_DIR + "system.log")
+system_log = Logger(os.path.join(LOG_DIR, "system.log"))
 system_log.write(1, "WebKOM started, LOGLEVEL=%d" % LOGLEVEL)
 
 # Take care of output to stdout and stderr
-logging_stdout = open(LOG_DIR + "stdout.log", "w")
+logging_stdout = open(os.path.join(LOG_DIR, "stdout.log"), "w")
 sys.stdout = logging_stdout
-logging_stderr = open(LOG_DIR + "stderr.log", "w")
+logging_stderr = open(os.path.join(LOG_DIR, "stderr.log"), "w")
 sys.stderr = logging_stderr
 
 # Start console thread

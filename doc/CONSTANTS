@@ -1,8 +1,6 @@
 Configuration constants in webkom_constants.py
 ==============================================
 
-Note: All paths *must* include an trailing "/". 
-
 * LOG_DIR
 
 The directory where log files, tracebacks etc should go. 
