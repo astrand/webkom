@@ -19,7 +19,7 @@ class TranslatorCache:
         lang_list = [string.strip(lang) for lang in lang_list]
 
         for lang in lang_list:
-            translator = self.try_lang(lang)
+            translator = self.try_lang(string.lower(lang))
             if translator:
                 return translator
 
