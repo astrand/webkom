@@ -2537,9 +2537,6 @@ def print_not_implemented(resp):
 # unlock_sess() should always be executed, even after tracebacks. 
 def handle_req(fcg, env, form):
     try: # Exceptions within this clause are critical and not sent to browser.
-        sys.stdout = logging_stdout
-        sys.stderr = logging_stderr
-        
         resp = Response(env, form)
         try:
             actions(resp)
@@ -2556,8 +2553,6 @@ def handle_req(fcg, env, form):
         fcg.pr(resp.http_header)
         fcg.pr(str(resp.doc))
 
-        sys.stdout.flush()
-        
     # Something went wrong when creating Response instance or
     # printing response doc. 
     except:
@@ -2621,11 +2616,10 @@ def run_fcgi():
 system_log = Logger(os.path.join(LOG_DIR, "system.log"))
 system_log.write(1, "WebKOM started, LOGLEVEL=%d" % LOGLEVEL)
 
-# Take care of output to stdout and stderr
-logging_stdout = open(os.path.join(LOG_DIR, "stdout.log"), "w")
-sys.stdout = logging_stdout
-logging_stderr = open(os.path.join(LOG_DIR, "stderr.log"), "w")
-sys.stderr = logging_stderr
+# Take care of output to stdout and stderr. 0 means unbuffered.
+# Note: stdout and stderr should not normally be used for any output. 
+sys.stdout = open(os.path.join(LOG_DIR, "stdout.log"), "w", 0)
+sys.stderr = open(os.path.join(LOG_DIR, "stderr.log"), "w", 0)
 
 # Start console thread
 thread.start_new_thread(run_console,())
@@ -2639,5 +2633,6 @@ translator_cache = TranslatorCache.TranslatorCache("webkom", LOCALE_DIR, DEFAULT
 fcgi = sz_fcgi.SZ_FCGI(handle_req)
 
 if __name__=="__main__":
+    FinalizerChecker(system_log)
     # and let it run
     run_fcgi()
