@@ -240,6 +240,9 @@ msgstr "Användarnamn"
 msgid "Confirmed reading: "
 msgstr "Bekräftat läsning: "
 
+msgid "If not, please"
+msgstr "Om inte, var vänlig"
+
 msgid "Blind carbon copy"
 msgstr "Dold kopia"
 
@@ -264,6 +267,9 @@ msgstr "Kan inte ansluta till servern."
 msgid "Ok"
 msgstr "Ok"
 
+msgid "An error occurred when fetching article information."
+msgstr "Ett fel uppstod när inläggen skulle hämtas."
+
 msgid "Unable to set number of unread."
 msgstr "Kunde inte utföra endast."
 
@@ -278,6 +284,9 @@ msgstr "Standardkommando: "
 
 msgid "Article text:"
 msgstr "Inläggstext:"
+
+msgid "Recipient"
+msgstr "Mottagare"
 
 msgid ", not marked by you. "
 msgstr ", ej markerad av dig. "
@@ -326,6 +335,9 @@ msgstr "Kommentar till:"
 
 msgid ", %(days)d days, %(hours)d hours and %(minutes)d minutes ago"
 msgstr ", %(days)d dagar, %(hours)d timmar och %(minutes)d minuter sedan"
+
+msgid "submit a bug report."
+msgstr "skicka in en buggrapport."
 
 msgid "View presentation"
 msgstr "Visa presentation"
@@ -419,8 +431,8 @@ msgstr "Författaren har begärt endast personliga svar."
 msgid "No server given."
 msgstr "Ingen server angiven."
 
-msgid "Recipient"
-msgstr "Mottagare"
+msgid "select from list"
+msgstr "välj från lista"
 
 msgid "Marktype"
 msgstr "Markeringstyp"
@@ -469,9 +481,6 @@ msgstr "Skapa möten"
 
 msgid "Logout"
 msgstr "Logga ut"
-
-msgid "If it isn't, please report this problem to"
-msgstr "Om inte, rapportera detta fel till"
 
 msgid "Date"
 msgstr "Datum"
@@ -677,8 +686,8 @@ msgstr "(t ex Eskil Block, FOI)"
 msgid "View without mail headers"
 msgstr "Visa utan mail-headers"
 
-msgid "An error occurred when fetching article information."
-msgstr "Ett fel uppstod när inläggen skulle hämtas."
+msgid "Select server"
+msgstr "Välj server"
 
 msgid "Conferences (with unread)"
 msgstr "Möten (med olästa)"
