@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python
 
 # WebKOM - a web based LysKOM client
 # 
@@ -38,8 +38,8 @@ import random, time
 import thread
 from webkom_utils import *
 import webkom_js
+import TranslatorCache
 import traceback
-
 
 class SessionSet:
     "A set of active sessions"
@@ -104,7 +104,7 @@ class SessionSet:
         self.log.flush()
              
 
-# Global sessionset
+# Global variables
 sessionset = SessionSet()
 
 # Used for debugging purposes in interactive terminal
@@ -159,7 +159,6 @@ class Response:
         self.sess = None
         self.shortcuts = []
         self.shortcuts_active = 1
-        self.pref_lang = "en"
 
         # Default HTTP header. 
         self.http_header = "Content-type: text/html\r\n" \
@@ -185,17 +184,19 @@ class Response:
 
 class Action:
     "Abstract class for actions. Action- and Submit-methods inherits this class."
-    def __init__(self, resp):
+    def __init__(self, resp, translator):
         self.resp = resp
         # Shortcuts
         self.doc = resp.doc
         self.form = resp.form
         self.key = resp.key
         self.sess = resp.sess
+        # Language
+        self._ = translator
         
     def print_error(self, msg):
         "Print error message"
-        self.doc.append(Bold("Fel: " + msg), BR())
+        self.doc.append(Bold(self._("Error: ") + msg), BR())
 
     #
     # Small and frequently-used KOM utility methods. The rest in webkom_utils.py
@@ -206,17 +207,17 @@ class Action:
         try:
             kom.ReqChangeConference(self.sess.conn, conf_num)
         except:
-            self.print_error("Det gick ej att ändra aktivt möte.")
+            self.print_error(self._("Unable to change current conference."))
     
     def get_conf_name(self, num):
         "Get conference name"
         # FIXME: Do linebreaks instead of truncating
-        return self.sess.conn.conf_name(num, default="Möte %d (finns inte)")[:MAX_CONFERENCE_LEN]
+        return self.sess.conn.conf_name(num, default=self._("Conference %d (does not exist)"))[:MAX_CONFERENCE_LEN]
 
     def get_pers_name(self, num):
         "Get persons name"
         # FIXME: Do linebreaks instead of truncating
-        return self.sess.conn.conf_name(num, default="Person %d (finns inte)")[:MAX_CONFERENCE_LEN]
+        return self.sess.conn.conf_name(num, default=self._("Person %d (does not exist)"))[:MAX_CONFERENCE_LEN]
 
     def get_presentation(self, num):
         "Get presentation of a conference"
@@ -250,7 +251,7 @@ class Action:
         "Return a string with information about number of unread"
         total = get_total_num_unread(self.sess.conn, self.sess.pers_num,
                                      self.sess.conn.member_confs)
-        retval = NBSP*4 + "Olästa: "
+        retval = NBSP*4 + self._("Unread: ")
         if current_conf:
             unread = self.sess.conn.no_unread[current_conf] 
             retval = retval + str(unread) + "/" + str(total)
@@ -266,9 +267,9 @@ class Action:
     def append_std_top(self, leftobj):
         "Append a standard top header to the document, including about-link"
         if self.key:
-            aboutlink = self.action_href("about", "Om WebKOM")
+            aboutlink = self.action_href("about", self._("About WebKOM"))
         else:
-            aboutlink = Href(BASE_URL + "?action=about", "Om WebKOM")
+            aboutlink = Href(BASE_URL + "?action=about", self._("About WebKOM"))
         tab=[[leftobj, aboutlink]]
         self.doc.append(Table(body=tab, border=0, cell_padding=0,
                               column1_align="left", cell_align="right", width="100%"))
@@ -278,12 +279,12 @@ class ViewPendingMessages(Action):
     "View pending messages"
     def print_heading(self, msg):
         if msg.recipient == 0:
-            text = "Alarmmeddelande"
+            text = self._("Alarm message")
         elif msg.recipient == self.sess.pers_num:
-            text = "Personligt meddelande"
+            text = self._("Personal message")
         else:
             recipient_name = self.get_conf_name(msg.recipient)
-            text = "Gruppmeddelande till " + recipient_name
+            text = self._("Group message to ") + recipient_name
 
         self.doc.append(Heading(2, text))
     
@@ -297,8 +298,8 @@ class ViewPendingMessages(Action):
             msg = self.sess.pending_messages.pop(0)
             self.print_heading(msg)
             sender_name = self.get_pers_name(msg.sender)
-            self.doc.append(Bold("Från: " + sender_name), BR())
-            self.doc.append(Bold("Tid: " +
+            self.doc.append(Bold(self._("From: ") + sender_name), BR())
+            self.doc.append(Bold(self._("Time: ") +
                                  time.strftime("%Y-%m-%d %H:%M", time.localtime(msg.time))))
             
             self.doc.append(BR(), msg.message)
@@ -343,12 +344,12 @@ class LoginPageActions(Action):
     def response(self):
         self.resp.shortcuts_active = 0
         toplink = Href(BASE_URL, "WebKOM")
-        cont = Container(toplink, ": Inloggning")
+        cont = Container(toplink, self._(": Login"))
         self.append_std_top(cont)
         default_kom_server = DEFAULT_KOM_SERVER
         if self.form.has_key("komserver"):
             default_kom_server = self.form["komserver"].value
-        submitbutton = Input(type="submit", name="loginsubmit", value="Logga in")
+        submitbutton = Input(type="submit", name="loginsubmit", value=self._("Logga in"))
 
         # Ugly focus-hack to work around broken Netscape
         # Non-JS capable browsers should ignore this
@@ -358,7 +359,7 @@ class LoginPageActions(Action):
         cont = Container()
         self.doc.append(Center(cont))
         cont.append(BR(2))
-        cont.append(Center(Heading(2, "WebKOM inloggning")))
+        cont.append(Center(Heading(2, self._("WebKOM login"))))
         cont.append(BR(2))
 
         #
@@ -371,9 +372,9 @@ class LoginPageActions(Action):
         F_submit = Form(BASE_URL, name="submit_form", submit="")
         F_submit.append(submitbutton)
 
-        formtable = [("Server", F_komserver),
-                     ("Användarnamn", F_username),
-                     ("Lösenord", F_password) ]
+        formtable = [(self._("Server"), F_komserver),
+                     (self._("Username"), F_username),
+                     (self._("Password"), F_password) ]
         js_cont.append(InputTable(formtable))
         js_cont.append(F_submit)
         
@@ -413,9 +414,9 @@ class LoginPageActions(Action):
         F = Form(BASE_URL, name="loginform", submit="")
 
         nonjs_cont.append(F)
-        logintable = [("Server", Input(name="komserver", size=20, value=default_kom_server)),
-                      ("Användarnamn", Input(name="username",size=20)),
-                      ("Lösenord", Input(type="password",name="password",size=20)) ]
+        logintable = [(self._("Server"), Input(name="komserver", size=20, value=default_kom_server)),
+                      (self._("Username"), Input(name="username",size=20)),
+                      (self._("Password"), Input(type="password",name="password",size=20)) ]
 
         F.append(Center(InputTable(logintable)))
         F.append(Center(submitbutton))
@@ -434,7 +435,7 @@ class LoginPageActions(Action):
         self.doc.append(nonjs_cont)
         self.doc.append(webkom_js.noscript_end)
 
-        self.doc.append(Href(BASE_URL + "?action=create_user", "Skapa ny användare..."))
+        self.doc.append(Href(BASE_URL + "?action=create_user", self._("Create new user...")))
 
         return
 
@@ -444,31 +445,31 @@ class AboutPageActions(Action):
     def response(self):
         if self.key:
             toplink = Href(self.base_session_url(), "WebKOM")
-            aboutlink = self.action_href("about", "Om WebKOM")
+            aboutlink = self.action_href("about", self._("About WebKOM"))
         else:
             toplink = Href(BASE_URL, "WebKOM")
-            aboutlink = Href(BASE_URL + "?action=about", "Om WebKOM")
+            aboutlink = Href(BASE_URL + "?action=about", self._("About WebKOM"))
             
         cont = Container(toplink, " : ", aboutlink)
         self.append_std_top(cont)
         
-        self.doc.append(Heading(2, "Om WebKOM"))
+        self.doc.append(Heading(2, self._("About WebKOM")))
         last_changed = time.strftime("%Y-%m-%d-%H:%M", time.localtime(os.stat(BASE_URL)[9]))
-        self.doc.append("Version i drift: " + VERSION + " (senast ändrad " + last_changed + ")")
-        
-        self.doc.append(Heading(3, "Översikt"))
-        self.doc.append("WebKOM är ett WWW-gränssnitt till ")
+        self.doc.append(self._("Version running: ") + VERSION + self._(" (last modified ") + last_changed + ")")
+
+        self.doc.append(Heading(3, self._("Overview")))
+        self.doc.append(self._("WebKOM is a WWW-interface for "))
         self.doc.append(external_href("http://www.lysator.liu.se/lyskom", "LysKOM"), ".")
-        self.doc.append("Målet är en enkel, snabb klient som är lätt att lära sig.")
+        self.doc.append(self._("The goal is a simple, easy-to-use client."))
         
-        self.doc.append(Heading(3, "Licens"))
-        self.doc.append("WebKOM är en fri programvara som lyder under GPL-licensen.")
+        self.doc.append(Heading(3, self._("License")))
+        self.doc.append(self._("WebKOM is free software, licensed under GPL."))
         
-        self.doc.append(Heading(3, "Författare"))
-        self.doc.append("Följande personer har på ett eller annat sätt hjälpt\
-        till att utveckla WebKOM:", BR(2))
+        self.doc.append(Heading(3, self._("Authors")))
+        self.doc.append(self._("The following people have in one way or another \
+        contributed to WebKOM:"), BR(2))
         self.doc.append(external_href("http://www.lysator.liu.se/~astrand/",
-                                      "Peter Åstrand (initiativtagare)"), BR())
+                                      self._("Peter Åstrand (project starter)")), BR())
         self.doc.append("Kent Engström", BR())
         self.doc.append("Per Cederqvist", BR())
         self.doc.append(external_href("http://www.lysator.liu.se/~forsberg/",
@@ -476,28 +477,27 @@ class AboutPageActions(Action):
         self.doc.append("Kjell Enblom", BR())
         self.doc.append("Niklas Lindgren", BR())
 
-        self.doc.append(Heading(3, "Teknik"))
-        self.doc.append("WebKOM är skrivet i Python och är en persistent, trådad ")
-        self.doc.append(external_href("http://www.fastcgi.com", "FastCGI"), "-applikation.")
-        self.doc.append("HTML-koden genereras av ")
+        self.doc.append(Heading(3, self._("Technology")))
+        self.doc.append(self._("WebKOM is written in Python and is a persistent, threaded "))
+        self.doc.append(external_href("http://www.fastcgi.com", "FastCGI"), self._(" application."))
+        self.doc.append(self._("The HTML code is generated by "))
         self.doc.append(external_href("http://starship.python.net/crew/friedrich/HTMLgen/html/main.html",
-
                                       "HTMLgen"), ".")
-        self.doc.append(Heading(3, "Buggar"))
-        self.doc.append("Det finns en ",
+        self.doc.append(Heading(3, self._("Bugs")))
+        self.doc.append(self._("There is a "),
                         external_href("http://webkom.lysator.liu.se/bugs.html",
-                                      "lista över kända buggar"), ".")
+                                      self._("list with known bugs")), ".")
 
-
+        # FIXME: Translate
 class WhatsImplementedActions(Action):
     "Generate a page with implementation details"
     def response(self):
         toplink = Href(self.base_session_url(), "WebKOM")
-        wilink = self.action_href("whats_implemented", "Vad kan WebKOM göra?")
+        wilink = self.action_href("whats_implemented", self._("Vad kan WebKOM göra?"))
         cont = Container(toplink, " : ", wilink)
         self.append_std_top(cont)
         
-        self.doc.append(Heading(2, "Vad kan WebKOM göra?"))
+        self.doc.append(Heading(2, self._("Vad kan WebKOM göra?")))
         page = """
         <h3>Implementerat</h3>
         <ul>
@@ -558,19 +558,20 @@ class MainPageActions(Action):
         self.append_std_top(cont)
 
         cont = Container()
-        cont.append(Heading(2, "Huvudsidan"))
-        cont.append(Heading(3, self.action_href("viewconfs", "Lista möten")))
-        cont.append(Heading(3, self.action_href("viewconfs_unread", "Lista möten med olästa")))
+        cont.append(Heading(2, self._("Main Page")))
+        cont.append(Heading(3, self.action_href("viewconfs", self._("List conferences"))))
+        cont.append(Heading(3, self.action_href("viewconfs_unread", self._("List conferences with unread"))))
         cont.append(Heading(3, self.action_href("writeletter&rcpt=" + str(self.sess.pers_num),
-                                                "Skicka brev")))
-        cont.append(Heading(3, self.action_href("joinconf", "Gå med i möte")))
-        cont.append(Heading(3, self.action_href("choose_conf", "Gå till möte")))
-        cont.append(Heading(3, self.action_href("whoison", "Vilka är inloggade")))
-        cont.append(Heading(3, self.action_href("changepw", "Byt lösenord")))
-        cont.append(Heading(3, self.action_href("writepresentation" + "&presentationfor=" + str(self.sess.pers_num), "Skriv presentation")))
-        cont.append(Heading(3, self.action_href("logout", "Logga ut")))
+                                                self._("Write letter"))))
+        cont.append(Heading(3, self.action_href("joinconf", self._("Join conference"))))
+        cont.append(Heading(3, self.action_href("choose_conf", self._("Go to conference"))))
+        cont.append(Heading(3, self.action_href("whoison", self._("Who is logged in"))))
+        cont.append(Heading(3, self.action_href("changepw", self._("Change password"))))
+        cont.append(Heading(3, self.action_href("writepresentation" + "&presentationfor="
+                                                + str(self.sess.pers_num), self._("Write presentation"))))
+        cont.append(Heading(3, self.action_href("logout", self._("Logout"))))
         cont.append(BR(), Heading(3, self.action_href("whats_implemented",
-                                                      "Vad kan WebKOM göra?")))
+                                                      self._("What can WebKOM do?"))))
 
         tab=[[cont]]
         self.doc.append(Table(body=tab, border=0, cell_padding=50, width="100%"))
@@ -601,26 +602,26 @@ class LogInActions(Action):
     "Do login actions"
     def error_message(self, errmsg):
         toplink = Href(BASE_URL, "WebKOM")
-        self.doc.append(Container(toplink, " : Inloggning"))
-        self.doc.append(Heading(2, "Inloggningen misslyckades"))
+        self.doc.append(Container(toplink, self._(" : Login")))
+        self.doc.append(Heading(2, self._("Login failed")))
         self.doc.append(errmsg)
 
     def gen_table(self, matches):
         # Ambiguity
         # Create top
         toplink = Href(BASE_URL, "WebKOM")
-        self.doc.append(Container(toplink, " : Inloggning"))
-        self.doc.append(Heading(2, "Användarnamnet är ej entydigt"))
+        self.doc.append(Container(toplink, self._(" : Login")))
+        self.doc.append(Heading(2, self._("The username is ambigious")))
 
         F = Form(BASE_URL, name="loginform", submit="")
         F.append(Input(type="hidden", name="komserver", value=self.komserver))
         F.append(Input(type="hidden", name="password", value=self.password))
 
-        F.append("Välj person:", BR())
+        F.append(self._("Choose user:"), BR())
         tab=[]
         infotext = None
         if len(matches) > 15:
-            infotext = "(För många träffar, tabellen trunkerad)"
+            infotext = self._("(To many hits, the table is truncated)")
         
         for (pers_num, pers_name) in matches[:15]:
             tab.append([pers_name,
@@ -632,7 +633,7 @@ class LogInActions(Action):
                        cell_align="right", width="100%"))
 
         addsubmit = Input(type="submit", name="loginsubmit",
-                          value="Logga in med vald användare")
+                          value=self._("Login with selected user"))
         tab = [["", addsubmit]]
         F.append(Table(body=tab, border=0, cell_align="right", width="100%"))
         self.doc.append(F)
@@ -671,7 +672,7 @@ class LogInActions(Action):
                 kom.ASYNC_NEW_MEMBERSHIP ]
             kom.ReqAcceptAsync(conn, ACCEPTING_ASYNCS).response()
         except:
-            self.error_message("Kan inte ansluta till servern.")
+            self.error_message(self._("Cannot connect to server."))
             return
 
         # Via number?
@@ -684,7 +685,7 @@ class LogInActions(Action):
 
         # Check number of matches
         if len(matches) == 0:
-            self.error_message("Användaren %s finns inte." % username)
+            self.error_message(self._("The user %s does not exist." % username))
             return
         elif len(matches) > 1:
             # Name is ambigious. Generate table for selection. 
@@ -696,7 +697,7 @@ class LogInActions(Action):
         try:
             kom.ReqLogin(conn, pers_num, self.password, invisible = 0).response()
         except kom.InvalidPassword:
-            self.error_message("Felaktigt lösenord.")
+            self.error_message(self._("Wrong password."))
             return
 
         kom.ReqSetClientVersion(conn, "WebKOM", VERSION)
@@ -732,9 +733,9 @@ class InvalidSessionPageActions(Action):
     def response(self):
         toplink = Href(BASE_URL, "WebKOM")
         self.doc.append(toplink)
-        self.doc.append(Heading(2,"Ej inloggad"))
-        self.doc.append(Container("Gå till ", Href(BASE_URL, "loginsidan"),
-                                  " och logga in på nytt."))
+        self.doc.append(Heading(2, self._("Not logged in")))
+        self.doc.append(Container(self._("Go to "), Href(BASE_URL, self._("the login page")),
+                                  self._(" and login again.")))
         return 
 
 
@@ -751,18 +752,18 @@ class ViewConfsActions(Action):
         else:
             action_url = "viewconfs"
 
-        conflink = self.action_href(action_url, "Möten")
+        conflink = self.action_href(action_url, self._("Conferences"))
         cont = Container(toplink, " : ", conflink)
         self.append_std_top(cont)
 
         if only_unread:
-            self.doc.append(Heading(2,"Möten (som du har olästa i)"))
+            self.doc.append(Heading(2, self._("Conferences (with unread)")))
         else:
-            self.doc.append(Heading(2,"Möten (som du är medlem i)"))
+            self.doc.append(Heading(2, self._("Conferences (you are are member of)")))
 
         std_cmd = Container()
-        self.doc.append("Standardkommando: ", std_cmd)
-        self.add_stdaction(std_cmd, self.resp, "goconf_with_unread", "Nästa möte med olästa")
+        self.doc.append(self._("Default command: "), std_cmd)
+        self.add_stdaction(std_cmd, self.resp, "goconf_with_unread", self._("Next conference with unread"))
 
         # Information about number of unread
         self.doc.append(self.unread_info())
@@ -792,10 +793,10 @@ class ViewConfsActions(Action):
 
         # Add the previous-page-link
         self.doc.append(self.action_href(action_url + "&first_conf=" + str(prev_first),
-                                         "Föregående sida", prev_first is not None), NBSP)
+                                         self._("Previous page"), prev_first is not None), NBSP)
 
         # Add a table
-        headings = ["Mötesnamn", "Antal olästa"]
+        headings = [self._("Conference name"), self._("Number of unread")]
         tab = []
         self.doc.append(Table(heading=headings, body=tab, cell_padding=2, width="60%"))
 
@@ -810,7 +811,7 @@ class ViewConfsActions(Action):
                 comment = str(n_unread)
                 name = Bold(name)
             else:
-                comment = "inga"
+                comment = self._("none")
                 
             tab.append([self.action_href("goconf&conf=" + str(conf.conference), name),
                         comment])
@@ -819,10 +820,10 @@ class ViewConfsActions(Action):
 
         # Add the next-page-link
         self.doc.append(self.action_href(action_url + "&first_conf=" + str(next_first),
-                                         "Nästa sida", next_first is not None), NBSP)
+                                         self._("Next page"), next_first is not None), NBSP)
         # Link for next conference with unread
         self.doc.append(self.action_href("goconf_with_unread",
-                                         "Nästa möte med olästa"), NBSP)
+                                         self._("Next conference with unread")), NBSP)
 
         return
 
@@ -835,11 +836,11 @@ class GoConfWithUnreadActions(Action):
             GoConfActions(self.resp).response(next_conf)
         else:
             toplink = Href(self.base_session_url(), "WebKOM")
-            conflink = self.action_href("viewconfs", "Möten")
+            conflink = self.action_href("viewconfs", self._("Conferences"))
             cont = Container(toplink, " : ", conflink)
             self.append_std_top(cont)
-            self.doc.append(Heading(3, "Inga olästa"))
-            self.doc.append("Det finns inga olästa inlägg.")
+            self.doc.append(Heading(3, self._("No unread")))
+            self.doc.append(self._("There are no unread articles."))
         return
 
 
@@ -864,7 +865,7 @@ class GoConfActions(Action):
         conf_name = self.get_conf_name(conf_num)
         
         toplink = Href(self.base_session_url(), "WebKOM")
-        conflink = self.action_href("viewconfs", "Möten")
+        conflink = self.action_href("viewconfs", self._("Conferences"))
         cont = Container(toplink, " : ", conflink)
         self.append_std_top(cont)
 
@@ -875,21 +876,21 @@ class GoConfActions(Action):
 
         # Standard action
         std_cmd = Container()
-        self.doc.append("Standardkommando: ", std_cmd)
+        self.doc.append(self._("Default command: "), std_cmd)
         # Information about number of unread
         self.doc.append(self.unread_info(self.sess.current_conf))
 
         self.doc.append(self.action_href("writearticle&rcpt=" + str(conf_num),
-                                         "Skriv inlägg"), NBSP)
+                                         self._("Write article")), NBSP)
         # Link to view presentation for this conference
         presentation = self.get_presentation(conf_num)
         self.doc.append(self.action_href("viewtext&textnum=" + str(presentation),
-                                         "Visa presentation", presentation), NBSP)
+                                         self._("View presentation"), presentation), NBSP)
 
-        self.doc.append(self.action_href("set_unread", "Endast"), NBSP)
-        self.doc.append(self.action_href("leaveconf", "Utträda ur möte"), NBSP)
+        self.doc.append(self.action_href("set_unread", self._("Set unread")), NBSP)
+        self.doc.append(self.action_href("leaveconf", self._("Leave conference")), NBSP)
         
-        self.doc.append(BR(), Heading(3, "Inläggsrubriker"))
+        self.doc.append(BR(), Heading(3, self._("Article subjects")))
 
         # local_num is the first local_num we are interested in
         if self.form.has_key("local_num"):
@@ -924,9 +925,9 @@ class GoConfActions(Action):
             
         self.doc.append(self.action_href("goconf&conf=" + str(conf_num) \
                                          + "&local_num=" + str(prev_first),
-                                         "Tidigare inlägg", prev_first), NBSP)
+                                         self._("Earlier articles"), prev_first), NBSP)
         
-        headings = ["Oläst", "Ärende", "Författare", "Datum", "Nummer"]
+        headings = [self._("Unread"), self._("Subject"), self._("Author"), self._("Date"), self._("Number")]
         tab = []
         self.doc.append(Table(heading=headings, body=tab, cell_padding=2,
                               column1_align="right", cell_align="left", width="100%"))
@@ -970,10 +971,10 @@ class GoConfActions(Action):
                 
         self.doc.append(self.action_href("goconf&conf=" + str(conf_num) \
                                          + "&local_num=" + str(next_first),
-                                         "Senare inlägg", next_first), NBSP)
+                                         self._("Later articles"), next_first), NBSP)
 
         self.doc.append(self.action_href("goconf_with_unread",
-                                         "Nästa möte med olästa"), NBSP)
+                                         self._("Next conference with unread")), NBSP)
 
 
         # Standard action
@@ -981,9 +982,9 @@ class GoConfActions(Action):
                                     self.sess.current_conf)
         if next_text:
             std_url = "viewtext&textnum=" + str(next_text)
-            self.add_stdaction(std_cmd, self.resp, std_url, "Läs nästa olästa")
+            self.add_stdaction(std_cmd, self.resp, std_url, self._("Read next unread"))
         else:
-            self.add_stdaction(std_cmd, self.resp, "goconf_with_unread", "Nästa möte med olästa")
+            self.add_stdaction(std_cmd, self.resp, "goconf_with_unread", self._("Next conference with unread"))
             
 
 class ViewTextActions(Action):
@@ -1002,25 +1003,25 @@ class ViewTextActions(Action):
             # Fetch info about commented text
             try:
                 c_ts = self.sess.conn.textstats[c.text_no]
-                c_authortext = " av " + self.get_pers_name(c_ts.author)
+                c_authortext = self._(" by ") + self.get_pers_name(c_ts.author)
             except:
                 c_authortext = ""
             if c.type == kom.MIC_FOOTNOTE:
-                header.append(["Fotnot till:",
+                header.append([self._("Footnote to:"),
                                str(self.action_href("viewtext&textnum=" + str(c.text_no), str(c.text_no))) \
                                + c_authortext])
             else:
-                header.append(["Kommentar till:",
+                header.append([self._("Comment to:"),
                                str(self.action_href("viewtext&textnum=" + str(c.text_no), str(c.text_no))) \
                                + c_authortext])
                 
             if c.sent_by is not None:
                 presentation = str(self.get_presentation(c.sent_by))
-                header.append(["Adderad av:",
+                header.append([self._("Added by:"),
                                self.action_href("viewtext&textnum=" + presentation, 
                                                 self.get_pers_name(c.sent_by), presentation)])
             if c.sent_at is not None:
-                header.append(["Adderad:", c.sent_at.to_date_and_time()])
+                header.append([self._("Added:"), c.sent_at.to_date_and_time()])
 
     def do_recipients(self, ts, header):
         comment_url = ""
@@ -1034,13 +1035,13 @@ class ViewTextActions(Action):
             comment_url = comment_url + "&" + mir2keyword(r.type) + "=" + str(r.recpt)
             
             if r.sent_by is not None:
-                leftcol = leftcol + "<br>Sänt av:"
+                leftcol = leftcol + "<br>" + self._("Sent by:")
                 rightcol = rightcol + "<br>" + self.get_pers_name(r.sent_by)
             if r.sent_at is not None:
-                leftcol = leftcol + "<br>Sänt:"
+                leftcol = leftcol + "<br>" + self._("Sent:")
                 rightcol = rightcol + "<br>" + r.sent_at.to_date_and_time()
             if r.rec_time is not None:
-                leftcol = leftcol + "<br>Mottaget:"
+                leftcol = leftcol + "<br>" + self._("Received:")
                 rightcol = rightcol + "<br>" + r.rec_time.to_date_and_time()
             header.append([leftcol, rightcol])
             # Mark as read
@@ -1068,16 +1069,16 @@ class ViewTextActions(Action):
             # Fetch info about comment
             try:
                 c_ts = self.sess.conn.textstats[c.text_no]
-                c_authortext = " av " + self.get_pers_name(c_ts.author)
+                c_authortext = self._(" by ") + self.get_pers_name(c_ts.author)
             except:
                 c_authortext = ""
                 
             if c.type == kom.MIC_FOOTNOTE:
-                header.append(["Fotnot i inlägg:",
+                header.append([self._("Footnote in article:"),
                                str(self.action_href("viewtext&textnum=" + str(c.text_no), str(c.text_no))) \
                                + c_authortext])
             else:
-                header.append(["Kommentar i inlägg:",
+                header.append([self._("Comment in article:"),
                                str(self.action_href("viewtext&textnum=" + str(c.text_no), str(c.text_no))) \
                                + c_authortext])
                 
@@ -1094,7 +1095,7 @@ class ViewTextActions(Action):
         # Toplink
         toplink = Href(self.base_session_url(), "WebKOM")
         # Link to conferences
-        conflink = self.action_href("viewconfs", "Möten")
+        conflink = self.action_href("viewconfs", self._("Conferences"))
         cont = Container(toplink, " : ", conflink)
         self.append_std_top(cont)
 
@@ -1128,7 +1129,7 @@ class ViewTextActions(Action):
 
         # Link for next conference with unread
         upper_actions.append(self.action_href("goconf_with_unread",
-                                              "Nästa möte med olästa"), NBSP)
+                                              self._("Next conference with unread")), NBSP)
 
         self.doc.append(BR())
 
@@ -1138,17 +1139,17 @@ class ViewTextActions(Action):
                 raise kom.NoSuchText
             ts = self.sess.conn.textstats[global_num]
         except kom.NoSuchText:
-            self.print_error("Inlägget finns inte.")
+            self.print_error(self._("The article does not exist."))
             return 
         except:
-            self.print_error("Ett fel uppstod vid hämtning av inläggsinformation.")
+            self.print_error(self._("An error occured when fetching article information."))
             return 
 
         # Fetch text
         try:
             text = kom.ReqGetText(self.sess.conn, global_num, 0, ts.no_of_chars).response()
         except:
-            self.print_error("Hämtning av texten misslyckades")
+            self.print_error(self._("An error occured when fetching article."))
             return
             
 
@@ -1170,16 +1171,19 @@ class ViewTextActions(Action):
             body = body[1:]
 
         header = []
-        header.append(["Inläggsnummer:",
+        header.append([self._("Article number:"),
                        self.action_href("viewtext&textnum=" + str(global_num), str(global_num))])
+
         presentation = str(self.get_presentation(ts.author))
         importdate = kom.first_aux_items_with_tag(ts.aux_items,
                                                   kom.AI_MX_DATE)
+
+        # FIXME: Translate
         if importdate:
-            header.append(["Datum:",
+            header.append([self._("Datum:"),
                            importdate.data])
         else:
-            header.append(["Datum:", ts.creation_time.to_date_and_time()]);
+            header.append([self._("Datum:"), ts.creation_time.to_date_and_time()]);
         if ismail:
             ai_from = kom.first_aux_items_with_tag(ts.aux_items,
                                                    kom.AI_MX_FROM)
@@ -1188,32 +1192,30 @@ class ViewTextActions(Action):
             realname = ""
             if ai_author:
                 realname = ai_author.data + " "
-            header.append(["Författare:",
-                           realname + str(Href("mailto:" + ai_from.data,
+            header.append([self._("Författare:"),
+                           realname + str(Href(self._("mailto:") + ai_from.data,
                                 ai_from.data))])
             
-            header.append(["Importerad:",
+            header.append([self._("Importerad:"),
                            ts.creation_time.to_date_and_time() +\
-                           " av " +
+                           self._(" av ") +
                            str(self.action_href("viewtext&textnum=" +\
                                                 presentation,
                                                 self.get_pers_name(ts.author),
                                                 presentation))])
             for recipient in kom.all_aux_items_with_tag(ts.aux_items,
                                                         kom.AI_MX_TO):
-                header.append(["Extern mottagare:",
+                header.append([self._("Extern mottagare:"),
                               Href("mailto:" + recipient.data,
                                    recipient.data)])
             for recipient in kom.all_aux_items_with_tag(ts.aux_items,
                                                         kom.AI_MX_CC):
-                header.append(["Extern kopiemottagare:",
+                header.append([self._("Extern kopiemottagare:"),
                               Href("mailto:" + recipient.data,
                                    recipient.data)])
-
-            
             
         else:            
-            header.append(["Författare:",
+            header.append([self._("Författare:"),
                            self.action_href("viewtext&textnum=" + presentation,
                                             self.get_pers_name(ts.author), presentation)])
 
@@ -1227,9 +1229,9 @@ class ViewTextActions(Action):
         unread_cont.append(self.unread_info(self.sess.current_conf))
 
         if ts.no_of_marks:
-            header.append(["Markeringar:", str(ts.no_of_marks)])
+            header.append([self._("Marks:"), str(ts.no_of_marks)])
     
-        header.append(["Ärende:", Bold(self.get_subject(global_num))])
+        header.append([self._("Subject:"), Bold(self.get_subject(global_num))])
 
         self.doc.append(BR())
         self.doc.append(Table(body=header, cell_padding=2, column1_align="right", width="75%"))
@@ -1289,7 +1291,7 @@ class ViewTextActions(Action):
         next_text = get_next_unread(self.sess.conn, self.sess.pers_num,
                                     self.sess.current_conf)
         next_text_url = "viewtext&textnum=" + str(next_text)
-        lower_actions.append(self.action_href(next_text_url, "Läs nästa olästa",
+        lower_actions.append(self.action_href(next_text_url, self._("Read next unread"),
                                               next_text), NBSP)
 
         # Add new comments
@@ -1303,30 +1305,31 @@ class ViewTextActions(Action):
         else:
             next_comment = None
         next_comment_url = "viewtext&textnum=" + str(next_comment) + "&reading_comment=1"
-        lower_actions.append(self.action_href(next_comment_url, "Läs nästa kommentar",
+        lower_actions.append(self.action_href(next_comment_url, self._("Read next comment"),
                                               next_comment), NBSP)
 
         # Standard action
         if next_comment:
-            self.add_stdaction(std_cmd, self.resp, next_comment_url, "Läs nästa kommentar")
+            self.add_stdaction(std_cmd, self.resp, next_comment_url, self._("Read next comment"))
         elif next_text:
-            self.add_stdaction(std_cmd, self.resp, next_text_url, "Läs nästa olästa")
+            self.add_stdaction(std_cmd, self.resp, next_text_url, self._("Read next unread"))
         else:
-            self.add_stdaction(std_cmd, self.resp, "goconf_with_unread", "Nästa möte med olästa")
+            self.add_stdaction(std_cmd, self.resp, "goconf_with_unread", self._("Next conference with unread"))
             
             
         # Maybe the user want to comment?
         comment_url = comment_url + "&comment_to=" + str(global_num)
         lower_actions.append(self.action_href("writearticle" + comment_url,
-                                              "Kommentera detta inlägg"), NBSP)
+                                              self._("Write comment")), NBSP)
 
         if format:
-            lower_actions.append(self.action_href("viewtext&textnum=" + str(global_num) + viewmailheadercode,
-                                                  "Visa i normalstil"))
+            lower_actions.append(self.action_href("viewtext&textnum=" + str(global_num),
+                                                  self._("View in normal style")))
         else:
-            lower_actions.append(self.action_href("viewtext&textnum=" + str(global_num) + "&viewformat=code" + viewmailheadercode,
-                                                  "Visa i kodstil"))
+            lower_actions.append(self.action_href("viewtext&textnum=" + str(global_num) + "&viewformat=code",
+                                                  self._("View in code style")))
 
+        # FIXME: Translate
         if ismail:
             if "" != viewmailheadercode:
                 lower_actions.append(self.action_href("viewtext&textnum=" +\
@@ -1346,7 +1349,7 @@ class ChangePwActions(Action):
     def response(self):
         self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
-        cont = Container(toplink, " : Byt lösenord")
+        cont = Container(toplink, self._(" : Change password"))
         self.append_std_top(cont)
         submitbutton = Center(Input(type="submit", name="changepwsubmit", value="Byt lösenord"))
         F = Form(BASE_URL, name="changepwform", submit=submitbutton)
@@ -1354,11 +1357,11 @@ class ChangePwActions(Action):
         F.append(self.hidden_key())
         
         F.append(BR(2))
-        F.append(Center(Heading(2, "Byt lösenord")))
+        F.append(Center(Heading(2, self._("Change password"))))
         F.append(BR(2))
-        logintable = [("Gammalt lösenord", Input(type="password", name="oldpw",size=20)),
-                      ("Nytt lösenord", Input(type="password", name="newpw1", size=20)),
-                      ("Upprepa nytt lösenord", Input(type="password", name="newpw2",size=20)) ]
+        logintable = [(self._("Old password"), Input(type="password", name="oldpw",size=20)),
+                      (self._("New password"), Input(type="password", name="newpw1", size=20)),
+                      (self._("Repeat new password"), Input(type="password", name="newpw2",size=20)) ]
         F.append(Center(InputTable(logintable)))
         return
 
@@ -1374,43 +1377,43 @@ class ChangePwSubmit(Action):
                                    self.form["newpw2"].value)
 
         toplink = Href(self.base_session_url(), "WebKOM")
-        changepwlink = self.action_href("changepw", "Byt lösenord")
+        changepwlink = self.action_href("changepw", self._("Change password"))
         self.doc.append(Container(toplink, " : ", changepwlink), BR(2))
 
         if newpw1 != newpw2:
-            self.print_error("De två nya lösenorden var ej lika.")
+            self.print_error(self._("The two new passwords didn't match."))
             return
 
         try:
             kom.ReqSetPasswd(self.sess.conn, self.sess.pers_num, oldpw, newpw1).response()
         except:
-            self.print_error("Servern accepterade ej lösenordsbytet")
+            self.print_error(self._("The server rejected your password change request"))
             return
         
-        self.doc.append(Heading(3, "Ok"))
-        self.doc.append("Lösenordsbytet lyckades")
+        self.doc.append(Heading(3, self._("Ok")))
+        self.doc.append(self._("Your password has been changed"))
 
 
 class CreateUserActions(Action):
     "Generate a page for creating a new LysKOM user"
     def response(self):
         toplink = Href(BASE_URL, "WebKOM")
-        create_user_link = Href(BASE_URL + "?action=create_user", "Skapa ny användare")
+        create_user_link = Href(BASE_URL + "?action=create_user", self._("Create new user"))
         cont = Container(toplink, " : ", create_user_link)
         self.append_std_top(cont)
         
-        submitbutton = Center(Input(type="submit", name="create_user_submit", value="Skapa användare"))
+        submitbutton = Center(Input(type="submit", name="create_user_submit", value=self._("Create new user")))
         F = Form(BASE_URL, name="create_user_form", submit="")
         F.append(Input(type="hidden", name="create_user_submit"))
         self.doc.append(F)
         
         F.append(BR(2))
-        F.append(Center(Heading(2, "Skapa ny användare")))
+        F.append(Center(Heading(2, self._("Create new user"))))
         F.append(BR(2))
-        logintable = [("Server", Input(name="komserver", size=20, value=DEFAULT_KOM_SERVER)),
-                      ("Användarnamn", Input(name="username", size=20)),
-                      ("Lösenord", Input(type="password", name="password1", size=20)), 
-                      ("Uppprepa lösenord", Input(type="password", name="password2", size=20)) ]
+        logintable = [(self._("Server"), Input(name="komserver", size=20, value=DEFAULT_KOM_SERVER)),
+                      (self._("Username"), Input(name="username", size=20)),
+                      (self._("Password"), Input(type="password", name="password1", size=20)), 
+                      (self._("Repeat password"), Input(type="password", name="password2", size=20)) ]
         
         F.append(Center(InputTable(logintable)))
         F.append(Center(submitbutton))
@@ -1428,19 +1431,19 @@ class CreateUserSubmit(Action):
         (password1, password2) = (self.form["password1"].value, self.form["password2"].value)
 
         toplink = Href(BASE_URL, "WebKOM")
-        create_user_link = Href(BASE_URL + "?action=create_user", "Skapa ny användare")
+        create_user_link = Href(BASE_URL + "?action=create_user", self._("Create new user"))
         cont = Container(toplink, " : ", create_user_link)
         self.append_std_top(cont)
 
         if password1 != password2:
-            self.print_error("De två nya lösenorden var ej lika.")
+            self.print_error(self._("The two new passwords didn't match."))
             return
 
         # Connect to server
         try:
             conn = kom.Connection(komserver, 4894)
         except:
-            self.print_error("Kan inte ansluta till servern.")
+            self.print_error(self._("Cannot connect to server."))
             return
 
         # Create person
@@ -1448,20 +1451,20 @@ class CreateUserSubmit(Action):
         try:
             kom.ReqCreatePerson(conn, username, password1, flags).response()
         except kom.LoginFirst:
-            self.print_error("Servern kräver inloggning innan nya användare kan skapas")
+            self.print_error(self._("The server requires login before new users can be created"))
             return
         except kom.PermissionDenied:
-            self.print_error("Du har inte tillräckliga rättigheter för att skapa ny användare")
+            self.print_error(self._("You lack permissions to create new users"))
             return
         except kom.PersonExists:
-            self.print_error("Det finns redan en användare med detta namnet")
+            self.print_error(self._("An user with this name exists."))
             return
         except kom.InvalidPassword:
-            self.print_error("Ogiltigt lösenord")
+            self.print_error(self._("Invalid password"))
             return
             
         self.doc.append(Heading(3, "Ok"))
-        self.doc.append("Användaren är skapad.")
+        self.doc.append(self._("User created."))
 
 class WritePresentationActions(Action):
     "Write presentation"
@@ -1480,9 +1483,10 @@ class WriteLetterActions(Action):
     "Write personal letter"
     def response(self):
         self.change_conf(self.sess.pers_num)
-        WriteArticleActions(self.resp).response()
+        WriteArticleActions(self.resp, self._).response()
 
 
+        # FIXME: Translations
 class WriteArticleActions(Action):
     "Generate a page for writing or commenting an article"
     def response(self, presentationfor = None, presconf = None):
@@ -1495,7 +1499,7 @@ class WriteArticleActions(Action):
         conf_name = self.get_conf_name(conf_num)
         
         toplink = Href(self.base_session_url(), "WebKOM")
-        conflink = self.action_href("viewconfs", "Möten")
+        conflink = self.action_href("viewconfs", self._("Conferences"))
         thisconf = self.action_href("goconf&conf=" + str(conf_num), conf_name)
 
         comment_to_list = get_values_as_list(self.form, "comment_to")
@@ -1504,6 +1508,7 @@ class WriteArticleActions(Action):
                 if not self.sess.conn.conferences[presentationfor].presentation in comment_to_list:
                     comment_to_list += [self.sess.conn.conferences[presentationfor].presentation]
         footnote_to_list = get_values_as_list(self.form, "footnote_to")
+
         submitname = "writearticlesubmit"
         submitvalue = "Skicka in"
         if presentationfor:
@@ -1515,7 +1520,7 @@ class WriteArticleActions(Action):
                 page_heading = "Kommentera inlägg"
             else:
                 page_heading = "Skriv inlägg"
-            
+
         writeart = self.action_href("writearticle", page_heading)
         
         cont = Container(toplink, " : ", conflink, " : ", thisconf, " : ", writeart)
@@ -1523,6 +1528,7 @@ class WriteArticleActions(Action):
 
         submitbutton = Input(type="submit", name=submitname,
                              value=submitvalue)
+        
         F = Form(BASE_URL, name="writearticleform", submit=submitbutton)
         self.doc.append(F)
         if presentationfor:
@@ -1608,17 +1614,17 @@ class WriteArticleActions(Action):
 
 
         # Add recipient table to document
-        headings = ["Typ", "Namn", "Ta bort?"]
+        headings = [self._("Type"), self._("Name"), self._("Remove?")]
         F.append(Table(body=tab, heading=headings, border=3, cell_padding=2, column1_align="right",
                        cell_align="left", width="100%"))
         
         ## Search and remove submit
         cont=Container()
-        cont.append("Sök ny mottagare:")
+        cont.append(self._("Search for new recipient:"))
         cont.append(Input(name="searchtext"))
         cont.append(Input(type="submit", name="searchrcptsubmit", value="Sök"))
         removesubmit = Input(type="submit", name="removercptsubmit",
-                             value="Ta bort markerade ovan")
+                             value=self._("Remove marked recipients"))
         tab = [[cont, removesubmit]]
         F.append(Table(body=tab, border=0, cell_align="right", width="100%"))
 
@@ -1627,11 +1633,11 @@ class WriteArticleActions(Action):
         if searchtext and (len(matches) <> 1):
             infotext = None
             if len(matches) == 0:
-                infotext = "(Inget matchar %s)" % searchtext
+                infotext = self._("(Nothing matches %s)") % searchtext
             elif len(matches) > 10:
-                infotext = "(För många träffar, sökresultatet trunkerat)"
+                infotext = self._("(Too many matches, search result truncated)")
                 
-            F.append("Sökresultat:", BR())
+            F.append(self._("Search result:"), BR())
             tab=[]
             for (rcpt_num, rcpt_name) in matches[:10]:
                 tab.append([rcpt_name,
@@ -1643,11 +1649,11 @@ class WriteArticleActions(Action):
                            cell_align="right", width="100%"))
 
             addsubmit = Input(type="submit", name="addrcptsubmit",
-                              value="Lägg till markerade ovan")
+                              value=self._("Add marked"))
             tab = [["", addsubmit]]
             F.append(Table(body=tab, border=0, cell_align="right", width="100%"))
 
-        F.append("Ärende:")
+        F.append(self._("Subject:"))
         subject = self.form.getvalue("articlesubject")
         if not subject:
             # No subject given, default to commented text, if any
@@ -1686,15 +1692,15 @@ class WriteArticleSubmit(Action):
         conf_name = self.get_conf_name(conf_num)
         
         toplink = Href(self.base_session_url(), "WebKOM")
-        conflink = self.action_href("viewconfs", "Möten")
+        conflink = self.action_href("viewconfs", self._("Conferences"))
         thisconf = self.action_href("goconf&conf=" + str(conf_num), conf_name)
-        writeart = self.action_href("writearticle", "Posta inlägg")
+        writeart = self.action_href("writearticle", self._("Write article"))
         
         cont = Container(toplink, " : ", conflink, " : ", thisconf, " : ", writeart)
         self.append_std_top(cont)
 
-        self.doc.append(Heading(2, "Skriv inlägg"))
-        self.doc.append("Inlägget är postat", BR())
+        self.doc.append(Heading(2, self._("Write article")))
+        self.doc.append(self._("Article submitted"), BR())
 
         # Get recipients
         # rcpt_dict is an dictionary index with the rcpt_number and rcpt_type as value
@@ -1728,6 +1734,7 @@ class WriteArticleSubmit(Action):
         # Comment/footnote to
         comment_to_list = get_values_as_list(self.form, "comment_to")
         footnote_to_list = get_values_as_list(self.form, "footnote_to")
+        # FIXME: Translations?
         for (type, typename, list) in \
             [(kom.MIC_COMMENT, "Comment to", comment_to_list),
              (kom.MIC_FOOTNOTE, "Footnote to", footnote_to_list)]:
@@ -1740,12 +1747,12 @@ class WriteArticleSubmit(Action):
                         mic = kom.MICommentTo(type, text_num)
                         misc_info.comment_to_list.append(mic)
                     except:
-                        self.print_error("%s: %d -- text not found" % (typename, text_num))
+                        self.print_error(self._("%s: %d -- text not found") % (typename, text_num))
                 except:
-                    self.print_error("%s: %s -- bad text number" % (typename, text_num_str))
+                    self.print_error(self._("%s: %s -- bad text number") % (typename, text_num_str))
 
         if not len(misc_info.recipient_list) > 0:
-            self.print_error("No recipients!")
+            self.print_error(self._("No recipients!"))
 
         subject = self.form.getvalue("articlesubject", "")
         text = self.form.getvalue("text_area", "")
@@ -1773,7 +1780,7 @@ class WriteArticleSubmit(Action):
                     update_membership(self.sess.conn, r.recpt, r.loc_no)
                 
         except kom.Error:
-            self.print_error("Det gick ej att skapa inlägget")
+            self.print_error(self._("Unable to create article"))
 
         return text_num
 
@@ -1794,10 +1801,10 @@ class WhoIsOnActions(Action):
     "Generate a page with active LysKOM users"
     def response(self):
         toplink = Href(self.base_session_url(), "WebKOM")
-        wholink = self.action_href("whoison", "Vilka är inloggade")
+        wholink = self.action_href("whoison", self._("Who is logged in"))
         cont = Container(toplink, " : ", wholink)
         self.append_std_top(cont)
-        self.doc.append(Heading(3, "Vilka är inloggade"))
+        self.doc.append(Heading(3, self._("Who is logged in")))
         # FIXME: This function seems not to show sessions that have been active the
         # last 30 minutes, but rather all sessions. Therefore, the comment below is
         # invalid. Fix this function, and re-activate the statement below!
@@ -1807,9 +1814,9 @@ class WhoIsOnActions(Action):
         try:
             who_list = kom.ReqWhoIsOnDynamic(self.sess.conn, active_last = 0).response()
         except:
-            self.doc.append("Anropet till servern misslyckades")
+            self.doc.append(self._("Request failed"))
 
-        headings = ["Session", "Användare<br>Kör från", "Närvarande i möte<br>Gör"]
+        headings = [self._("Session"), self._("User<br>From"), self._("Working conference<br>Is doing")]
         tab = []
         
         for who in who_list:
@@ -1817,14 +1824,14 @@ class WhoIsOnActions(Action):
             name = self.get_pers_name(who.person)
             user_and_host = static.username + "@" + static.hostname
             conf_name = self.sess.conn.conf_name(who.working_conference,
-                                                 default="Ej närvarande i något möte")[:MAX_CONFERENCE_LEN]
+                                                 default=self._("No working conference"))[:MAX_CONFERENCE_LEN]
             tab.append([who.session, 
                         name[:37] + "<br>" + user_and_host[:37],
                         conf_name \
                         + "<br>" + who.what_am_i_doing[:37]])
 
         self.doc.append(Table(heading=headings, cell_padding=2, body=tab, width="100%"))
-        self.doc.append("Sammanlagt %s aktiva användare." % len(who_list))
+        self.doc.append(self._("A total of %s active users.") % len(who_list))
         
         return
 
@@ -1840,7 +1847,7 @@ class JoinConfActions(Action):
     def search_page(self):
         self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
-        joinlink = self.action_href("joinconf", "Gå med i möte")
+        joinlink = self.action_href("joinconf", self._("Join conference"))
         cont = Container(toplink, " : ", joinlink)
         self.append_std_top(cont)
 
@@ -1849,12 +1856,12 @@ class JoinConfActions(Action):
         F.append(self.hidden_key())
 
         F.append(BR())
-        F.append(Heading(2, "Gå med i möte"))
+        F.append(Heading(2, self._("Join conference")))
         F.append(BR())
 
         ## Search and remove submit
         cont=Container()
-        cont.append("Sök möte:")
+        cont.append(self._("Search conference:"))
         cont.append(Input(name="searchtext"))
         cont.append(Input(type="hidden", name="searchconfsubmit"))
         cont.append(Input(type="submit", name="searchconfsubmit", value="Sök"), BR())
@@ -1866,11 +1873,11 @@ class JoinConfActions(Action):
             matches = self.sess.conn.lookup_name(searchtext, want_pers=0, want_confs=1)
             infotext = None
             if len(matches) == 0:
-                infotext = "(Inget matchar %s)" % searchtext
+                infotext = self._("(Nothing matches %s)") % searchtext
             elif len(matches) > 10:
-                infotext = "(För många träffar, sökresultatet trunkerat)"
+                infotext = self._("(Too many matches, search result truncated)")
                 
-            F.append("Sökresultat:", BR())
+            F.append(self._("Search result:"), BR())
             tab=[]
             for (rcpt_num, rcpt_name) in matches[:10]:
                 tab.append([rcpt_name,
@@ -1882,7 +1889,7 @@ class JoinConfActions(Action):
                            cell_align="right", width="100%"))
 
             addsubmit = Input(type="submit", name="joinconfsubmit",
-                              value="Gå med i markerat möte")
+                              value=self._("Join marked conference"))
             tab = [["", addsubmit]]
             F.append(Table(body=tab, border=0, cell_align="right", width="100%"))
 
@@ -1893,7 +1900,7 @@ class JoinConfSubmit(Action):
     "Handles submits for joining a conference."
     def response(self):
         toplink = Href(self.base_session_url(), "WebKOM")
-        joinlink = self.action_href("joinconf", "Gå med i möte")
+        joinlink = self.action_href("joinconf", self._("Join conference"))
         cont = Container(toplink, " : ", joinlink)
         self.append_std_top(cont)
         
@@ -1903,11 +1910,11 @@ class JoinConfSubmit(Action):
             # FIXME: User settable priority
             kom.ReqAddMember(self.sess.conn, conf, self.sess.pers_num, 100, 1000, type).response()
         except:
-            self.print_error("Det gick ej att gå med i mötet.")
+            self.print_error(self._("Unable to join conference."))
             return
 
-        self.doc.append(Heading(3, "Ok"))
-        self.doc.append("Du är nu medlem i mötet ")
+        self.doc.append(Heading(3, self._("Ok")))
+        self.doc.append(self._("You are now a member of conference "))
         self.doc.append(self.action_href("goconf&conf=" + str(conf), self.get_conf_name(conf)))
         self.doc.append(".")
         
@@ -1918,7 +1925,7 @@ class SetUnreadActions(Action):
     def response(self):
         self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
-        conflink = self.action_href("viewconfs", "Möten")
+        conflink = self.action_href("viewconfs", self._("Conferences"))
         cont = Container(toplink, " : ", conflink)
         self.append_std_top(cont)
 
@@ -1932,11 +1939,12 @@ class SetUnreadActions(Action):
         self.doc.append(F)
         F.append(self.hidden_key())
 
-        F.append(Heading(2, "Endast läsa senaste"))
+        F.append(Heading(2, self._("Set unread")))
 
-        F.append("Sätt läsmarkeringar så att du endast har ")
+        F.append(self._("Sätt läsmarkeringar så att du endast har "))
+        F.append(self._("Set read marks to "))
         F.append(Input(name="num_unread", size=4, value="20"))
-        F.append(" olästa i detta mötet.", BR())
+        F.append(self._(" unread articles in this conference."), BR())
 
         return
 
@@ -1945,7 +1953,7 @@ class SetUnreadSubmit(Action):
     "Handles submits for joining a conference."
     def response(self):
         toplink = Href(self.base_session_url(), "WebKOM")
-        conflink = self.action_href("viewconfs", "Möten")
+        conflink = self.action_href("viewconfs", self._("Conferences"))
         cont = Container(toplink, " : ", conflink)
         self.append_std_top(cont)
 
@@ -1959,15 +1967,15 @@ class SetUnreadSubmit(Action):
         try:
             kom.ReqSetUnread(self.sess.conn, conf_num, num_unread).response()
         except:
-            self.print_error("Det gick ej att sätta antalet olästa.")
+            self.print_error(self._("Unable to set number of unread."))
             return
 
         # Invalidate caches
         self.sess.conn.memberships.invalidate(conf_num)
         self.sess.conn.no_unread.invalidate(conf_num)
         
-        self.doc.append(Heading(3, "Ok"))
-        self.doc.append("Antal olästa är nu satt till " + str(num_unread) + ".")
+        self.doc.append(Heading(3, self._("Ok")))
+        self.doc.append(self._("The number of unread articles is now ") + str(num_unread) + ".")
         
         return
 
@@ -1991,8 +1999,8 @@ class LeaveConfActions(Action):
         F = Form(BASE_URL, name="set_unread_form", submit=submitbutton)
         self.doc.append(F)
         F.append(self.hidden_key())
-        F.append(Heading(2, "Utträda ur mötet"))
-        F.append("Vill du verkligen utträda ur mötet " + conf_name + "?")
+        F.append(Heading(2, self._("Leave conference")))
+        F.append(self._("Do you really want to leave conference ") + conf_name + "?")
         F.append(BR(2))
         return
 
@@ -2001,7 +2009,7 @@ class LeaveConfSubmit(Action):
     "Handles submits for leaving a conference."
     def response(self):
         toplink = Href(self.base_session_url(), "WebKOM")
-        conflink = self.action_href("viewconfs", "Möten")
+        conflink = self.action_href("viewconfs", self._("Conferences"))
         cont = Container(toplink, " : ", conflink)
         self.append_std_top(cont)
 
@@ -2012,15 +2020,15 @@ class LeaveConfSubmit(Action):
         try:
             kom.ReqSubMember(self.sess.conn, conf_num, self.sess.conn.user_no).response()
         except:
-            self.print_error("Det gick ej att utträda ur mötet.")
+            self.print_error(self._("Unable to leave conference."))
             return
 
         # Note:
         # We don't need to invalidate any caches, since a async
         # message should do that for us. 
         
-        self.doc.append(Heading(3, "Ok"))
-        self.doc.append("Du är nu inte längre medlem i mötet " + conf_name + ".")
+        self.doc.append(Heading(3, self._("Ok")))
+        self.doc.append(self._("You are no longer a member of conference ") + conf_name + ".")
         
         return
 
@@ -2033,7 +2041,7 @@ class ChooseConfActions(Action):
         # Non-JS capable browsers should ignore this
         self.doc.onLoad = "document.choose_conf_form.searchtext.focus()"
         toplink = Href(self.base_session_url(), "WebKOM")
-        golink = self.action_href("joinconf", "Gå till möte")
+        golink = self.action_href("joinconf", self._("Choose working conference"))
         cont = Container(toplink, " : ", golink)
         self.append_std_top(cont)
 
@@ -2042,17 +2050,17 @@ class ChooseConfActions(Action):
         F.append(self.hidden_key())
 
         F.append(BR())
-        F.append(Heading(2, "Gå till möte (som du är medlem i)"))
+        F.append(Heading(2, self._("Choose working conference")))
         F.append(BR())
-        F.append("Mata in del av mötesnamnets början. Det går också att söka ")
-        F.append("via mötesnummer genom att ange # följt av mötets nummer.", BR())
+        F.append(self._("Type in the beginning of the conference name. You can also search "))
+        F.append(self._("via conference numbers by giving # followed by the conference number."), BR())
 
         ## Search and remove submit
         cont=Container()
-        cont.append("Sök möte:")
+        cont.append(self._("Search for conference:"))
         cont.append(Input(name="searchtext"))
         cont.append(Input(type="hidden", name="choose_conf_search"))
-        cont.append(Input(type="submit", name="choose_conf_search", value="Sök"), BR())
+        cont.append(Input(type="submit", name="choose_conf_search", value=self._("Search")), BR())
         F.append(cont)
         
         ## Search result
@@ -2066,11 +2074,11 @@ class ChooseConfActions(Action):
             
             infotext = None
             if len(member_matches) == 0:
-                infotext = "(Inget matchar %s)" % searchtext
+                infotext = self._("(Nothing matches %s)") % searchtext
             elif len(member_matches) > 10:
-                infotext = "(För många träffar, sökresultatet trunkerat)"
+                infotext = self._("(Too many matches, search result truncated)")
                 
-            self.doc.append("Sökresultat:", BR())
+            self.doc.append(self._("Search result:"), BR())
             tab=[]
             for (rcpt_num, rcpt_name) in member_matches[:10]:
                 tab.append([self.action_href("goconf&conf=" + str(rcpt_num), rcpt_name)])
@@ -2084,35 +2092,33 @@ class ChooseConfActions(Action):
         return
 
 
-
 def actions(resp):
     "Do requested actions based on CGI keywords"
-    # Set up wanted language
     try:
-        langs = string.split(resp.env["HTTP_ACCEPT_LANGUAGE"], ',')
-        langs = [string.strip(lang) for lang in langs]
-        resp.pref_lang = langs[0]
+        lang_string = resp.env["HTTP_ACCEPT_LANGUAGE"]
     except KeyError:
-        langs = []
+        lang_string = ""
+    
+    trans = translator_cache.get_translator(resp.env["HTTP_ACCEPT_LANGUAGE"]).gettext
     
     if resp.form.has_key("loginsubmit"):
-        LogInActions(resp).response()
+        LogInActions(resp, trans).response()
         return
 
     if resp.form.has_key("sessionkey"):
         resp.key = resp.form["sessionkey"].value
     elif resp.form.has_key("action") and (resp.form["action"].value == "about"):
         # It's possible to view about page withour being logged in
-        AboutPageActions(resp).response()
+        AboutPageActions(resp, trans).response()
         return
     elif resp.form.has_key("action") and (resp.form["action"].value == "create_user"):
-        CreateUserActions(resp).response()
+        CreateUserActions(resp, trans).response()
         return
     elif resp.form.has_key("create_user_submit"):
-        CreateUserSubmit(resp).response()
+        CreateUserSubmit(resp, trans).response()
         return
     else:
-        LoginPageActions(resp).response()
+        LoginPageActions(resp, trans).response()
         return 
     
     # "loginsubmit" and "about" excluded
@@ -2147,7 +2153,7 @@ def actions(resp):
                        "set_unread" : SetUnreadActions }
 
     if not sessionset.valid_session(resp.key):
-        InvalidSessionPageActions(resp).response()
+        InvalidSessionPageActions(resp, trans).response()
         return 
 
     # Submits
@@ -2180,10 +2186,11 @@ def actions(resp):
     resp.sess.lock_sess()
 
     # View messages
-    ViewPendingMessages(resp).response()
+    ViewPendingMessages(resp, trans).response()
 
     # Create an instance of apropriate class and let it generate response
-    action = response_type(resp)
+    action = response_type(resp, trans)
+    # Generate page
     action.response()
 
     # Add Javascript shortcuts
@@ -2193,14 +2200,13 @@ def actions(resp):
         resp.add_shortcut("b", action.base_session_url() + "&action=writeletter&rcpt=" 
                           + str(resp.sess.pers_num))
         resp.add_shortcut("g", action.base_session_url() + "&action=choose_conf")
-        AddShortCuts(resp).response()
+        AddShortCuts(resp, trans).response()
 
     # Set page title
     resp.doc.title = "WebKOM: " + resp.sess.conn.conf_name(resp.sess.pers_num)[:MAX_CONFERENCE_LEN]
 
     # For debugging 
     #resp.doc.append(str(resp.env))
-    #resp.doc.append("<hr>Språket är:" + resp.pref_lang)
         
     return 
 
@@ -2226,7 +2232,8 @@ def func(fcg, env, form):
                 # Put it on the web.
                 # (Is it possible to print it directly, without going via the file?
                 # Then tell me!)
-                resp.doc.append(Heading(3, "Internt serverfel"))
+                # FIXME: Translate
+                resp.doc.append(Heading(3, "Internal server error"))
                 resp.doc.append("Kontrollera ifall buggen finns med på")
                 resp.doc.append(Href("../bugs.html", "listan över kända buggar"))
                 resp.doc.append("Om den inte gör det, rapportera då gärna")
@@ -2243,7 +2250,7 @@ def func(fcg, env, form):
             # Unlock session (it was probably locked in "actions")
             if resp.sess:
                 resp.sess.unlock_sess()
-                
+
             # Produce output
             fcg.pr(resp.http_header)
             fcg.pr(str(resp.doc))
@@ -2272,7 +2279,6 @@ def run_maintenance(self, *args):
     while 1:
         time.sleep(60)
         sessionset.del_inactive()
-        
 
 def run_fcgi():
     try:
@@ -2281,6 +2287,7 @@ def run_fcgi():
         import traceback
         f = open(LOG_DIR + "traceback.main", "w")
         traceback.print_exc(file = f)
+        f.close()
 
 #
 # MAIN
@@ -2290,10 +2297,14 @@ thread.start_new_thread(run_console,(0,0))
 # Start maintenance thread
 thread.start_new_thread(run_maintenance,(0,0))
 
+# Create instance of translator
+translator_cache = TranslatorCache.TranslatorCache()
+
 # Create an instance of our FCGI wrapper
 fcgi = sz_fcgi.SZ_FCGI(func)
 
 if __name__=="__main__":
     # and let it run
     run_fcgi()
-    
+
+
