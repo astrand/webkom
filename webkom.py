@@ -697,28 +697,41 @@ class MainPageActions(Action):
 
         cont = Container()
         cont.append(Heading(2, self._("Main Page")))
-        cont.append(Heading(3, self.action_href("viewconfs_unread", self._("List conferences with unread"))))
-        cont.append(Heading(3, self.action_href("viewconfs", self._("List all conferences you are a member of"))))
-        cont.append(Heading(3, self.action_href("writeletter&amp;rcpt=" + str(self.sess.conn.get_user()),
-                                                self._("Write letter"))))
-        cont.append(Heading(3, self.action_href("joinconf", self._("Join conference"))))
-        cont.append(Heading(3, self.action_href("choose_conf", self._("Go to conference"))))
-        cont.append(Heading(3, self.action_href("whoison", self._("Who is logged in"))))
-        cont.append(Heading(3, self.action_href("changepw", self._("Change password"))))
-        cont.append(Heading(3, self.action_href("writepresentation" + "&amp;presentationfor="
-                                                + str(self.sess.conn.get_user()), self._("Write presentation"))))
-        cont.append(Heading(3,
-                            self.action_href("view_presentation",
-                                             self._("View presentation"))))
-        cont.append(Heading(3,
-                            self.action_href("view_markings",
-                                             self._("View marked articles"))))
-        cont.append(Heading(3, self.action_href("logout", self._("Logout"))))
-        cont.append(Heading(3, self.action_href("logoutothersessions",
-                                                self._("Logout my other "\
-                                                       "sessions"))))
-        cont.append(BR(), Heading(3, self.action_href("whats_implemented",
-                                                      self._("What can WebKOM do?"))))
+
+        cont.append(Heading(3, self._("Read")))
+        read_stuff = []
+        read_stuff.append(self.action_href("viewconfs_unread", self._("List conferences with unread")))
+        read_stuff.append(self.action_href("viewconfs", self._("List all conferences you are a member of")))
+        read_stuff.append(self.action_href("view_markings", self._("View marked articles")))
+        cont.append(List(read_stuff))
+
+        cont.append(Heading(3, self._("Write")))
+        write_stuff = []
+        write_stuff.append(self.action_href("writeletter&amp;rcpt=" + str(self.sess.conn.get_user()),
+                                            self._("Write letter")))
+        cont.append(List(write_stuff))
+
+        cont.append(Heading(3, self._("Conference")))
+        conf_stuff = []
+        conf_stuff.append(self.action_href("joinconf", self._("Join conference")))
+        conf_stuff.append(self.action_href("choose_conf", self._("Go to conference")))
+        conf_stuff.append(self.action_href("view_presentation", self._("View presentation")))
+        cont.append(List(conf_stuff))
+
+        cont.append(Heading(3, self._("Person")))
+        pers_stuff = []
+        pers_stuff.append(self.action_href("whoison", self._("Who is logged in")))
+        pers_stuff.append(self.action_href("changepw", self._("Change password")))
+        pers_stuff.append(self.action_href("writepresentation" + "&amp;presentationfor="
+                                           + str(self.sess.conn.get_user()), self._("Write presentation")))
+        cont.append(List(pers_stuff))
+
+        cont.append(Heading(3, self._("Other")))
+        misc_stuff = []
+        misc_stuff.append(self.action_href("logout", self._("Logout")))
+        misc_stuff.append(self.action_href("logoutothersessions", self._("Logout my other sessions")))
+        misc_stuff.append(self.action_href("whats_implemented", self._("What can WebKOM do?")))
+        cont.append(List(misc_stuff))
 
         tab=[[cont]]
         self.doc.append(Table(body=tab, border=0, cell_padding=50, width="100%"))
