@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+# -*- coding: iso-8859-1 -*-
 
 # WebKOM - a web based LysKOM client
 # 

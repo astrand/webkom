@@ -1,3 +1,4 @@
+# -*- coding: iso-8859-1 -*-
 # thfcgi.py - FastCGI communication with thread support
 #
 # Copyright Peter Åstrand <astrand@lysator.liu.se> 2001

@@ -1,4 +1,5 @@
 # -*-python-*-
+# -*- coding: iso-8859-1 -*-
 #
 #   Copyright © 1999-2001 The ViewCVS Group. All rights reserved. 
 #

@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# -*- coding: iso-8859-1 -*-
 # Originally written by Barry Warsaw <bwarsaw@python.org>
 #
 # minimally patched to make it even more xgettext compatible 

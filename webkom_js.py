@@ -1,4 +1,4 @@
-
+# -*- coding: iso-8859-1 -*-
 # WebKOM - a web based LysKOM client
 # 
 # Copyright (C) 2000 by Peter Åstrand
