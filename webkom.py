@@ -2060,9 +2060,9 @@ class LeaveConfSubmit(Action):
         conf_num = self.sess.current_conf
         conf_name = self.get_conf_name(conf_num)
         cont.append(" : ", conf_name)
-        
+
         try:
-            kom.ReqSubMember(self.sess.conn, conf_num, self.sess.conn.user_no).response()
+            kom.ReqSubMember(self.sess.conn, conf_num, self.sess.conn.get_user()).response()
         except:
             self.print_error(self._("Unable to leave conference."))
             return
