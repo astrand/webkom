@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 VERSION=`python -c "from webkom_constants import *; print VERSION"`
 PWD=`pwd`
 SRCDIR=`basename ${PWD}`
