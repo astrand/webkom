@@ -1,0 +1,39 @@
+Summary: A web based LysKOM client
+Name: webkom
+Version: 0.11
+Release: 1
+Requires: python2, webserver
+Copyright: GPL
+Group: System Environment/Daemons
+Source: http://www.lysator.liu.se/lyskom/klienter/webkom/webkom-0.14.tgz
+URL: http://www.lysator.liu.se/lyskom/klienter/webkom/
+Packager: Peter Åstrand <astrand@lysator.liu.se>
+BuildRoot: %{_tmppath}/%{name}-root
+BuildArchitectures: noarch
+Prefix: /opt
+
+%description
+WebKOM is LysKOM-to-Web gateway service. It is written in Python as a
+FastCGI-application. 
+
+%prep
+%setup
+
+%build
+python -O -c 'from compileall import *; compile_dir(".")'
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT/%{prefix}/webkom
+cp -r * $RPM_BUILD_ROOT/%{prefix}/webkom
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%post
+echo "Please run $RPM_INSTALL_PREFIX/webkom/apache-setup.py for Apache integration."
+
+%files
+%defattr(-,root,root)
+
+%{prefix}/webkom
