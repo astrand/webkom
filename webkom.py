@@ -432,7 +432,7 @@ class Action:
         try:
             num_unread = self.sess.conn.no_unread[self.sess.current_conf]
         except kom.NotMember:
-            return "Conferences (you are not a member of)"
+            return _("Conferences (you are not a member of)")
         
         if num_unread:
             # We are in a conference with unread articles
