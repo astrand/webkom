@@ -1174,10 +1174,13 @@ class GoConfActions(Action):
             prev_first = first_local_num
         if next_first > highest_local_num:
             next_first = None
-            
-        self.doc.append(self.action_href("goconf&amp;conf=" + str(conf_num) \
-                                         + "&amp;local_num=" + str(prev_first),
-                                         self._("Earlier articles"), prev_first), NBSP)
+
+        ediv = Div(align="right")
+        ediv.append(self.action_href("goconf&amp;conf=" + str(conf_num) \
+                                     + "&amp;local_num=" + str(prev_first),
+                                     self._("Earlier articles"),
+                                     prev_first), NBSP)
+        self.doc.append(ediv)
         
         headings = [self._("Unread"), self._("Subject"), self._("Author"), self._("Date"), self._("Number")]
         tab = []
@@ -1223,13 +1226,16 @@ class GoConfActions(Action):
                 unreadindicator = "&nbsp;"
 
             tab.append([unreadindicator, subj, author, date, textnum])
-                
-        self.doc.append(self.action_href("goconf&amp;conf=" + str(conf_num) \
-                                         + "&amp;local_num=" + str(next_first),
-                                         self._("Later articles"), next_first), NBSP)
 
-        self.doc.append(self.action_href("goconf_with_unread",
-                                         self._("Next conference with unread")), NBSP)
+        ldiv = Div(align="Right")        
+        ldiv.append(self.action_href("goconf_with_unread",
+                                     self._("Next conference with unread")),
+                    NBSP)
+        ldiv.append(self.action_href("goconf&amp;conf=" + str(conf_num) \
+                                     + "&amp;local_num=" + str(next_first),
+                                     self._("Later articles"),
+                                     next_first), NBSP)
+        self.doc.append(ldiv)
 
 
         # Standard action
