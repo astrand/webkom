@@ -83,8 +83,6 @@ LOCALBIND = None
 
 MAX_SUBJ_PER_PAGE = 25
 MAX_CONFS_PER_PAGE = 15
-MAINTAINER_NAME = "YOUR NAME HERE"
-MAINTAINER_MAIL = "your.name@example.com"
 CONSOLE_SOCKET = "/tmp/webkom.console"
 
 MAX_CONFERENCE_LEN = 50
@@ -96,6 +94,7 @@ COPYPASTE_CHARACTERS = "å Å ä Ä ö Ö ü Ü ! \" @ $ % & / { } [ ] ( ) \ ? ~ < > |"
 KNOWN_BUGS_URL = "http://bugzilla.lysator.liu.se/buglist.cgi" \
                  "?bug_status=NEW&bug_status=ASSIGNED" \
                  "&bug_status=REOPENED&product=WebKOM"
+BUGREPORT_URL = "http://bugzilla.lysator.liu.se/enter_bug.cgi?product=WebKOM"
 CUSTOM_RIGHT_FOOTER = ""
 TOPLINK_SEPARATOR = " &gt; "
 STYLESHEET = None

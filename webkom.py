@@ -3128,10 +3128,8 @@ def write_traceback(resp):
     resp.doc.append(_("Check if this bug is listed on"))
     resp.doc.append(external_href(KNOWN_BUGS_URL,
                                   _("the list with known bugs.")))
-    resp.doc.append(_("If it isn't, please report this problem to"))
-    resp.doc.append(MAINTAINER_NAME)
-    resp.doc.append(Href("mailto: " + MAINTAINER_MAIL, MAINTAINER_MAIL + "."))
-
+    resp.doc.append(_("If not, please"))
+    resp.doc.append(external_href(BUGREPORT_URL, _("submit a bug report.")))
     resp.doc.append(_("Attach the error message below."))
     resp.doc.append(_("The server time was: ") + \
                     time.strftime("%Y%m%d-%H:%M", time.localtime(time.time())))
