@@ -1,5 +1,5 @@
 
-LOG_DIR = "/home/astrand/webkom/logs/"
+LOG_DIR = "/home/astrand/webkom/webkom/logs/"
 MODULES_PATH = "/home/astrand/webkom/python-modules/"
 VERSION = "0.5"
 BASE_URL = "webkom.py"
