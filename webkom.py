@@ -297,7 +297,12 @@ class Action:
     def current_conflink(self):
         "Return a link to current conference with correct caption, depending on"
         "whether there are unread articles in this conference or not"
-        if self.sess.conn.no_unread[self.sess.current_conf]:
+        try:
+            num_unread = self.sess.conn.no_unread[self.sess.current_conf]
+        except kom.NotMember:
+            return "Conferences (you are not a member of)"
+        
+        if num_unread:
             # We are in a conference with unread articles
             return self.action_href("viewconfs_unread", self._("Conferences (with unread)"))
         else:
