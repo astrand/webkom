@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: WebKOM 0.16\n"
+"Project-Id-Version: WebKOM 0.17\n"
 "PO-Revision-Date: Sun Mar 18 22:08:39 2001\n"
 "Last-Translator: Peter Åstrand <astrand@lysator.liu.se>\n"
 "Language-Team: Peter Åstrand <astrand@lysator.liu.se>\n"
