@@ -108,6 +108,14 @@ class SessionSet:
         for key in self.sessionset.keys():
             sess = self.sessionset[key]
             sess.async_message(m, 0)
+
+    def log_me_out(self, session):
+        self.sessionset_lock.acquire()
+        for key in self.sessionset.keys():
+            if self.sessionset[key] == session:
+                self.write_log("Deleting remotely logged out session", key)
+                del self.sessionset[key]
+        self.sessionset_lock.release()
              
 
 # Global variables
@@ -132,6 +140,9 @@ class Message:
         self.message = message
         self.time = time.time()
 
+class RemotelyLoggedOutException(Exception):
+    pass
+
 class Session:
     "A session class. Lives as long as the session (and connection)"
     def __init__(self, conn):
@@ -144,6 +155,7 @@ class Session:
         self.lock.acquire()
         # Holds pending messages
         self.pending_messages = []
+        self.whoami = kom.ReqWhoAmI(self.conn).response()
         
     def lock_sess(self):
         "Lock session"
@@ -156,6 +168,11 @@ class Session:
 
     def async_message(self, msg, c):
         self.pending_messages.append(Message(msg.recipient, msg.sender, msg.message))
+
+    def async_logout(self, msg, c):
+        if msg.session_no == self.whoami:
+            sessionset.log_me_out(self)
+            raise RemotelyLoggedOutException
 
 
 
@@ -700,7 +717,8 @@ class LogInActions(Action):
                 kom.ASYNC_NEW_TEXT,
                 kom.ASYNC_NEW_RECIPIENT,
                 kom.ASYNC_SUB_RECIPIENT,
-                kom.ASYNC_NEW_MEMBERSHIP ]
+                kom.ASYNC_NEW_MEMBERSHIP,
+                kom.ASYNC_LOGOUT ]
             kom.ReqAcceptAsync(conn, ACCEPTING_ASYNCS).response()
         except:
             self.error_message(self._("Cannot connect to server."))
@@ -748,6 +766,7 @@ class LogInActions(Action):
 
         # Handle messages
         conn.add_async_handler(kom.ASYNC_SEND_MESSAGE, self.resp.sess.async_message)
+        conn.add_async_handler(kom.ASYNC_LOGOUT, self.resp.sess.async_logout)
 
         # Pre-fetch information about half of the conferences
         prefetch_num = len(conn.member_confs)/2
@@ -2307,6 +2326,15 @@ def func(fcg, env, form):
             resp = Response(env, form)
             try: # For response generation
                 actions(resp)
+            except RemotelyLoggedOutException:
+                _ = translator_cache.get_translator("en").gettext
+                cont = Container(Href(BASE_URL, "WebKOM"))
+                cont.append(Heading(3, _("Logged out remotely")))
+                cont.append(_("Someone (probably you) ended this session remotely"))
+                cont.append(P())
+                cont.append(Href(BASE_URL, _("Login again")))
+                resp.doc.append(cont)
+                resp.sess = None
             except:
                 write_traceback(resp)
 
