@@ -451,7 +451,7 @@ class ViewPendingMessages(Action):
         while self.sess.pending_messages:
             msg = self.sess.pending_messages.pop(0)
             self.print_heading(msg)
-            if type(msg.sender) == String:
+            if type(msg.sender) == types.StringType:
                 sender_name = msg.sender
             else:
                 sender_name = self.get_pers_name(msg.sender)

@@ -39,13 +39,7 @@ TRUE = 1
 class Struct:
     pass
 
-# Data types
-Integer = type(1)
-String = type("")
-List = type([])
-
 # KOM utility functions
-
 
 # FIXME: Ugly return-API
 def kom_login(komserver, username, password):
