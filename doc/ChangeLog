@@ -1,3 +1,5 @@
+Note: This ChangeLog is not used anymore. See CVS logs instead. 
+
 2001-02-05  Peter Åstrand  <astrand@lysator.liu.se>
 
 	* Fixed a bug in ViewTextActions, causing local_num to be cleared. 
