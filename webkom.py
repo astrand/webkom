@@ -391,6 +391,7 @@ class LogOutActions(Action):
             pass
         
         sessionset.del_session(self.key)
+        self.resp.sess.conn.socket.close()
         self.resp.sess = None
         
         LoginPageActions(self.resp).response()
