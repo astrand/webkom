@@ -1840,7 +1840,7 @@ class JoinConfActions(Action):
     "Generate a page for joinging a conference"
     def response(self):
         if self.form.getvalue("joinconfsubmit", None):
-            JoinConfSubmit(self).response()
+            JoinConfSubmit(self.resp, self._).response()
         else:
             self.search_page()
 
