@@ -104,7 +104,7 @@ class SessionSet:
         try:
             # Do the actual deletion.
             # The CachedUserConnection object probably has registered callbacks for
-            # asynchronous messages. These must be removed to prevent circular references.
+            # asynchronous messages. These should be removed to prevent circular references.
             self.sessionset[key].conn.async_handlers = {}
             # At this point, there should be 5 references to this Session object:
             # * The reference in the sessionset.sessionset dictionary. 
@@ -115,11 +115,7 @@ class SessionSet:
             # If there are more references, there are probably circular references.
             # The GC will take care of this (as long as no __del__:s are used!),
             # but there is nothing wrong with helping the GC a little bit...
-            num_refs = sys.getrefcount(self.sessionset[key])
-            if num_refs != 5:
-                system_log.level_write(1, "INTERNAL ERROR: Wrong number of Session references before deletion")
             del self.sessionset[key]
-
         except:
             system_log.level_write(1, "Exception in _delete_session when deleting session.")
 
