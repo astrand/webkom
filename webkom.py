@@ -1549,6 +1549,10 @@ class CreateUserActions(Action):
         create_user_link = Href(BASE_URL + "?action=create_user", self._("Create new user"))
         cont = Container(toplink, " : ", create_user_link)
         self.append_std_top(cont)
+
+        default_kom_server = DEFAULT_KOM_SERVER
+        if self.form.has_key("komserver"):
+            default_kom_server = self.form["komserver"].value
         
         submitbutton = Center(Input(type="submit", name="create_user_submit", value=self._("Create new user")))
         F = Form(BASE_URL, name="create_user_form", submit="")
@@ -1558,7 +1562,7 @@ class CreateUserActions(Action):
         F.append(BR(2))
         F.append(Center(Heading(2, self._("Create new user"))))
         F.append(BR(2))
-        logintable = [(self._("Server"), Input(name="komserver", size=20, value=DEFAULT_KOM_SERVER)),
+        logintable = [(self._("Server"), Input(name="komserver", size=20, value=default_kom_server)),
                       (self._("Username"), Input(name="username", size=20)),
                       (self._("Password"), Input(type="password", name="password1", size=20)), 
                       (self._("Repeat password"), Input(type="password", name="password2", size=20)) ]
