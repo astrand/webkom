@@ -1359,6 +1359,8 @@ class ViewTextActions(Action):
         
         # Body
         # FIXME: Reformatting according to protocol A.
+        # FIXME: Can these translations be done more efficient, eg. in less steps?
+        body = del_8859_1_invalid_chars(body)
         body = linkify_text(body)
         body = HTMLutil.latin1_escape(escape(body))
         body = unquote_specials(body)
