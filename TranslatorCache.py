@@ -6,6 +6,7 @@ class TranslatorCache:
     def __init__(self, domain, locale_dir, default_lang):
         self.known_languages = {}
         self.known_languages["en"] = gettext.NullTranslations()
+        self.default_lang = default_lang
 
 
     def get_translator(self, lang_string):
@@ -20,7 +21,7 @@ class TranslatorCache:
             if translator:
                 return translator
 
-        translator = self.try_lang(default_lang)
+        translator = self.try_lang(self.default_lang)
         if translator:
             return translator
 
