@@ -638,7 +638,14 @@ class LoginPageActions(Action):
             logintable.append((self._("Server"), default_kom_server))
             F.append(Input(type="hidden", name="komserver", value=default_kom_server))
         else:
-            logintable.append((self._("Server"), Input(name="komserver", size=20, value=default_kom_server)))
+            if SERVER_LIST:
+                serverlist_href = Href(BASE_URL + "?action=select_server", self._("select from list"))
+            else:
+                serverlist_href = ""
+            
+            logintable.append((self._("Server"),
+                               Container(Input(name="komserver", size=20, value=default_kom_server),
+                                         serverlist_href)))
 
         logintable.append((self._("Username"),
                            Container(Input(name="username",size=20),
@@ -730,6 +737,27 @@ class AboutPageActions(Action):
         self.doc.append(self._("It should be used for bug reports, feature requests and general feedback."))
         
         self.append_right_footer()
+
+
+class SelectServerPageActions(Action):
+    "Page for selecting LysKOM server"
+    def response(self):
+        toplink = Href(BASE_URL, "WebKOM")
+        aboutlink = Href(BASE_URL + "?action=select_server", self._("Select server"))
+            
+        cont = Container(toplink, TOPLINK_SEPARATOR, aboutlink)
+        self.append_std_top(cont)
+        
+        self.doc.append(Heading(2, self._("Select server")))
+        if SERVER_LIST:
+            tab = map(self._make_row, SERVER_LIST)
+            self.doc.append(Table(body=tab, cell_padding=2, border=3, width="40%"))
+        
+        self.append_right_footer()
+
+    def _make_row(self, server):
+        description, hostname = server
+        return [description, Href(BASE_URL + "?komserver=" + hostname, hostname)]
 
 
 class WhatsImplementedActions(Action):
@@ -2926,11 +2954,13 @@ def actions(resp):
 
     if resp.form.has_key("sessionkey"):
         resp.key = resp.form["sessionkey"].value
-    elif resp.form.has_key("action") and (resp.form["action"].value == "about"):
-        # It's possible to view about page withour being logged in
+    elif resp.form.getvalue("action") == "about":
         AboutPageActions(resp).response()
         return
-    elif resp.form.has_key("action") and (resp.form["action"].value == "create_user"):
+    elif resp.form.getvalue("action") == "select_server":
+        SelectServerPageActions(resp).response()
+        return
+    elif resp.form.getvalue("action") == "create_user":
         CreateUserActions(resp).response()
         return
     elif resp.form.has_key("create_user_submit"):

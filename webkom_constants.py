@@ -57,6 +57,17 @@ VERSION = "0.20"
 BASE_URL = "webkom.py"
 DEFAULT_KOM_SERVER = "kom.lysator.liu.se"
 LOCK_KOM_SERVER = 0
+SERVER_LIST = [
+    ("LysKOM", "kom.lysator.liu.se"),
+    ("LuddKOM", "kom.ludd.luth.se"),
+    ("CdKOM", "kom.cd.chalmers.se"),
+    ("UppKOM", "kom.update.uu.se"),
+    ("RydKOM", "kom.hem.liu.se"),
+    ("TokKOM", "kom.stacken.kth.se"),
+    ("MDSKOM", "kom.mds.mdh.se"),
+    ("DsKOM", "kom.ds.hj.se")]
+
+
 VALIDATOR_LINK = 1
 
 # Log out the users sessions on the same webkom/komserver if this is set to
