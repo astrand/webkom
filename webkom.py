@@ -88,7 +88,6 @@ class SessionSet:
             if self.sessionset[key].conn.get_user() == pno:
                 ret.append(key)
         return ret
-                
 
     def add_session(self, sess):
         "Add session to sessionset. Return sessionkey"
