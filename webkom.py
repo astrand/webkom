@@ -2183,13 +2183,7 @@ class WriteArticleActions(Action):
                                  % self.sess.conn.conferences[presentationfor].presentation)
                 
         F.append("Article text:", BR())
-        # NOTE: This produces *invalid*HTML*. I'm really sorry to have to do this. 
-        # The reason is that Netscape <= 4.X does not wrap lines by default. It should.
-        # FIXME: Change this as soon as Netscape <= 4.X becomes uncommon. 
-        F.append("\n<textarea name=\"text_area\" rows=20 cols=70 wrap=\"virtual\">")
-
-        F.append(text)
-        F.append("</textarea>")
+        F.append(Textarea(rows=20, cols=70))
         F.append(BR())
 
         self.doc.append(self._("If certain characters are hard to write with your keyword, "
@@ -2279,10 +2273,11 @@ class WriteArticleSubmit(Action):
 
         subject = self.form.getvalue("articlesubject", "")
         text = self.form.getvalue("text_area", "")
+        # Make sure we have UNIX linebreaks
+        text = text.replace("\r\n", "\n")
+        text = text.replace("\r", "\n")
         # Reformat text (eg. make it maximum 70 chars
         text = reformat_text(text)
-        # Remove \m
-        text = string.replace(text, "\015", "")
         creating_software = kom.AuxItem(tag=kom.AI_CREATING_SOFTWARE,
                                         data="WebKOM %s" % VERSION)
 
