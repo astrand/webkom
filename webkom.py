@@ -644,13 +644,13 @@ class WhatsImplementedActions(Action):
         <li>Join conference</li>
         <li>Set unread</li>
         <li>Leave conference</li>
+        <li>Mark/unmark articles</li>
         </ul>
 
         <h3>May be implemented in a near future</h3>
         <ul>
         <li>Read article by specifying global article number</li>
         <li>Write footnotes</li>
-        <li>Mark/unmark articles</li>
         <li>Read marked articles</li>
         </ul>
 
@@ -1611,8 +1611,20 @@ class ViewTextActions(Action):
         # The number of unread has been updated in do_recipients, so now it's OK to add it
         unread_cont.append(self.unread_info(self.sess.current_conf))
 
-        if ts.no_of_marks:
-            header.append([self._("Marks:"), str(ts.no_of_marks)])
+        markline = str(ts.no_of_marks)
+        if self.sess.marked_texts.has_key(global_num):
+            markline+=self._(", marked by you. ")
+            markline+=str(self.action_href("unmark_text&amp;textnum="+\
+                                           str(global_num),
+                                           self._("Unmark")))
+        else:
+            markline+=self._(", not marked by you. ")
+            markline+=str(self.action_href("mark_text&amp;textnum="+\
+                                           str(global_num),
+                                           self._("Mark")))
+
+                             
+        header.append([self._("Marks:"), markline])
 
         header.append([self._("Subject:"), Bold(self.get_subject(global_num))])
 
@@ -2476,6 +2488,29 @@ class ViewMarkingsActions(Action):
             tab.append([textnum, author, subject, tpe])
         return
 
+class MarkTextActions(Action):
+    "Mark a text"
+    def response(self):
+        marktype = 100
+        textnum = int(self.form.getvalue("textnum"))
+        kom.ReqMarkText(self.sess.conn, textnum, marktype).response()
+        self.sess.conn.textstats.invalidate(textnum)
+        self.sess.marked_texts[textnum] = [100]
+        self.resp.set_redir("?sessionkey="+self.resp.key+\
+                            "&action=viewtext&textnum="+str(textnum))
+        return
+
+class UnmarkTextActions(Action):
+    "Unmark a text"
+    def response(self):
+        textnum = int(self.form.getvalue("textnum"))
+        kom.ReqUnmarkText(self.sess.conn, textnum).response()
+        self.sess.conn.textstats.invalidate(textnum)
+        del self.sess.marked_texts[textnum]
+        self.resp.set_redir("?sessionkey="+self.resp.key+\
+                            "&action=viewtext&textnum="+str(textnum))
+        return
+
 
 class SetUnreadActions(Action):
     "Generate a page for setting unread"
@@ -2808,6 +2843,8 @@ def actions(resp):
                        "login_progress" : LoginProgressPageActions,
                        "read_confirmation" : ReadConfirmationActions,
                        "view_presentation" : ViewPresentationActions,
+                       "unmark_text" : UnmarkTextActions,
+                       "mark_text" : MarkTextActions,
                        "view_markings" : ViewMarkingsActions }
 
     if not sessionset.valid_session(resp.key):
