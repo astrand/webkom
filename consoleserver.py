@@ -20,7 +20,7 @@
 
 # Adapted from Demo/pysvr. 
 
-import sys, os, string, getopt, thread, socket, traceback
+import sys, os, thread, socket, traceback
 from code import compile_command
 
 
