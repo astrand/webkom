@@ -34,11 +34,11 @@ msgstr "Ej inloggad"
 msgid "This server has a message of the day:"
 msgstr "Servern har ett dagsmeddelande:"
 
-msgid "WebKOM server message"
-msgstr "Meddelande från WebKOM-servern"
+msgid "Subject:"
+msgstr "Ärende:"
 
-msgid "Article number:"
-msgstr "Inläggsnummer:"
+msgid "Unread"
+msgstr "Oläst"
 
 msgid "View FAQ"
 msgstr "Visa FAQ"
@@ -55,8 +55,8 @@ msgstr "Inga olästa"
 msgid "The two new passwords didn't match."
 msgstr "De två nya lösenorden var ej lika."
 
-msgid "New password"
-msgstr "Nytt lösenord"
+msgid "Try again!"
+msgstr "Försök igen!"
 
 msgid "(Not readable)"
 msgstr "(Ej läsbar)"
@@ -90,9 +90,6 @@ msgstr "Antalet olästa inlägg är nu "
 
 msgid "You can find more information about WebKOM on the"
 msgstr "Du hittar mer information om WebKOM på"
-
-msgid "Go to "
-msgstr "Gå till "
 
 msgid "Alarm message"
 msgstr "Alarmmeddelande"
@@ -130,20 +127,17 @@ msgstr "Fotnot i inlägg:"
 msgid "list with known bugs"
 msgstr "lista med kända buggar"
 
-msgid "Password"
-msgstr "Lösenord"
+msgid "homepage."
+msgstr "hemsidan."
 
-msgid "The server requires login before new users can be created"
-msgstr "Servern kräver inloggning innan nya användare kan skapas"
-
-msgid "Web page"
-msgstr "Webbsida"
+msgid "Conferences (you are a member of)"
+msgstr "Möten (som du är medlem i)"
 
 msgid "Overview"
 msgstr "Översikt"
 
-msgid "Write personal comment"
-msgstr "Skriv personligt svar"
+msgid "WebKOM is a WWW-interface for "
+msgstr "WebKOM är ett WWW-gränssnitt till "
 
 msgid "Time: "
 msgstr "Tid: "
@@ -157,14 +151,8 @@ msgstr "Skickat:"
 msgid "Someone (probably you) ended this session remotely"
 msgstr "Någon (antagligen du) loggade ut den här sessionen på distans"
 
-msgid "Server call not implemented"
-msgstr "Serveranropet är ej implementerat"
-
 msgid "Leave conference"
 msgstr "Utträd ur möte"
-
-msgid "Add marked"
-msgstr "Lägg till markerade"
 
 msgid "Author:"
 msgstr "Författare:"
@@ -206,8 +194,8 @@ msgstr "Markera"
 msgid " conferences."
 msgstr " möten."
 
-msgid "WebKOM is a WWW-interface for "
-msgstr "WebKOM är ett WWW-gränssnitt till "
+msgid "Write personal comment"
+msgstr "Skriv personligt svar"
 
 msgid "User number"
 msgstr "Användarnummer"
@@ -215,8 +203,8 @@ msgstr "Användarnummer"
 msgid " by "
 msgstr " av "
 
-msgid "Conferences (with unread)"
-msgstr "Möten (med olästa)"
+msgid "Translations are provided by the GNU gettext library."
+msgstr "Översättningarna görs med biblioteket GNU gettext."
 
 msgid "Number of unread"
 msgstr "Antal olästa"
@@ -233,9 +221,6 @@ msgstr "Användarnamn"
 msgid "Confirmed reading: "
 msgstr "Bekräftat läsning: "
 
-msgid "Main Page"
-msgstr "Huvudsida"
-
 msgid "Blind carbon copy"
 msgstr "Dold kopia"
 
@@ -245,6 +230,9 @@ msgstr "Fortsätt inloggningen"
 msgid "Translations"
 msgstr "Översättningar"
 
+msgid "Server communications error"
+msgstr "Fel vid kommunikation med server"
+
 msgid "View marked articles"
 msgstr "Visa markerade inlägg"
 
@@ -253,6 +241,9 @@ msgstr "listan med kända buggar."
 
 msgid "Unable to set number of unread."
 msgstr "Kunde inte utföra endast."
+
+msgid "Article number:"
+msgstr "Inläggsnummer:"
 
 msgid "You are now a member of conference "
 msgstr "Du är nu medlem i mötet "
@@ -275,8 +266,8 @@ msgstr "Följande översättningar finns installerade på det här systemet:"
 msgid "Server"
 msgstr "Server"
 
-msgid "Conferences (you are a member of)"
-msgstr "Möten (som du är medlem i)"
+msgid "New password"
+msgstr "Nytt lösenord"
 
 msgid "Login again"
 msgstr "Logga in igen"
@@ -290,8 +281,8 @@ msgstr "Skapa ny användare"
 msgid "Invalid password"
 msgstr "Felaktigt lösenord"
 
-msgid "Killed the following session(s):"
-msgstr "Följande session(er) loggades ut:"
+msgid ", marked by you. "
+msgstr ", markerad av dig. "
 
 msgid "Later articles"
 msgstr "Senare inlägg"
@@ -311,23 +302,30 @@ msgstr "Visa presentation"
 msgid "The server time was: "
 msgstr "Serverns tid var: "
 
+msgid ""
+"An error occured while communicating with the LysKOM server. This could be a "
+"network problem or a LysKOM server failure."
+msgstr ""
+"Ett nätverksfel inträffade vid kommunikationen med LysKOM-servern. \n"
+"Det här kan bero på ett nätverksproblem eller ett fel på servern."
+
 msgid "The article does not exist."
 msgstr "Inlägget existerar inte."
 
 msgid "Repeat new password"
 msgstr "Upprepa nytt lösenord"
 
-msgid "The server rejected your password change request"
-msgstr "Servern accepterade ej lösenordsändringen"
+msgid "Write comment"
+msgstr "Skriv kommentar"
 
-msgid "Your password has been changed"
-msgstr "Ditt lösenord har ändrats"
+msgid "The username is ambiguous"
+msgstr "Användarnamnet är ej entydigt"
 
 msgid "Cannot connect to server."
 msgstr "Kan inte ansluta till servern."
 
-msgid "Write comment"
-msgstr "Skriv kommentar"
+msgid "See person "
+msgstr "Se även person "
 
 msgid "The author has requested others not to comment this text."
 msgstr "Författaren har begärt att inte få kommentarer."
@@ -344,8 +342,8 @@ msgstr "Session"
 msgid "Set unread"
 msgstr "Endast"
 
-msgid "The HTML code is generated by "
-msgstr "HTML-koden genereras av "
+msgid "Go to "
+msgstr "Gå till "
 
 msgid "The author requests read confirmation. "
 msgstr "Författaren har begärt läsbekräftelse. "
@@ -356,11 +354,14 @@ msgstr "Ärende"
 msgid "Technology"
 msgstr "Teknik"
 
-msgid "Peter Åstrand (project starter, most of implementation)"
-msgstr "Peter Åstrand (initiativtagare, implementerat det mesta)"
+msgid "Main Page"
+msgstr "Huvudsida"
 
 msgid "There is a "
 msgstr "Det finns en "
+
+msgid "You must give a positive number as argument."
+msgstr "Du måste ange ett positivt nummer."
 
 msgid "An error occurred when fetching article."
 msgstr "Ett fel uppstod när inlägget skulle hämtas."
@@ -371,8 +372,8 @@ msgstr "Extern mottagare:"
 msgid "Join conference"
 msgstr "Gå med i möte"
 
-msgid "Read next comment"
-msgstr "Läsa nästa kommentar"
+msgid "The author requests private replies only."
+msgstr "Författaren har begärt endast personliga svar."
 
 msgid "No server given."
 msgstr "Ingen server angiven."
@@ -429,9 +430,6 @@ msgstr "Sätt som presentation"
 msgid "Logout"
 msgstr "Logga ut"
 
-msgid "You must give a number as argument."
-msgstr "Du måste ange ett nummer."
-
 msgid "If it isn't, please report this problem to"
 msgstr "Om inte, rapportera detta fel till"
 
@@ -441,8 +439,8 @@ msgstr "Datum"
 msgid "Added by:"
 msgstr "Adderad av:"
 
-msgid "Version running: "
-msgstr "Version i drift: "
+msgid "Login failed"
+msgstr "Inloggningen misslyckades"
 
 msgid "Person %d (does not exist)"
 msgstr "Person %d (finns inte)"
@@ -491,14 +489,14 @@ msgstr "Ogiltig korsreferens:"
 msgid "Remove marked recipients"
 msgstr "Ta bort markerade mottagare"
 
-msgid ", marked by you. "
-msgstr ", markerad av dig. "
+msgid "All conferences loaded. "
+msgstr "Alla möten inladdade. "
 
 msgid "View all conferences"
 msgstr "Visa alla möten"
 
-msgid "Subject:"
-msgstr "Ärende:"
+msgid "WebKOM server message"
+msgstr "Meddelande från WebKOM-servern"
 
 msgid "Remove?"
 msgstr "Ta bort?"
@@ -509,14 +507,11 @@ msgstr "ingen"
 msgid "Search for conference or person:"
 msgstr "Sök efter möte eller person:"
 
-msgid "Try again!"
-msgstr "Försök igen!"
-
 msgid "Check if this bug is listed on"
 msgstr "Kontrollera ifall den här buggen finns med på"
 
-msgid "See person "
-msgstr "Se även person "
+msgid "Search result:"
+msgstr "Sökresultat:"
 
 msgid ""
 "If certain characters are hard to write with your keyword, you can copy and "
@@ -524,6 +519,9 @@ msgid ""
 msgstr ""
 "Om vissa tecken är svåra att skriva med ditt tangentbord så kan du klippa "
 "och klistra från raden nedan:"
+
+msgid "The server rejected your password change request"
+msgstr "Servern accepterade ej lösenordsändringen"
 
 msgid "The following people have in one way or another contributed to WebKOM:"
 msgstr "Följande personer har på ett eller annat sätt bidragit till WebKOM:"
@@ -537,8 +535,8 @@ msgstr "Utloggad på distans"
 msgid "(Nothing matches %s)"
 msgstr "(Inget matchar %s)"
 
-msgid "The username is ambiguous"
-msgstr "Användarnamnet är ej entydigt"
+msgid "Your password has been changed"
+msgstr "Ditt lösenord har ändrats"
 
 msgid "This server instance started "
 msgstr "Den här serverinstansen startade "
@@ -552,8 +550,8 @@ msgstr "WebKOM är fri mjukvara, licensierad under GPL."
 msgid "Working conference<br>Is doing"
 msgstr "Aktuellt möte<br>Gör"
 
-msgid "Search result:"
-msgstr "Sökresultat:"
+msgid "Add marked"
+msgstr "Lägg till markerade"
 
 msgid "Eva Isaksson (Finnish translation)"
 msgstr "Eva Isaksson (finsk översättning)"
@@ -573,8 +571,8 @@ msgstr "Från: "
 msgid "Carbon copy"
 msgstr "Extra kopiemottagare"
 
-msgid "Login failed"
-msgstr "Inloggningen misslyckades"
+msgid "Version running: "
+msgstr "Version i drift: "
 
 msgid "Attach the error message below."
 msgstr "Bifoga felmeddelandet nedan."
@@ -588,8 +586,8 @@ msgstr "(För många träffar, sökresultatet har trunkerats)"
 msgid "What can WebKOM do?"
 msgstr "Vad kan WebKOM göra?"
 
-msgid "There are no unread articles."
-msgstr "Det finns inga olästa inlägg."
+msgid "External carbon copy:"
+msgstr "Extern kopiemottagare:"
 
 msgid " (last modified "
 msgstr " (senast ändrad "
@@ -600,14 +598,14 @@ msgstr "Ok"
 msgid " in the Bugzilla at Lysator"
 msgstr "i Bugzilla på Lysator"
 
-msgid "You lack permissions to create new users"
-msgstr "Du har inte rättigheter till att skapa nya användare"
+msgid "Repeat password"
+msgstr "Upprepa lösenord"
 
 msgid "Unable to create article."
 msgstr "Det gick inte att skapa inlägget."
 
-msgid "Translations are provided by the GNU gettext library."
-msgstr "Översättningarna görs med biblioteket GNU gettext."
+msgid "Conferences (with unread)"
+msgstr "Möten (med olästa)"
 
 msgid "Unable to leave conference."
 msgstr "Kunde inte utträda ur möte."
@@ -618,14 +616,14 @@ msgstr "WebKOM är skriven i Python och är en persistent, trådad "
 msgid "You have confirmed reading text "
 msgstr "Du har bekräftat att du har läst inlägg "
 
+msgid "The HTML code is generated by "
+msgstr "HTML-koden genereras av "
+
 msgid "Personal message"
 msgstr "Personligt meddelande"
 
 msgid "Choose user:"
 msgstr "Välj användare:"
-
-msgid "The author requests private replies only."
-msgstr "Författaren har begärt endast personliga svar."
 
 msgid "Choose working conference"
 msgstr "Gå till mötet"
@@ -648,8 +646,8 @@ msgstr "Om WebKOM"
 msgid "Search for new recipient:"
 msgstr "Sök ny mottagare:"
 
-msgid "homepage."
-msgstr "hemsidan."
+msgid "Password"
+msgstr "Lösenord"
 
 msgid "No working conference"
 msgstr "Inget aktuellt möte"
@@ -669,14 +667,23 @@ msgstr "Namn"
 msgid "License"
 msgstr "Licens"
 
+msgid "You lack permissions to create new users"
+msgstr "Du har inte rättigheter till att skapa nya användare"
+
 msgid "Logout my other sessions"
 msgstr "Logga ut mina andra sessioner"
 
 msgid "User name"
 msgstr "Användarnamn"
 
+msgid "The server requires login before new users can be created"
+msgstr "Servern kräver inloggning innan nya användare kan skapas"
+
 msgid "Article submitted."
 msgstr "Inlägget skickat"
+
+msgid "Killed the following session(s):"
+msgstr "Följande session(er) loggades ut:"
 
 msgid "Write presentation"
 msgstr "Skriv presentation"
@@ -687,8 +694,8 @@ msgstr "Inget möte valt."
 msgid "Login"
 msgstr "Logga in"
 
-msgid "Unread"
-msgstr "Oläst"
+msgid "Web page"
+msgstr "Webbsida"
 
 msgid "Search result will be limited to "
 msgstr "Sökresultatet kommer att begränsas till "
@@ -705,11 +712,11 @@ msgstr "Möte %d (existerar inte)"
 msgid "%s: %d -- text not found"
 msgstr "%s: %d -- inlägget finns inte"
 
-msgid "External carbon copy:"
-msgstr "Extern kopiemottagare:"
+msgid "There are no unread articles."
+msgstr "Det finns inga olästa inlägg."
 
-msgid "Repeat password"
-msgstr "Upprepa lösenord"
+msgid "Peter Åstrand (project starter, most of implementation)"
+msgstr "Peter Åstrand (initiativtagare, implementerat det mesta)"
 
 msgid "WebKOM login"
 msgstr "WebKOM inloggning"
@@ -723,8 +730,11 @@ msgstr "Gruppmeddelande till "
 msgid "Set read marks to "
 msgstr "Sätt läsmarkeringar så att "
 
+msgid "Server call not implemented"
+msgstr "Serveranropet är ej implementerat"
+
+msgid "Read next comment"
+msgstr "Läsa nästa kommentar"
+
 msgid "Comment in article:"
 msgstr "Kommentar i inlägg:"
-
-msgid "All conferences loaded. "
-msgstr "Alla möten inladdade. "
