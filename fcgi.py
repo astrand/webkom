@@ -306,9 +306,6 @@ class FCGI:
         self.out = sys.stdout = StringIO()
         self.data = StringIO(data)
 
-    def __del__(self):
-        self.Finish()
-
     def Finish(self, status=0):
         if not self.haveFinished:
             self.haveFinished = 1
