@@ -38,6 +38,7 @@ import random, time
 import thread
 from webkom_utils import *
 import webkom_js
+import traceback
 
 
 class SessionSet:
@@ -1495,6 +1496,10 @@ class WriteArticleActions(Action):
         thisconf = self.action_href("goconf&conf=" + str(conf_num), conf_name)
 
         comment_to_list = get_values_as_list(self.form, "comment_to")
+        if presentationfor:
+            if 0 != self.sess.conn.conferences[presentationfor].presentation:
+                if not self.sess.conn.conferences[presentationfor].presentation in comment_to_list:
+                    comment_to_list += [self.sess.conn.conferences[presentationfor].presentation]
         footnote_to_list = get_values_as_list(self.form, "footnote_to")
         submitname = "writearticlesubmit"
         submitvalue = "Skicka in"
