@@ -410,6 +410,8 @@ class LoginPageActions(Action):
         self.doc.append(nonjs_cont)
         self.doc.append(webkom_js.noscript_end)
 
+        self.doc.append(Href(BASE_URL + "?action=create_user", "Skapa ny användare..."))
+
         return
 
 
@@ -1241,22 +1243,93 @@ class ChangePwSubmit(Action):
 
         toplink = Href(self.base_session_url(), "WebKOM")
         changepwlink = self.action_href("changepw", "Byt lösenord")
-        self.doc.append(Container(toplink, " : ", changepwlink))
+        self.doc.append(Container(toplink, " : ", changepwlink), BR(2))
 
         if newpw1 != newpw2:
-            self.doc.append(Heading(3, "Fel"))
             self.print_error("De två nya lösenorden var ej lika.")
             return
 
         try:
             kom.ReqSetPasswd(self.sess.conn, self.sess.pers_num, oldpw, newpw1).response()
         except:
-            self.doc.append(Heading(3, "Fel"))
             self.print_error("Servern accepterade ej lösenordsbytet")
             return
         
         self.doc.append(Heading(3, "Ok"))
         self.doc.append("Lösenordsbytet lyckades")
+
+
+class CreateUserActions(Action):
+    "Generate a page for creating a new LysKOM user"
+    def response(self):
+        toplink = Href(BASE_URL, "WebKOM")
+        create_user_link = Href(BASE_URL + "?action=create_user", "Skapa ny användare")
+        cont = Container(toplink, " : ", create_user_link)
+        self.append_std_top(cont)
+        
+        submitbutton = Center(Input(type="submit", name="create_user_submit", value="Skapa användare"))
+        F = Form(BASE_URL, name="create_user_form", submit="")
+        F.append(Input(type="hidden", name="create_user_submit"))
+        self.doc.append(F)
+        
+        F.append(BR(2))
+        F.append(Center(Heading(2, "Skapa ny användare")))
+        F.append(BR(2))
+        logintable = [("Server", Input(name="komserver", size=20, value=DEFAULT_KOM_SERVER)),
+                      ("Användarnamn", Input(name="username", size=20)),
+                      ("Lösenord", Input(type="password", name="password1", size=20)), 
+                      ("Uppprepa lösenord", Input(type="password", name="password2", size=20)) ]
+        
+        F.append(Center(InputTable(logintable)))
+        F.append(Center(submitbutton))
+
+        return
+
+
+class CreateUserSubmit(Action):
+    "Create new LysKOM user"
+    def response(self):
+        assert(self.form.has_key("komserver") and self.form.has_key("username")
+               and self.form.has_key("password1") and self.form.has_key("password2"))
+
+        (komserver, username) = (self.form["komserver"].value, self.form["username"].value)
+        (password1, password2) = (self.form["password1"].value, self.form["password2"].value)
+
+        toplink = Href(BASE_URL, "WebKOM")
+        create_user_link = Href(BASE_URL + "?action=create_user", "Skapa ny användare")
+        cont = Container(toplink, " : ", create_user_link)
+        self.append_std_top(cont)
+
+        if password1 != password2:
+            self.print_error("De två nya lösenorden var ej lika.")
+            return
+
+        # Connect to server
+        try:
+            conn = kom.Connection(komserver, 4894)
+        except:
+            self.print_error("Kan inte ansluta till servern.")
+            return
+
+        # Create person
+        flags = kom.PersonalFlags()
+        try:
+            kom.ReqCreatePerson(conn, username, password1, flags).response()
+        except kom.LoginFirst:
+            self.print_error("Servern kräver inloggning innan nya användare kan skapas")
+            return
+        except kom.PermissionDenied:
+            self.print_error("Du har inte tillräckliga rättigheter för att skapa ny användare")
+            return
+        except kom.PersonExists:
+            self.print_error("Det finns redan en användare med detta namnet")
+            return
+        except kom.InvalidPassword:
+            self.print_error("Ogiltigt lösenord")
+            return
+            
+        self.doc.append(Heading(3, "Ok"))
+        self.doc.append("Användaren är skapad.")
 
 
 class WriteLetterActions(Action):
@@ -1824,7 +1897,13 @@ def actions(resp):
     elif resp.form.has_key("action") and (resp.form["action"].value == "about"):
         # It's possible to view about page withour being logged in
         AboutPageActions(resp).response()
-        return 
+        return
+    elif resp.form.has_key("action") and (resp.form["action"].value == "create_user"):
+        CreateUserActions(resp).response()
+        return
+    elif resp.form.has_key("create_user_submit"):
+        CreateUserSubmit(resp).response()
+        return
     else:
         LoginPageActions(resp).response()
         return 
