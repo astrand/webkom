@@ -1,4 +1,4 @@
-#!/sw/local/bin/python
+#!/usr/bin/env python2
 
 # WebKOM - a web based LysKOM client
 # 
