@@ -400,7 +400,7 @@ class Action:
             return Font(text, color=INACTIVE_LINK_COLOR)
 
     def external_href(self, url, text):
-        redirected_url = self.resp._get_url_base() + "?redirect=" + url
+        redirected_url = self.resp._get_url_base() + "?redirect=" + urllib.quote_plus(url)
         return external_href(redirected_url, text)
 
     def webkom_escape_linkify(self, s):
@@ -420,12 +420,13 @@ class Action:
 
         # http URLs
         pat = re.compile("(?P<fullurl>(http://|(?=www\\.))(?P<url>[^\t \012\014\"<>|\\\]*[^\t \012\014\"<>|.,!(){}?'`:]))")
-        repl = '\001a href="http://\\g<url>"\002\\g<fullurl>\001/a\002' 
+        # We quote the URL now, because it will be an argument to the ?redirect mechanism (added below)
+        repl = lambda m: '\001a href="http://' + urllib.quote_plus(m.group("url")) + '"\002' + m.group("fullurl") + '\001/a\002'
         text = pat.sub(repl, text)
 
         # https URLs
         pat = re.compile("(?P<fullurl>(https://)(?P<url>[^\t \012\014\"<>|\\\]*[^\t \012\014\"<>|.,!(){}?'`:]))")
-        repl = '\001a href="https://\\g<url>"\002\\g<fullurl>\001/a\002'
+        repl = lambda m: '\001a href="https://' + urllib.quote_plus(m.group("url")) + '"\002' + m.group("fullurl") + '\001/a\002'
         text = pat.sub(repl, text)
 
         # ftp URLs
@@ -440,6 +441,7 @@ class Action:
 
         # Change all links to go through our redirection mechanism. 
         redirect = self.resp._get_url_base() + "?redirect="
+        # Both for http and https. 
         text = text.replace('\001a href="http', '\001a href="%shttp' % redirect)
         
         return text
