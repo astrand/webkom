@@ -217,6 +217,7 @@ class Session:
         # Result of submission. There is no problem when two submits are done
         # at the same time from one session, since the session is locked. 
         self.submit_result = {}
+        self.saved_shortcuts = []
 
         self.marked_texts = {}
         for mark in kom.ReqGetMarks(self.conn).response():
@@ -471,6 +472,8 @@ class Action:
         
     def submit_redir(self, submit_result):
         self.sess.submit_result = submit_result
+        # Save shortcuts
+        self.sess.saved_shortcuts = self.resp.shortcuts
         # Redirect to result page. Note: Since this is not HTML, do not escape "&"
         self.resp.set_redir("?sessionkey=" + self.resp.key + "&action=submit_result")
 
@@ -2380,25 +2383,23 @@ class WriteArticleSubmit(Action):
             self.submit_redir(result_cont)
             return
 
-        result_cont.append(self._("Article submitted."), BR())
+        result_cont.append(self._("Article submitted."), BR(2))
 
         for text_str in comment_to_list+footnote_to_list:
             self.sess.conn.textstats.invalidate(int(text_str))
         
         if comment_to_list:
-            result_cont.append(self.action_href("viewtext&amp;textnum="+\
-                                                comment_to_list[0],
-                                                self._("Go back to the "\
-                                                       "article you "\
-                                                       "commented")))
+            actionstr = "viewtext&amp;textnum=" + comment_to_list[0]
+            actiondescription = self._("Go back to the article you commented")
+        elif footnote_to_list:
+            actionstr = "viewtext&amp;textnum="+ footnote_to_list[0]
+            actiondescription = self._("Go back to the article you footnoted")
+        else:
+            actionstr = "goconf_with_unread"
+            actiondescription = self._("Next conference with unread")
 
-        if footnote_to_list:
-            result_cont.append(self.action_href("viewtext&amp;textnum="+\
-                                                footnote_to_list[0],
-                                                self._("Go back to the "\
-                                                       "article you "\
-                                                       "footnoted")))
-        
+        self.action_shortcut(" ", actionstr)
+        result_cont.append(self.action_href(actionstr, actiondescription))
         self.submit_redir(result_cont)
 
         return text_num 
@@ -2886,6 +2887,8 @@ class SubmitResultActions(Action):
     "Generate a page with result of submission. All submissions are redirected"
     "to this page, to prevent re-submission via browser reload etc."
     def response(self):
+        # Restore saved shortcuts
+        self.resp.shortcuts = self.sess.saved_shortcuts
         self.doc.append(self.sess.submit_result)
         return
 
