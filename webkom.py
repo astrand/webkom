@@ -108,13 +108,20 @@ class SessionSet:
 sessionset = SessionSet()
 
 # Used for debugging purposes in interactive terminal
-def first_conn():
-    return sessionset.sessionset.items()[0][1].conn
+def first_sess():
+    return sessionset.sessionset.items()[0][1]
 
 # Messages
 class Message:
     def __init__(self, recipient, sender, message):
+        # The following recipients are defined:
+        # -1: Message from WebKOM operator
+        # 0: Alarm message
+        # An integer equals the current user: A personal message
+        # An integer equalse some conference: A group message
         self.recipient = recipient
+        # The sender can be an integer or a string. If it's an integer,
+        # the name will be looked up from the LysKOM server. 
         self.sender = sender
         self.message = message
         self.time = time.time()
@@ -275,7 +282,9 @@ class Action:
 class ViewPendingMessages(Action):
     "View pending messages"
     def print_heading(self, msg):
-        if msg.recipient == 0:
+        if msg.recipient == -1:
+            text = self._("Message from WebKOM administrator")
+        elif msg.recipient == 0:
             text = self._("Alarm message")
         elif msg.recipient == self.sess.conn.get_user():
             text = self._("Personal message")
@@ -294,7 +303,11 @@ class ViewPendingMessages(Action):
         while self.sess.pending_messages:
             msg = self.sess.pending_messages.pop(0)
             self.print_heading(msg)
-            sender_name = self.get_pers_name(msg.sender)
+            if type(msg.sender) == String:
+                sender_name = msg.sender
+            else:
+                sender_name = self.get_pers_name(msg.sender)
+                
             self.doc.append(Bold(self._("From: ") + sender_name), BR())
             self.doc.append(Bold(self._("Time: ") +
                                  time.strftime("%Y-%m-%d %H:%M", time.localtime(msg.time))))
