@@ -1732,7 +1732,9 @@ class WriteArticleActions(Action):
 
         # Create type_list
         type_list = []
-        for mir in mir_keywords_dict.keys():
+        keywords = mir_keywords_dict.keys()
+        keywords.sort()
+        for mir in keywords:
             keyword = mir_keywords_dict[mir]
             type_list.append( (mir2caption(self, mir), keyword) )
 
