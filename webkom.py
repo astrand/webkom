@@ -2,7 +2,7 @@
 
 # Environment issues
 import sys
-sys.path.append("/home/astrand/webkom/python-modules")
+sys.path.append(MODULES_PATH)
 
 import os, sys, string, socket, errno
 from cStringIO import StringIO
@@ -25,7 +25,7 @@ class SessionSet:
         # Lock variable, for updating "sessions"
         self.sessionset_lock = thread.allocate_lock()
         # Global session log
-        self.log = open("session.log", "a")
+        self.log = open(LOG_DIR + "session.log", "a")
 
     def valid_session(self, key):
         "Check if a given key is a valid, active sessionkey"
@@ -1643,7 +1643,7 @@ def func(fcg, env, form):
                 import traceback
                 import time
                 timetext = time.strftime("%y%m%d-%H%M", time.localtime(time.time()))                
-                f = open("traceback-" + timetext, "w")
+                f = open(LOG_DIR + "traceback-" + timetext, "w")
                 traceback.print_exc(file = f)
                 f.close()
                 # Put it on the web.
@@ -1659,7 +1659,7 @@ def func(fcg, env, form):
                 resp.doc.append("Bifoga felutskriften nedan.")
                 resp.doc.append("Serverns tid var: " + \
                                 time.strftime("%Y%m%d-%H:%M", time.localtime(time.time())))
-                f = open("traceback-" + timetext, "r")
+                f = open(LOG_DIR + "traceback-" + timetext, "r")
                 resp.doc.append(Pre(str(f.read())))
                 f.close()
 
@@ -1681,7 +1681,7 @@ def func(fcg, env, form):
             pass
     except:
         import traceback
-        f = open("traceback.func", "w")
+        f = open(LOG_DIR + "traceback.func", "w")
         traceback.print_exc(file = f)
     return
 
@@ -1692,7 +1692,7 @@ def run_console(self, *args):
     try:
         fifoconsole.interact(local=globals(), fifoprefix="testwebkom")
     except:
-        f=open("traceback.fifoconsole", "w")
+        f=open(LOG_DIR + "traceback.fifoconsole", "w")
         traceback.print_exc(file = f)
         f.close()
 
@@ -1707,7 +1707,7 @@ def run_fcgi():
         fcgi.run()
     except:
         import traceback
-        f = open("traceback.main", "w")
+        f = open(LOG_DIR + "traceback.main", "w")
         traceback.print_exc(file = f)
 
 #
