@@ -1283,6 +1283,19 @@ class ViewTextActions(Action):
         if header:
             self.doc.append(Table(body=header, cell_padding=2, column1_align="right", border=0, width="80%"))
 
+    def check_content_type(self, ts):
+        ai_ct = kom.first_aux_items_with_tag(ts.aux_items, kom.AI_CONTENT_TYPE)
+        type_subtype = mime_content_type(ai_ct.data)
+        if type_subtype not in ["text/x-kom-basic", "x-kom/basic", "x-kom/text"]:
+            self.doc.append(Bold("Warning: article has unknown content type ",
+                                 webkom_escape(type_subtype), BR()))
+        
+        ct_params = mime_content_params(ai_ct.data)
+        charset = ct_params.get("charset")
+        if charset and charset != "iso-8859-1":
+            self.doc.append(Bold("Warning: article has unknown character set ",
+                                 webkom_escape(charset), BR()))
+
     def response(self):
         # Toplink
         toplink = Href(self.base_session_url(), "WebKOM")
@@ -1290,7 +1303,7 @@ class ViewTextActions(Action):
         cont = Container(toplink, " : ", self.current_conflink())
         self.append_std_top(cont)
 
-        # Local and global text number
+        # Global text number
         global_num = int(self.form["textnum"].value)
 
         # Valid article?
@@ -1335,7 +1348,10 @@ class ViewTextActions(Action):
                                               self._("Next conference with unread")), NBSP)
 
         self.doc.append(BR())
-
+        
+        # Warn for strange content-types
+        self.check_content_type(ts)
+                
         # Fetch text
         try:
             text = kom.ReqGetText(self.sess.conn, global_num, 0, ts.no_of_chars).response()
