@@ -4,8 +4,8 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: webkom 0.8\n"
-"PO-Revision-Date: Sat Jun 16 22:10:05 2001\n"
+"Project-Id-Version: webkom 0.15\n"
+"PO-Revision-Date: Sun Dec 02 18:09:11 2001\n"
 "Last-Translator: Eva Isaksson <eisaksso@cc.helsinki.fi>\n"
 "Language-Team: Eva Isaksson <eisaksso@cc.helsinki.fi>\n"
 "MIME-Version: 1.0\n"
@@ -146,9 +146,9 @@ msgstr "Vaihda salasanasi"
 msgid "Server"
 msgstr "Palvelin"
 
-#: ../webkom.py:469
-msgid "Peter ≈strand (project starter)"
-msgstr "Peter ≈strand (projektin k‰ynnist‰j‰)"
+#: ../webkom.py:587
+msgid "Peter ≈strand (project starter, most of implementation)"
+msgstr "Peter ≈strand (projektin k‰ynnist‰j‰ ja p‰‰kehitt‰j‰)"
 
 #: ../webkom.py:486
 msgid "The following translations are installed on this system:"
@@ -301,8 +301,8 @@ msgid " by "
 msgstr "kirjoittaja"
 
 #: ../webkom.py:455
-msgid "(last modified "
-msgstr "(viimeksi muokattu "
+msgid " (last modified "
+msgstr " (viimeksi muokattu "
 
 #: ../webkom.py:1636
 msgid "Remove marked recipients"
@@ -420,8 +420,8 @@ msgstr "Seuraavat henkilˆt ovat tavalla tai toisella osallistuneet WebKOMin teke
 msgid "Overview"
 msgstr "Yhteenveto"
 
-#: ../webkom.py:761
-msgid "Conferences (you are are member of)"
+#: ../webkom.py:363 ../webkom.py:882 ../webkom.py:968
+msgid "Conferences (you are a member of)"
 msgstr "Kokoukset (joissa olet j‰senen‰)"
 
 #: ../webkom.py:754 ../webkom.py:838 ../webkom.py:867 ../webkom.py:1110
@@ -685,3 +685,87 @@ msgstr "Ulkoinen vastaanottaja:"
 #: ../webkom.py:1762
 msgid "%s: %s -- bad text number"
 msgstr "%s: %s -- huono tekstin numero"
+
+#: ../webkom.py:682
+msgid "List all conferences you are a member of"
+msgstr "Kaikki kokoukset joissa olet j‰senen‰"
+
+#: ../webkom.py:693 ../webkom.py:1975
+msgid "Logout my other sessions"
+msgstr "Loggaa ulos muut istuntoni"
+
+#: ../webkom.py:1989
+msgid "You do not have any other sessions with this server"
+msgstr "Sinulla ei ole t‰ll‰ palvelimella muita istuntoja"
+
+#: ../webkom.py:2228
+msgid "Yes, leave conference"
+msgstr "Kyll‰, eroa kokouksesta"
+
+#: ../webkom.py:393
+msgid "WebKOM server message"
+msgstr "Viesti WebKOM-palvelimelta"
+
+#: ../webkom.py:2082
+msgid "View all conferences"
+msgstr "N‰yt‰ kaikki kokoukset"
+
+#: ../webkom.py:2083
+msgid "Search result will be limited to "
+msgstr "Osumien lukum‰‰r‰ enint‰‰n "
+
+#: ../webkom.py:2084
+msgid " conferences."
+msgstr "kokousta."
+
+#: ../webkom.py:2507
+msgid "Someone (probably you) ended this session remotely"
+msgstr "Joku (sin‰ itse?) et‰loggasi ulos t‰st‰ istunnosta"
+
+#: ../webkom.py:2517
+msgid "Server call not implemented"
+msgstr "Palvelinkutsua ei asennettu"
+
+#: ../webkom_utils.py:199
+msgid "Recipient"
+msgstr "Vastaanottaja"
+
+#: ../webkom_utils.py:203
+msgid "Blind carbon copy"
+msgstr "Tiedoksi vastaanottajille"
+
+#: ../webkom_utils.py:201
+msgid "Carbon copy"
+msgstr "Muut vastaanottajat"
+
+#: ../webkom.py:595
+msgid "Eva Isaksson (finnish translation)"
+msgstr "Eva Isaksson (suomennos)"
+
+#: ../webkom.py:1991
+msgid "Killed the following session(s):"
+msgstr "Seuraavat istunnot katkaistiin:"
+
+#: ../webkom.py:2506
+msgid "Logged out remotely"
+msgstr "Istunto et‰katkaistiin"
+
+#: ../webkom.py:2132
+msgid "No conference selected."
+msgstr "Et ole valinnut kokousta."
+
+#: ../webkom.py:762
+msgid "No server given."
+msgstr "Et ole valinnut palvelinta."
+
+#: ../webkom.py:766
+msgid "No username given."
+msgstr "Et ole antanut k‰ytt‰j‰nime‰."
+
+#: ../webkom.py:770
+msgid "Password variable is missing."
+msgstr "Et antanut salasanaa."
+
+#: ../webkom.py:2509 ../webkom.py:2522
+msgid "Login again"
+msgstr "Loggaa sis‰‰n uudelleen"
