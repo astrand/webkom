@@ -102,7 +102,7 @@ class Record:
         namelen = struct.unpack("!B", data[pos])[0]
         if namelen & 128:
             # 4-byte name length
-            namelen = struct.unpack("!I", data[pos:pos+4])[0]
+            namelen = struct.unpack("!I", data[pos:pos+4])[0] & 0x7fffffff
             pos += 4
         else:
             pos += 1
@@ -110,7 +110,7 @@ class Record:
         valuelen = struct.unpack("!B", data[pos])[0]
         if valuelen & 128:
             # 4-byte value length
-            valuelen = struct.unpack("!I", data[pos:pos+4])[0]
+            valuelen = struct.unpack("!I", data[pos:pos+4])[0] & 0x7fffffff
             pos += 4
         else:
             pos += 1
@@ -128,14 +128,14 @@ class Record:
             data = struct.pack("!B", namelen)
         else:
             # 4-byte name length
-            data = struct.pack("!I", namelen)
+            data = struct.pack("!I", namelen | 0x80000000)
 
         valuelen = len(value)
         if valuelen < 128:
             data += struct.pack("!B", value)
         else:
             # 4-byte value length
-            data += struct.pack("!I", value)
+            data += struct.pack("!I", value | 0x80000000)
 
         return data + name + value
         
