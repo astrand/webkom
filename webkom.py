@@ -243,7 +243,8 @@ class Response:
         self.req = req
         self.env = env
         self.form = form
-        self.doc = WebKOMSimpleDocument(title="WebKOM", bgcolor=HTMLcolors.WHITE, vlinkcolor=HTMLcolors.BLUE)
+        self.doc = WebKOMSimpleDocument(title="WebKOM", bgcolor=HTMLcolors.WHITE,
+                                        vlinkcolor=HTMLcolors.BLUE, stylesheet=STYLESHEET)
         
         self.key = ""
         self.sess = None

@@ -87,3 +87,5 @@ KNOWN_BUGS_URL = "http://bugzilla.lysator.liu.se/buglist.cgi" \
                  "&bug_status=REOPENED&product=WebKOM"
 CUSTOM_RIGHT_FOOTER = ""
 TOPLINK_SEPARATOR = " &gt; "
+STYLESHEET = None
+#STYLESHEET = "style.css"

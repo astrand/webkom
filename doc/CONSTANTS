@@ -71,3 +71,7 @@ Specifies the amount of logging information:
 3: Nothing extra.
 4: Debugging. 
 
+* STYLESHEET
+
+Specifies an optional stylesheet to use. If None, no stylesheet will
+be used.
