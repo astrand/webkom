@@ -2553,8 +2553,15 @@ class SetUnreadSubmit(Action):
         top_cont.append(" : ", self.action_href("goconf&amp;conf=" + str(conf_num),
                                                 conf_name))
         
-        
-        num_unread = int(self.form.getvalue("num_unread"))
+        try:
+            num_unread = int(self.form.getvalue("num_unread"))
+        except ValueError:
+            result_cont.append(Heading(3, self._("Invalid input")))
+            result_cont.append(self._("You must give a number as argument."))
+            result_cont.append(self.action_href("set_unread", self._("Try again!")))
+            
+            self.submit_redir(result_cont)
+            return
         try:
             kom.ReqSetUnread(self.sess.conn, conf_num, num_unread).response()
         except:
