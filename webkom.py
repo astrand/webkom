@@ -228,11 +228,18 @@ class Response:
         # FIXME: Should only be on pages that uses countdowns. 
         style = """\
 SPAN.countdownstyle {
-    background-color: #dda0de;
+    background-color: #ffffff;
     position:absolute; 
     left:40; 
-    top:40; 
+    top:140; 
 }
+SPAN.countdownfinished {
+    background-color: #ffffff;
+    position:absolute; 
+    left:5; 
+    top:200; 
+}
+
 """
         self.doc = WebKOMSimpleDocument(title="WebKOM", bgcolor=HTMLcolors.WHITE, vlinkcolor=HTMLcolors.BLUE, style=style)
         
@@ -242,22 +249,29 @@ SPAN.countdownstyle {
         self.shortcuts_active = 1
         self.docstart_written = 0
 
-        # Default HTTP header. 
-        self.http_header = "Content-type: text/html; charset=iso-8859-1\r\n" \
-                           "Cache-Control: no-cache\r\n" \
-                           "Pragma: no-cache\r\n" \
-                           "Expires: 0\r\n" \
-                           "\r\n"
+        # Default HTTP headers. 
+        self.http_headers = ["Content-type: text/html; charset=iso-8859-1",
+                            "Cache-Control: no-cache",
+                            "Pragma: no-cache",
+                            "Expires: 0"]
 
     def write_docstart(self):
         if not self.docstart_written:
-            self.req.out.write(self.http_header)
+            http_header = string.join(self.http_headers + 2*[""], "\r\n")
+            self.req.out.write(http_header)
             self.req.out.write(self.doc.get_doc_start())
             self.docstart_written = 1
 
-    def set_redir(self, url_text):
-        # Do not print shortcuts code after redirection, this leads to internal error. 
-        self.shortcuts_active = 0
+    def write_docstart_refresh(self, seconds, url_text):
+        if not self.docstart_written:
+            url_text = self._get_url_base() + "?sessionkey=" + self.key + url_text
+            http_headers = self.http_headers + ["Refresh: %s; URL=%s" % (seconds, url_text)]
+            http_header = string.join(http_headers + 2*[""], "\r\n")
+            self.req.out.write(http_header)
+            self.req.out.write(self.doc.get_doc_start())
+            self.docstart_written = 1
+
+    def _get_url_base(self):
         server_name = self.env["HTTP_HOST"]
         if not server_name:
             server_name = self.env["SERVER_NAME"]
@@ -266,7 +280,13 @@ SPAN.countdownstyle {
         else:
             server_name = "http://" + server_name
         script_name = self.env["SCRIPT_NAME"]
-        self.http_header = "Location: " + server_name + script_name + url_text + "\n\n"
+        return server_name + script_name
+        
+    def set_redir(self, url_text):
+        # Do not print shortcuts code after redirection, this leads to internal error.
+        self.shortcuts_active = 0
+        url_base = self._get_url_base()
+        self.http_headers = ["Location: " + url_base + url_text]
 
     def add_shortcut(self, key, url):
         self.shortcuts.append((key, url))
@@ -794,16 +814,52 @@ class LogInActions(Action):
         # Setup async handling
         self.setup_asyncs(conn)
 
-        # Pre-fetch information about half of the conferences
-        prefetch_num = len(conn.member_confs)/2
-        conf_list = conn.member_confs[0:prefetch_num]
-        for conf_num in conf_list:
-            conn.no_unread[conf_num]
-
-        # Redirect to mainpage
-        self.resp.set_redir("?sessionkey=" + self.resp.key)
+        # Redirect to progress page
+        self.resp.set_redir("?sessionkey=" + self.resp.key + "&action=login_progress")
 
 
+class LoginProgressPageActions(Action):
+    def response(self):
+        self.resp.shortcuts_active = 0
+        self.resp.write_docstart_refresh(1, "")
+        self.doc.append(Heading(2, self._("Login progress")))
+        self.doc.append("Please wait while your conference list is loading...", BR())
+        self.doc.append("Number of conferences loaded:")
+        self.resp.req.out.write(self.doc.flush_doc_contents())
+
+        last_update = 0
+
+        # Pre-fetch information about conferences & unread
+        total_num_confs = len(self.sess.conn.member_confs)
+        for conf_pos in range(total_num_confs):
+            curtime = time.time()
+            # Display progress every second
+            if curtime - last_update > 1:
+                self.print_progress(conf_pos, total_num_confs)
+                last_update = curtime
+
+            #time.sleep(1) # For debugging
+            conf_num = self.sess.conn.member_confs[conf_pos]
+            self.sess.conn.no_unread[conf_num]
+
+        self.print_progress(total_num_confs, total_num_confs)
+        self.print_loaded()
+        
+    def print_progress(self, confs_loaded, total_num_confs):
+        self.resp.req.out.write('<span id="counter" class="countdownstyle">%s/%s</span><br>\n' % (str(confs_loaded), str(total_num_confs)))
+        self.resp.req.flush_out()
+
+    def print_loaded(self):
+        # It's impossible to use class as a keyword argument directly. 
+        kwargs = {"class": "countdownfinished", "id": "counter"}
+        span = Span(**kwargs)
+        self.doc.append(span)
+        span.append("All conferences loaded. ")
+        span.append(Href(self.base_session_url(), "Go to main page"))
+        
+        self.resp.req.out.write(self.doc.flush_doc_contents())
+        self.resp.req.flush_out()
+        
 
 class InvalidSessionPageActions(Action):
     "Generate a page informating about an invalid session"
@@ -2299,7 +2355,7 @@ def actions(resp):
         lang_string = resp.env["HTTP_ACCEPT_LANGUAGE"]
     except KeyError:
         lang_string = ""
-    
+
     if resp.form.has_key("loginsubmit"):
         LogInActions(resp).response()
         return
