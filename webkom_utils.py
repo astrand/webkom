@@ -357,35 +357,75 @@ def existing_locals(conn, conf_num, ask_for, highest_local):
     return local_nums
 
 
-def search_articles(conn, needle, limit=None):
-    """Search articles for needle. Returns a list of global article
-    numbers, where needle is either in the subject or body. The limit
-    argument specifies the maximum number of articles to look through."""
+class ArticleSearcher:
+    def __init__(self, conn, limit):
+        self.max_int32 = int(2**31L-1)
+        self.conn = conn
+        self.limit = limit
 
-    max_int32 = int(2**31L-1)
-    if limit is None:
-        limit = max_int32
-    result = []
-    reo = re.compile(needle, re.I)
-    textnum = max_int32
+    def search(self, needle):
+        result = []
+        reo = re.compile(needle, re.I)
+        while self.limit > 0:
+            self.limit -= 1
+            for textnum in self._fetch_textnums():
+                try:
+                    text = kom.ReqGetText(self.conn, textnum).response()
+                    if reo.search(text):
+                        result.append(textnum)
+                except kom.NoSuchText:
+                    # Either the text was just removed, or we have no read
+                    # permission
+                    pass
 
-    while limit > 0:
-        limit -= 1
+        return result
+
+    def _fetch_textnums(self):
+        """Return a list of texts to search through. If the result is an
+        empty list, there are not more texts. Abstract method. """
+        raise NotImplementedError()
+
+
+class GlobalArticleSearcher(ArticleSearcher):
+    def __init__(self, conn, limit):
+        ArticleSearcher.__init__(self, conn, limit)
+        self.textnum = self.max_int32
+
+    def _fetch_textnums(self):
         try:
-            textnum = kom.ReqFindPreviousTextNo(conn, textnum).response()
-            try:
-                text = kom.ReqGetText(conn, textnum).response()
-                if reo.search(text):
-                    result.append(textnum)
-            except kom.NoSuchText:
-                # Either the text was just removed, or we have no read
-                # permission
-                pass
+            self.textnum = kom.ReqFindPreviousTextNo(self.conn, self.textnum).response()
         except kom.NoSuchText:
             # There are no more texts
-            break
+            return []
+        else:
+            return [self.textnum]
 
-    return result
+
+class LocalArticleSearcher(ArticleSearcher):
+    def __init__(self, conn, limit, conf_num):
+        ArticleSearcher.__init__(self, conn, limit)
+        self.conf_num = conf_num
+        self.local_no_ceiling = 0
+        self.later_texts_exists = 1
+        
+    def _fetch_textnums(self):
+        if not self.later_texts_exists:
+            return []
+        
+        no_of_existing_texts = min(self.limit, 255)
+        try:
+            m = kom.ReqLocalToGlobalReverse(self.conn, self.conf_num, self.local_no_ceiling,
+                                            no_of_existing_texts).response()
+        except kom.UndefinedConference:
+            return []
+        except kom.AccessDenied:
+            return []
+
+        self.later_texts_exists = m.later_texts_exists
+        self.local_no_ceiling = m.range_begin
+        textnums = [textnum for local_textnum, textnum in m.list]
+        textnums.reverse()
+        return textnums
 
 
 def get_ai_dict(ai_list):

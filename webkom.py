@@ -890,7 +890,7 @@ class MainPageActions(Action):
             self.action_href("viewconfs", self._("List all conferences you are a member of")),
             self.action_href("view_markings", self._("List marked articles"))])
         # self.action_href("specify_article_number", self._("View article with specified number"))]))
-        if GLOBAL_SEARCH_LIMIT != 0:
+        if SEARCH_LIMIT != 0:
             l.append(self.action_href("search", self._("Search article")))
         cont.append(l)
 
@@ -1338,7 +1338,7 @@ class GoConfActions(Action):
 
         link = self.action_href("viewtext&amp;textnum=" + textnum,
                                 self._("View FAQ"), ai_faq)
-        self.doc.append(link)
+        self.doc.append(link, NBSP)
 
     
     def response(self, conf_num=None):
@@ -1394,6 +1394,8 @@ class GoConfActions(Action):
         self.doc.append(self.action_href("set_unread", self._("Set unread")), NBSP)
         self.doc.append(self.action_href("leaveconf", self._("Leave conference")), NBSP)
         self.print_faq_link(conf_num)
+        self.doc.append(self.action_href("search&amp;conf=" + str(conf_num),
+                                         self._("Search")), NBSP)
         
         self.doc.append(BR(), Heading(3, self._("Articles")))
 
@@ -3051,23 +3053,40 @@ class SearchActions(Action):
     def response(self):
         self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
-        golink = self.action_href("search",
-                                  self._("Search article"))
-        self.append_std_top(Container(toplink, ' : ', golink))
+        cont = Container(toplink)
+        
+        conf_num = int(self.form.getvalue("conf", 0))
+        if conf_num:
+            searcher = LocalArticleSearcher(self.sess.conn, SEARCH_LIMIT, conf_num)
+            conf_name = self.get_conf_name(conf_num)
+            title = self._("Search article in %s") % conf_name
+            cont.append(TOPLINK_SEPARATOR, self.current_conflink())
+            cont.append(TOPLINK_SEPARATOR, self.action_href("goconf&amp;conf=" + str(conf_num),
+                                                            conf_name))
+            cont.append(TOPLINK_SEPARATOR,
+                        self.action_href("search&amp;conf=" + str(conf_num),
+                                         self._("Search")))
+        else:
+            searcher = GlobalArticleSearcher(self.sess.conn, SEARCH_LIMIT)
+            title = self._("Search article in all conferences")
+            cont.append(self.action_href("search", title))
+        self.append_std_top(cont)
+
         F = Form(BASE_URL, name="search_form", submit="")
         self.doc.append(F)
         F.append(self.hidden_key())
         F.append(BR())
-        F.append(Heading(2, self._("Search article")))
+        F.append(Heading(2, title))
 
         helpstring = self._("Search for articles and subjects containing some text.")
         helpstring += " " + self._("The search is not case sensitive.")
         helpstring += " " + self._("Regular expressions are allowed.")
-        if GLOBAL_SEARCH_LIMIT is not None:
-            helpstring += " " + self._("The search is limited to the last %d articles.") % GLOBAL_SEARCH_LIMIT
+        if SEARCH_LIMIT is not None:
+            helpstring += " " + self._("The search is limited to the last %d articles.") % SEARCH_LIMIT
         F.append(helpstring, BR(2))
         
         F.append(Input(name="searchtext", value=self.form.getvalue("searchtext")))
+        F.append(Input(type="hidden", name="conf", value=str(conf_num)))
         F.append(Input(type="hidden", name="search_submit"))
         F.append(Input(type="submit", name="search_submit",
                        value=self._("Search")), BR())
@@ -3075,11 +3094,11 @@ class SearchActions(Action):
 
         searchtext = self.form.getvalue("searchtext", None)
         if searchtext:
-            matches = search_articles(self.sess.conn, searchtext, GLOBAL_SEARCH_LIMIT)
+            matches = searcher.search(searchtext)
             self.doc.append(self._("Search result:"), BR())
             self.print_matches(matches)
-        return
 
+        
     def print_matches(self, matches):
         # FIXME: The code below is duplicated in many places. Make common method. 
         headings = [self._("Subject"), self._("Author"),
