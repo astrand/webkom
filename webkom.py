@@ -100,7 +100,7 @@ class SessionSet:
     def write_log(self, msg, key):
         self.log.write(time.strftime("%Y-%m-%d %H:%M ", time.localtime(time.time())))
         self.log.write(msg +", key=" + str(key) + " pers_num=" +
-                       str(self.sessionset[key].pers_num) + "\n")
+                       str(self.sessionset[key].conn.get_user()) + "\n")
         self.log.flush()
              
 
@@ -121,11 +121,10 @@ class Message:
 
 class Session:
     "A session class. Lives as long as the session (and connection)"
-    def __init__(self, conn, pers_num):
+    def __init__(self, conn):
         self.conn = conn
         # FIXME: Since CachedUserConnection now contains the user number,
         # this variable is not neccessary any longer. 
-        self.pers_num = pers_num
         self.current_conf = 0
         self.comment_tree = []
         self.timestamp = time.time()
@@ -249,7 +248,7 @@ class Action:
 
     def unread_info(self, current_conf=0):
         "Return a string with information about number of unread"
-        total = get_total_num_unread(self.sess.conn, self.sess.pers_num,
+        total = get_total_num_unread(self.sess.conn, self.sess.conn.get_user(),
                                      self.sess.conn.member_confs)
         retval = NBSP*4 + self._("Unread: ")
         if current_conf:
@@ -280,7 +279,7 @@ class ViewPendingMessages(Action):
     def print_heading(self, msg):
         if msg.recipient == 0:
             text = self._("Alarm message")
-        elif msg.recipient == self.sess.pers_num:
+        elif msg.recipient == self.sess.conn.get_user():
             text = self._("Personal message")
         else:
             recipient_name = self.get_conf_name(msg.recipient)
@@ -561,14 +560,14 @@ class MainPageActions(Action):
         cont.append(Heading(2, self._("Main Page")))
         cont.append(Heading(3, self.action_href("viewconfs", self._("List conferences"))))
         cont.append(Heading(3, self.action_href("viewconfs_unread", self._("List conferences with unread"))))
-        cont.append(Heading(3, self.action_href("writeletter&rcpt=" + str(self.sess.pers_num),
+        cont.append(Heading(3, self.action_href("writeletter&rcpt=" + str(self.sess.conn.get_user()),
                                                 self._("Write letter"))))
         cont.append(Heading(3, self.action_href("joinconf", self._("Join conference"))))
         cont.append(Heading(3, self.action_href("choose_conf", self._("Go to conference"))))
         cont.append(Heading(3, self.action_href("whoison", self._("Who is logged in"))))
         cont.append(Heading(3, self.action_href("changepw", self._("Change password"))))
         cont.append(Heading(3, self.action_href("writepresentation" + "&presentationfor="
-                                                + str(self.sess.pers_num), self._("Write presentation"))))
+                                                + str(self.sess.conn.get_user()), self._("Write presentation"))))
         cont.append(Heading(3, self.action_href("logout", self._("Logout"))))
         cont.append(BR(), Heading(3, self.action_href("whats_implemented",
                                                       self._("What can WebKOM do?"))))
@@ -707,7 +706,7 @@ class LogInActions(Action):
         # If the sessionkey is valid, someone else is using it. 
         while sessionset.valid_session(sessionkey):
             sessionkey = gen_session_key()
-        self.resp.sess = Session(conn, pers_num)
+        self.resp.sess = Session(conn)
         # Add to sessionset
         sessionset.new_session(sessionkey, self.resp.sess)
         self.resp.key = sessionkey
@@ -901,7 +900,7 @@ class GoConfActions(Action):
         # Get unread texts
         # FIXME: error handling
         ms = self.sess.conn.memberships[conf_num]
-        texts = get_texts(self.sess.conn, self.sess.pers_num, conf_num, MAX_SUBJ_PER_PAGE, ask_for)
+        texts = get_texts(self.sess.conn, self.sess.conn.get_user(), conf_num, MAX_SUBJ_PER_PAGE, ask_for)
         
         # Prepare for links to earlier/later pages of texts
         first_local_num = self.sess.conn.conferences[conf_num].first_local_no
@@ -978,7 +977,7 @@ class GoConfActions(Action):
 
 
         # Standard action
-        next_text = get_next_unread(self.sess.conn, self.sess.pers_num,
+        next_text = get_next_unread(self.sess.conn, self.sess.conn.get_user(),
                                     self.sess.current_conf)
         if next_text:
             std_url = "viewtext&textnum=" + str(next_text)
@@ -1288,7 +1287,7 @@ class ViewTextActions(Action):
         self.doc.append(lower_actions)
 
         # Add links for reading next unread
-        next_text = get_next_unread(self.sess.conn, self.sess.pers_num,
+        next_text = get_next_unread(self.sess.conn, self.sess.conn.get_user(),
                                     self.sess.current_conf)
         next_text_url = "viewtext&textnum=" + str(next_text)
         lower_actions.append(self.action_href(next_text_url, self._("Read next unread"),
@@ -1385,7 +1384,7 @@ class ChangePwSubmit(Action):
             return
 
         try:
-            kom.ReqSetPasswd(self.sess.conn, self.sess.pers_num, oldpw, newpw1).response()
+            kom.ReqSetPasswd(self.sess.conn, self.sess.conn.get_user(), oldpw, newpw1).response()
         except:
             self.print_error(self._("The server rejected your password change request"))
             return
@@ -1471,7 +1470,7 @@ class WritePresentationActions(Action):
     def response(self):
         serverinfo = kom.ReqGetInfo(self.sess.conn).response()
         presfor = self.form.getvalue("presentationfor")
-        if int(presfor) == self.sess.pers_num:
+        if int(presfor) == self.sess.conn.get_user():
             self.change_conf(serverinfo.pers_pres_conf)
             WriteArticleActions(self.resp, self._).response(presentationfor = int(presfor), presconf = serverinfo.pers_pres_conf)
         else:
@@ -1482,7 +1481,7 @@ class WritePresentationActions(Action):
 class WriteLetterActions(Action):
     "Write personal letter"
     def response(self):
-        self.change_conf(self.sess.pers_num)
+        self.change_conf(self.sess.conn.get_user())
         WriteArticleActions(self.resp, self._).response()
 
 
@@ -1908,7 +1907,7 @@ class JoinConfSubmit(Action):
         type = kom.ConfType()
         try:
             # FIXME: User settable priority
-            kom.ReqAddMember(self.sess.conn, conf, self.sess.pers_num, 100, 1000, type).response()
+            kom.ReqAddMember(self.sess.conn, conf, self.sess.conn.get_user(), 100, 1000, type).response()
         except:
             self.print_error(self._("Unable to join conference."))
             return
@@ -2198,12 +2197,12 @@ def actions(resp):
         # Add global shortcuts
         resp.add_shortcut("v", action.base_session_url() + "&action=whoison")
         resp.add_shortcut("b", action.base_session_url() + "&action=writeletter&rcpt=" 
-                          + str(resp.sess.pers_num))
+                          + str(resp.sess.conn.get_user()))
         resp.add_shortcut("g", action.base_session_url() + "&action=choose_conf")
         AddShortCuts(resp, trans).response()
 
     # Set page title
-    resp.doc.title = "WebKOM: " + resp.sess.conn.conf_name(resp.sess.pers_num)[:MAX_CONFERENCE_LEN]
+    resp.doc.title = "WebKOM: " + resp.sess.conn.conf_name(resp.sess.conn.get_user())[:MAX_CONFERENCE_LEN]
 
     # For debugging 
     #resp.doc.append(str(resp.env))
