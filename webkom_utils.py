@@ -5,8 +5,18 @@ from webkom_constants import *
 import re
 import string
 
+
+NBSP = "&nbsp;"
+
+# Magic!
+class Struct:
+    pass
+
+
 # KOM utility functions
 
+
+# FIXME: Ugly return-API
 def kom_login(komserver, username, password):
     "Login to KOM server. Return (connection, pers_no, errorstring)"
     port = 4894
@@ -33,11 +43,16 @@ def kom_login(komserver, username, password):
     return (conn, matches[0][0], None)
 
 
-# Modified version av get_unread_texts (from kom.py)
-def get_num_unread_texts(conn, pers_num, conf_num):
-    "Get number of unread texts in a conference (500 max)"
-    num_unread = 0
-    ms = kom.ReqQueryReadTexts(conn, pers_num, conf_num).response()
+def get_total_num_unread(conn, pers_num, conf_list):
+    total = 0
+    for conf_num in conf_list:
+        total = total + conn.no_unread[conf_num]
+    return total
+
+
+def get_next_unread(conn, pers_num, conf_num):
+    "Get next unread text in a conference and return as a global number"
+    ms = conn.memberships[conf_num]
 
     # Start asking for translations
     ask_for = ms.last_text_read + 1
@@ -45,52 +60,25 @@ def get_num_unread_texts(conn, pers_num, conf_num):
     while more_to_fetch:
         try:
             mapping = kom.ReqLocalToGlobal(conn, conf_num,
-                                           ask_for, 255).response()
+                                           ask_for, 16).response()
             for (local_num, global_num) in mapping.list:
                 if (local_num not in ms.read_texts) and global_num:
-                    num_unread = num_unread + 1
-                    if num_unread > 500:
-                        return num_unread
+                    return global_num
             ask_for = mapping.range_end
             more_to_fetch = mapping.later_texts_exists
         except kom.NoSuchLocalText:
             # No unread texts
             more_to_fetch = 0
-
-    return num_unread
-
-
-def get_next_unread(conn, pers_num, conf_num):
-        "Get next unread text"
-        # FIXME: Make more server-friendly
-        ms = kom.ReqQueryReadTexts(conn, pers_num, conf_num).response()
-
-        # Start asking for translations
-        ask_for = ms.last_text_read + 1
-        more_to_fetch = 1
-        while more_to_fetch:
-            try:
-                mapping = kom.ReqLocalToGlobal(conn, conf_num,
-                                               ask_for, 5).response()
-                for (local_num, global_num) in mapping.list:
-                    if (local_num not in ms.read_texts) and global_num:
-                        return global_num
-                ask_for = mapping.range_end
-                more_to_fetch = mapping.later_texts_exists
-            except kom.NoSuchLocalText:
-                # No unread texts
-                more_to_fetch = 0
-
-        return 0
+    return 0
 
 
-def get_texts(conn, pers_num, conf_num, lowest_local=None):
-    "Get all unread texts. Return a list of tuples (local_num, global_num, unread)"
+def get_texts(conn, pers_num, conf_num, max_num, lowest_local=None):
+    "Get all unread texts. Return a list of tuples (local_num, global_num)"
     # Start list
     texts = []
     
     # Get membership record
-    ms = kom.ReqQueryReadTexts(conn, pers_num, conf_num).response()
+    ms = conn.memberships[conf_num]
 
     # Start asking for translations
     if lowest_local:
@@ -105,15 +93,13 @@ def get_texts(conn, pers_num, conf_num, lowest_local=None):
             mapping = kom.ReqLocalToGlobal(conn, conf_num,
                                            ask_for, 255).response()
             for (local_num, global_num) in mapping.list:
-                unread = (local_num not in ms.read_texts) and (local_num > ms.last_text_read)
+                if n_texts >= max_num: 
+                    return texts
                 # global_num may be zero if texts are deleted
                 if global_num:
-                    # The last entry in the tuple indicates if the text is unread
-                    texts.append((local_num, global_num, unread))
+                    texts.append((local_num, global_num))
                     n_texts = n_texts + 1 
-                if n_texts >= MAX_SUBJ_PER_PAGE:
-                    return texts
-                
+                    
             ask_for = mapping.range_end
             more_to_fetch = mapping.later_texts_exists
         except kom.NoSuchLocalText:
@@ -123,52 +109,31 @@ def get_texts(conn, pers_num, conf_num, lowest_local=None):
     return texts
 
 
-def get_active_memberships(conn, pers_num, ask_for, max_num):
-    "Get a limited number of active memberships"
+def get_active_memberships(conn, member_confs, first_pos, max_num):
+    "Get a limited number of active memberships, starting at position first_pos"
     retlist = []
-
-    while 1:
-        try:
-            # It doesn't matter how many confs to get each time;
-            # MAX_CONFS_PER_PAGE + 1 is just chosen because thats a common number
-            memberships = kom.ReqGetMembership(conn, pers_num, ask_for,
-                                               MAX_CONFS_PER_PAGE + 1, 1).response()
-            for ms in memberships:
-                if (ms.priority != 0) and (not ms.type.passive):
-                    retlist.append(ms)
-                    if len(retlist) >= max_num:
-                        return retlist
-            ask_for = ask_for + len(memberships)
-        except kom.IndexOutOfRange:
+    for conf_num in member_confs[first_pos:]:
+        if len(retlist) >= max_num:
             return retlist
+        retlist.append(conn.memberships[conf_num])
+    return retlist
 
 
-def get_conf_with_unread(conn, pers_num):
+def get_conf_with_unread(conn, member_confs):
     "Get next conference with unread articles"
-    unread_confs = kom.ReqGetUnreadConfs(conn, pers_num).response()
-
-    for conf_num in unread_confs:
-        ms = kom.ReqQueryReadTexts(conn, pers_num, conf_num).response()
-        highest_local_num = conn.uconferences[conf_num].highest_local_no
-        if highest_local_num > ms.last_text_read:
-            # Start asking for translations
-            ask_for = ms.last_text_read + 1
-            more_to_fetch = 1
-            while more_to_fetch:
-                try:
-                    mapping = kom.ReqLocalToGlobal(conn, conf_num,
-                                                   ask_for, 128).response()
-                    for (local_num, global_num) in mapping.list:
-                        if (local_num not in ms.read_texts) and global_num:
-                            # Yes, an unread article exist
-                            return conf_num
-
-                    ask_for = mapping.range_end
-                    more_to_fetch = mapping.later_texts_exists
-                except kom.NoSuchLocalText:
-                    # No unread texts
-                    more_to_fetch = 0
+    for conf_num in member_confs:
+        if conn.no_unread[conf_num] > 0:
+            return conf_num
     return None
+
+
+# FIXME: Obsolete and ugly. Remove me. 
+def is_member(conn, pers_num, conf_num):
+    try:
+        kom.ReqQueryReadTexts(conn, pers_num, conf_num).response()
+    except kom.NotMember:
+        return 0
+    return 1
 
 
 # MISC helper functions
@@ -269,4 +234,85 @@ def reformat_text(text):
     return result
 
 
-NBSP = "&nbsp;"
+def update_membership(conn, conf_num, read_text):
+    "Update the Membership object in the cache when we have read a text"
+    # Note: read_text is a local number of the read text.
+    ms = conn.memberships[conf_num]
+    # ms.added_at unchanged
+    # ms.added_by unchanged
+    # ms.conference unchanged
+
+    # Update ms.last_text_read or ms.read_texts
+    # Start asking for translations
+    ms.read_texts.append(read_text)
+
+    # Defrag
+    ms.read_texts.sort()
+    locals = existing_locals(conn, conf_num, ms.last_text_read + 1, ms.read_texts[-1:][0])
+    for loc in locals:
+        if loc in ms.read_texts:
+            ms.last_text_read = loc
+            ms.read_texts.remove(loc)
+        else:
+            break
+                        
+    # FIXME: update ms.last_time_read (set to current time)
+    # ms.position unchanged
+    # ms.priority unchanged
+    # ms.type unchanged
+
+def update_unread(conn, conf_num, read_loc_num):
+    "Update the value of no_unread when a local text is read"
+    if is_unread(conn, conf_num, read_loc_num):
+        conn.no_unread[conf_num] = conn.no_unread[conf_num] - 1
+
+def is_unread(conn, conf_num, local_num):
+    if local_num <= conn.memberships[conf_num].last_text_read:
+        return 0
+    elif local_num in conn.memberships[conf_num].read_texts:
+        return 0
+    else:
+        return 1
+
+
+def existing_locals(conn, conf_num, ask_for, highest_local):
+    "Fetch all existing local text numbers between [ask_for, highest_local]"
+    more_to_fetch = 1
+    local_nums = []
+    while more_to_fetch:
+        try:
+            mapping = kom.ReqLocalToGlobal(conn, conf_num,
+                                           ask_for, 64).response()
+            for (local_num, global_num) in mapping.list:
+                if local_num > highest_local:
+                    return local_nums
+                if global_num:
+                    local_nums.append(local_num)
+                    
+            ask_for = mapping.range_end
+            more_to_fetch = mapping.later_texts_exists
+        except kom.NoSuchLocalText:
+            # No unread texts
+            more_to_fetch = 0
+
+    return local_nums
+
+
+# FIXME: Unused function. 
+## def next_local_no(conn, ask_for, conf_num):
+##     more_to_fetch = 1
+##     while more_to_fetch:
+##         try:
+##             mapping = kom.ReqLocalToGlobal(conn, conf_num,
+##                                            ask_for, 5).response()
+##             for (local_num, global_num) in mapping.list:
+##                 if global_num:
+##                     return local_num
+##             ask_for = mapping.range_end
+##             more_to_fetch = mapping.later_texts_exists
+##         except kom.NoSuchLocalText:
+##             # No unread texts
+##             more_to_fetch = 0
+##     return 0
+
+
