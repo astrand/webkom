@@ -412,9 +412,12 @@ class Action:
         "Create an standard top header table, including about-link"
         if self.key:
             aboutlink = self.action_href("about", self._("About WebKOM"))
+            logoutlink = self.action_href("logout", self._("Logout"))
         else:
             aboutlink = Href(BASE_URL + "?action=about", self._("About WebKOM"))
-        tab=[[leftobj, aboutlink]]
+            logoutlink = ""
+        tab = [[leftobj, aboutlink],
+               ["", logoutlink]]
         return Table(body=tab, border=0, cell_padding=0,
                      column1_align="left", cell_align="right", width="100%")
 
