@@ -2104,30 +2104,34 @@ class SetUnreadActions(Action):
 class SetUnreadSubmit(Action):
     "Handles submits for joining a conference."
     def response(self):
+        # We add to a container instead of document, since we are going to redirect. 
+        result_cont = Container()
         toplink = Href(self.base_session_url(), "WebKOM")
-        cont = Container(toplink, " : ", self.current_conflink())
-        self.append_std_top(cont)
+        top_cont = Container(toplink, " : ", self.current_conflink())
+        result_cont.append(self.gen_std_top(top_cont))
 
         conf_num = self.sess.current_conf
         conf_name = self.get_conf_name(conf_num)
-        cont.append(" : ", self.action_href("goconf&amp;conf=" + str(conf_num),
-                                            conf_name))
+        top_cont.append(" : ", self.action_href("goconf&amp;conf=" + str(conf_num),
+                                                conf_name))
         
         
         num_unread = int(self.form.getvalue("num_unread"))
         try:
             kom.ReqSetUnread(self.sess.conn, conf_num, num_unread).response()
         except:
-            self.print_error(self._("Unable to set number of unread."))
+            result_cont.append(self.gen_error(self._("Unable to set number of unread.")))
+            self.submit_redir(result_cont)
             return
 
         # Invalidate caches
         self.sess.conn.memberships.invalidate(conf_num)
         self.sess.conn.no_unread.invalidate(conf_num)
         
-        self.doc.append(Heading(3, self._("Ok")))
-        self.doc.append(self._("The number of unread articles is now ") + str(num_unread) + ".")
-        
+        result_cont.append(Heading(3, self._("Ok")))
+        result_cont.append(self._("The number of unread articles is now ") + str(num_unread) + ".")
+
+        self.submit_redir(result_cont)
         return
 
 
