@@ -2243,8 +2243,8 @@ def write_traceback(resp):
     resp.doc.append(Heading(3, "Internal server error"))
     resp.doc.append(_("Check if this bug is listed on"))
     resp.doc.append(Href("../bugs.html", _("the list with known bugs")))
-    resp.doc.append(_("If it doesn't, please report this problem "))
-    resp.doc.append(_("to ") + MAINTAINER_NAME)
+    resp.doc.append(_("If it doesn't, please report this problem to"))
+    resp.doc.append(MAINTAINER_NAME)
     resp.doc.append(Href("mailto: " + MAINTAINER_MAIL, MAINTAINER_MAIL + "."))
 
     resp.doc.append(_("Attach the error message below."))
