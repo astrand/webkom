@@ -644,11 +644,9 @@ class WhatsImplementedActions(Action):
         <li>Status for conference/persons</li>
         <li>Add recipients and comments to existing articles</li>
         <li>Move articles between conferences</li>
-        <li>FAQ handling</li>
         <li>Prevent comments</li>
         <li>Request personal answer</li>
         <li>Request read confirmation</li>
-        <li>Cross references</li>
         </ul>
 
         """
