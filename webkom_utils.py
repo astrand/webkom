@@ -25,6 +25,7 @@ import re
 import string
 import random
 import sys
+import inspect
 
 NBSP = "&nbsp;"
 INACTIVE_LINK_COLOR = HTMLcolors.GREY6
@@ -400,5 +401,25 @@ def get_installed_languages():
             result += ", " + lang 
 
     return result
+
+class FinalizerChecker:
+    def __init__(self, syslog):
+        self.syslog = syslog
+        self.check_finalizers()
+
+    def check_module(self, module):
+        for (name, klass) in inspect.getmembers(module, inspect.isclass):
+            self.check_class(klass)
+
+    def check_class(self, klass):
+        for (name, value) in inspect.getmembers(klass):
+            if name == "__del__":
+                self.syslog.write(1, "ERROR: Class %s has __del__ finalizer!" \
+                                  % klass)
+    def check_finalizers(self):
+        for key in globals().keys():
+            attr = globals()[key]
+            if inspect.ismodule(attr):
+                self.check_module(attr)
 
 
