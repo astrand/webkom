@@ -1151,7 +1151,19 @@ class ViewTextActions(Action):
         # Skip over the subject
         body = text[string.find(text, "\n"):]
         # ...and the empty line
-        body = body[1:]
+        ismail = 0
+        if kom.first_aux_items_with_tag(ts.aux_items, kom.AI_MX_FROM):
+            ismail = 1
+        viewmailheadercode = ""
+        if kom.first_aux_items_with_tag(ts.aux_items, kom.AI_MX_MISC):
+            if self.form.getvalue("viewmailheader"):
+                body = kom.first_aux_items_with_tag(ts.aux_items,
+                                                    kom.AI_MX_MISC).data + body
+                viewmailheadercode = "&viewmailheader=true"                
+            else:
+                body = body[1:]
+        else:
+            body = body[1:]
 
         header = []
         header.append(["Inläggsnummer:",
@@ -1164,8 +1176,9 @@ class ViewTextActions(Action):
                            importdate.data])
         else:
             header.append(["Datum:", ts.creation_time.to_date_and_time()]);
-        ai_from = kom.first_aux_items_with_tag(ts.aux_items, kom.AI_MX_FROM)
-        if ai_from:
+        if ismail:
+            ai_from = kom.first_aux_items_with_tag(ts.aux_items,
+                                                   kom.AI_MX_FROM)
             ai_author = kom.first_aux_items_with_tag(ts.aux_items,
                                                      kom.AI_MX_AUTHOR)
             realname = ""
@@ -1304,11 +1317,22 @@ class ViewTextActions(Action):
                                               "Kommentera detta inlägg"), NBSP)
 
         if format:
-            lower_actions.append(self.action_href("viewtext&textnum=" + str(global_num),
+            lower_actions.append(self.action_href("viewtext&textnum=" + str(global_num) + viewmailheadercode,
                                                   "Visa i normalstil"))
         else:
-            lower_actions.append(self.action_href("viewtext&textnum=" + str(global_num) + "&viewformat=code",
+            lower_actions.append(self.action_href("viewtext&textnum=" + str(global_num) + "&viewformat=code" + viewmailheadercode,
                                                   "Visa i kodstil"))
+
+        if ismail:
+            if "" != viewmailheadercode:
+                lower_actions.append(self.action_href("viewtext&textnum=" +\
+                                                      str(global_num),
+                                                      "Visa utan headers"))
+            else:
+                lower_actions.append(self.action_href("viewtext&textnum=" +\
+                                                      str(global_num) +\
+                                                      "&viewmailheader=true",
+                                                      "Visa med mailheader"))
         return 
 
 
