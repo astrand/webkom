@@ -2183,7 +2183,7 @@ class WriteArticleActions(Action):
                                  % self.sess.conn.conferences[presentationfor].presentation)
                 
         F.append("Article text:", BR())
-        F.append(Textarea(rows=20, cols=70))
+        F.append(Textarea(rows=20, cols=70, text=text))
         F.append(BR())
 
         self.doc.append(self._("If certain characters are hard to write with your keyword, "
