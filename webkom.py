@@ -1099,7 +1099,8 @@ class ViewTextActions(Action):
         return comment_url
 
 
-    def add_comments_in(self, ts, header, new_comments):
+    def add_comments_in(self, ts, new_comments):
+        header = []
         for c in ts.misc_info.comment_in_list:
             # Fetch info about comment
             try:
@@ -1134,7 +1135,10 @@ class ViewTextActions(Action):
                             new_comments.append(c.text_no)
                             break
 
-        self.doc.append(Table(body=header, cell_padding=2, column1_align="right", border=0, width="80%"))
+        # Do not add the table if there are no comments; this will
+        # render as incorrect HTML. Tables may not be empty. 
+        if header:
+            self.doc.append(Table(body=header, cell_padding=2, column1_align="right", border=0, width="80%"))
 
     def response(self):
         # Toplink
@@ -1310,9 +1314,8 @@ class ViewTextActions(Action):
         self.doc.append("</table>")
 
         # Ok, the body is done. Let's add all comments.
-        header = []
         new_comments = []
-        self.add_comments_in(ts, header, new_comments)
+        self.add_comments_in(ts, new_comments)
 
         # Handling for reading comments
         reading_comment = self.form.getvalue("reading_comment", 0)
