@@ -377,9 +377,8 @@ class Action:
             return 0
 
     def get_article_text(self, num):
-        ts = self.sess.conn.textstats[num] 
         try:
-            text = kom.ReqGetText(self.sess.conn, num, 0, ts.no_of_chars).response()
+            text = kom.ReqGetText(self.sess.conn, num).response()
         except:
             self.print_error(self._("An error occurred when fetching article."))
             return ""
