@@ -361,7 +361,7 @@ class Action:
             self.print_error(self._("An error occurred when fetching article."))
             return ""
         # Skip over the subject
-        text = text[string.find(text, "\n")+1:]
+        text = text[string.find(text, "\n"):]
         return text
     # End of KOM utility methods.
     #
