@@ -918,7 +918,7 @@ class LogInActions(Action):
 
         # Check number of matches
         if len(matches) == 0:
-            self.error_message(self._("The user %s does not exist." % self.username))
+            self.error_message(self._("The user %s does not exist.") % self.username)
             return
         elif len(matches) > 1:
             # Name is ambiguous. Generate table for selection. 
