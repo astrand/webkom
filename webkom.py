@@ -1227,16 +1227,20 @@ class GoConfActions(Action):
 
             tab.append([unreadindicator, subj, author, date, textnum])
 
-        ldiv = Div(align="Right")        
-        ldiv.append(self.action_href("goconf_with_unread",
-                                     self._("Next conference with unread")),
-                    NBSP)
-        ldiv.append(self.action_href("goconf&amp;conf=" + str(conf_num) \
-                                     + "&amp;local_num=" + str(next_first),
-                                     self._("Later articles"),
-                                     next_first), NBSP)
-        self.doc.append(ldiv)
-
+        tl = TableLite(width="100%")
+        tr = TR()
+        tr.append(TD(self.action_href("goconf_with_unread",
+                                      self._("Next conference with unread"))
+                     , align="left"))
+        tr.append(TD(self.action_href("goconf&amp;conf=" +\
+                                      str(conf_num) \
+                                      + "&amp;local_num=" +\
+                                      str(next_first),
+                                      self._("Later articles"),
+                                      next_first),
+                     align="right"))
+        tl.append(tr)
+        self.doc.append(tl)
 
         # Standard action
         next_text = get_next_unread(self.sess.conn, self.sess.conn.get_user(),
