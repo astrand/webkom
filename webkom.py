@@ -170,7 +170,7 @@ class Session:
         self.lock.acquire()
         # Holds pending messages
         self.pending_messages = []
-        self.whoami = kom.ReqWhoAmI(self.conn).response()
+        self.session_num = kom.ReqWhoAmI(self.conn).response()
         self.last_active = 0
         # Result of submission. There is no problem when two submits are done
         # at the same time from one session, since the session is locked. 
@@ -192,7 +192,7 @@ class Session:
         self.pending_messages.append(Message(msg.recipient, msg.sender, msg.message))
 
     def async_logout(self, msg, c):
-        if msg.session_no == self.whoami:
+        if msg.session_no == self.session_num:
             sessionset.log_me_out(self)
             raise RemotelyLoggedOutException
 
@@ -1962,7 +1962,7 @@ class LogoutOtherSessionsActions(Action):
             self.doc.append(self._("Request failed"))
         killring = []
         for who in who_list:
-            if self.sess.conn.get_user() == who.person and self.sess.whoami != who.session:
+            if self.sess.conn.get_user() == who.person and self.sess.session_num != who.session:
                 killring.append(who.session)
         if 0 == len(killring):
             self.doc.append(Header(3, self._("You do not have any other sessions with this server")))
