@@ -53,7 +53,7 @@ ORIGIN_DIR = get_origin_dir()
 LOG_DIR = os.path.join(ORIGIN_DIR, "logs")
 #LOG_DIR = "/var/log/webkom"
 LOCALE_DIR = os.path.join(ORIGIN_DIR, "locale")
-VERSION = "0.18"
+VERSION = "0.19"
 BASE_URL = "webkom.py"
 DEFAULT_KOM_SERVER = "kom.lysator.liu.se"
 
