@@ -2253,7 +2253,7 @@ class WriteArticleSubmit(Action):
             self.submit_redir(result_cont)
             return
 
-        result_cont.append(self._("Article submitted"), BR())
+        result_cont.append(self._("Article submitted."), BR())
 
         for text_str in comment_to_list+footnote_to_list:
             self.sess.conn.textstats.invalidate(int(text_str))
