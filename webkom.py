@@ -889,8 +889,8 @@ class MainPageActions(Action):
         l = List([
             self.action_href("viewconfs_unread", self._("List conferences with unread")),
             self.action_href("viewconfs", self._("List all conferences you are a member of")),
-            self.action_href("view_markings", self._("List marked articles"))])
-        # self.action_href("specify_article_number", self._("View article with specified number"))]))
+            self.action_href("view_markings", self._("List marked articles")),
+            self.action_href("specify_article_number", self._("View article with specified number"))])
         if SEARCH_LIMIT != 0:
             l.append(self.action_href("search", self._("Search article")))
         cont.append(l)
@@ -1503,21 +1503,23 @@ class GoConfActions(Action):
 
 
 
-## class SpecifyArticleNumberPageActions(Action):
-##     """Specify article number to view"""
-##     def response(self):
-##         toplink = Href(self.base_session_url(), "WebKOM")
-##         thispage = self.action_href("specify_article_number", self._("View article with specified number"))
-##         cont = Container(toplink, TOPLINK_SEPARATOR, thispage)
-##         self.append_std_top(cont)
-##         self.doc.append(Heading(2, self._("View article with specified number")))
+class SpecifyArticleNumberPageActions(Action):
+    """Specify article number to view"""
+    def response(self):
+        self.resp.shortcuts_active = 0
+        self.doc.onLoad = "document.specify_article_form.textnum.focus()"
+        toplink = Href(self.base_session_url(), "WebKOM")
+        thispage = self.action_href("specify_article_number", self._("View article with specified number"))
+        cont = Container(toplink, TOPLINK_SEPARATOR, thispage)
+        self.append_std_top(cont)
+        self.doc.append(Heading(2, self._("View article with specified number")))
 
-##         submitbutton = Input(type="submit", name="viewarticlesubmit",
-##                              value=self._("View article"))
-##         F = Form(BASE_URL, name="specify_article_form", submit=submitbutton)
-##         self.doc.append(F)
-##         F.append(self.hidden_key())
-##         F.append(Input(name="textnum", value="123"))
+        submitbutton = Input(type="submit", name="viewtext",
+                             value=self._("View article"))
+        F = Form(BASE_URL, name="specify_article_form", submit=submitbutton)
+        self.doc.append(F)
+        F.append(self.hidden_key())
+        F.append(Input(name="textnum"))
 
 
 class ViewTextActions(Action):
@@ -1750,11 +1752,18 @@ class ViewTextActions(Action):
             
     def response(self):
         # Global text number
-        global_num = int(self.form["textnum"].value)
+        try:
+            global_num = int(self.form["textnum"].value)
+        except ValueError:
+            self.print_error(self._("Invalid article number."))
+            return 
 
         if 0 == self.sess.current_conf:
-            self.change_conf(self.sess.conn.textstats[global_num].\
-                             misc_info.recipient_list[0].recpt)
+            try:
+                new_current_conf = self.sess.conn.textstats[global_num].misc_info.recipient_list[0].recpt
+            except kom.NoSuchText:
+                new_current_conf = self.sess.conn.get_user()
+            self.change_conf(new_current_conf)
         
         # Toplink
         toplink = Href(self.base_session_url(), "WebKOM")
@@ -3176,6 +3185,7 @@ def actions(resp):
                        "set_unread_submit" : SetUnreadSubmit,
                        "choose_conf_search" : ChooseConfActions,
                        "search_submit" : SearchActions,
+                       "viewtext" : ViewTextActions,
                        "view_presentation_search" : ViewPresentationActions }
     
     action_keywords = {"logout" : LogOutActions,
@@ -3204,8 +3214,9 @@ def actions(resp):
                        "mark_text" : MarkTextActions,
                        "view_markings" : ViewMarkingsActions,
                        "search" : SearchActions,
+                       "specify_article_number" : SpecifyArticleNumberPageActions,
                        "internal_error": TriggerInternalErrorActions}
-                       # "specify_article_number" : SpecifyArticleNumberPageActions}
+
 
     if not sessionset.valid_session(resp.key):
         InvalidSessionPageActions(resp).response()
