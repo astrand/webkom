@@ -1,7 +1,7 @@
 
 LOG_DIR = "/home/astrand/webkom/webkom/logs/"
 MODULES_PATH = "/home/astrand/webkom/python-modules/"
-VERSION = "0.7"
+VERSION = "0.8"
 BASE_URL = "webkom.py"
 DEFAULT_KOM_SERVER = "kom.lysator.liu.se"
 MAX_SUBJ_PER_PAGE = 25
@@ -12,6 +12,4 @@ MAINTAINER_MAIL = "astrand@lysator.liu.se"
 MAX_CONFERENCE_LEN = 37
 # 12 hours auto-logout
 SESSION_TIMEOUT = 60 * 60 * 12 
-
-
 
