@@ -35,18 +35,16 @@ import  os, sys, string, socket, errno
 from    cStringIO   import StringIO
 import  cgi
 
-#---------------------------------------------------------------------------
-
 # Set various FastCGI constants
 # Maximum number of requests that can be handled
-FCGI_MAX_REQS=1
+FCGI_MAX_REQS = 1
 FCGI_MAX_CONNS = 1
 
 # Supported version of the FastCGI protocol
 FCGI_VERSION_1 = 1
 
 # Boolean: can this application multiplex connections?
-FCGI_MPXS_CONNS=0
+FCGI_MPXS_CONNS = 0
 
 # Record types
 FCGI_BEGIN_REQUEST = 1 ; FCGI_ABORT_REQUEST = 2 ; FCGI_END_REQUEST   = 3
@@ -59,7 +57,7 @@ FCGI_MAXTYPE = FCGI_UNKNOWN_TYPE
 # Types of management records
 ManagementTypes = [FCGI_GET_VALUES]
 
-FCGI_NULL_REQUEST_ID=0
+FCGI_NULL_REQUEST_ID = 0
 
 # Masks for flags component of FCGI_BEGIN_REQUEST
 FCGI_KEEP_CONN = 1
@@ -77,33 +75,28 @@ FCGI_UNKNOWN_ROLE     = 3               # Role value not known
 error = 'fcgi.error'
 
 
-#---------------------------------------------------------------------------
-
 # The following function is used during debugging; it isn't called
 # anywhere at the moment
 
 def error(msg):
-    "Append a string to /tmp/err"
+    """Append a string to /tmp/err"""
     errf=open('/tmp/err', 'a+')
     errf.write(msg+'\n')
     errf.close()
 
-#---------------------------------------------------------------------------
-
 class record:
-    "Class representing FastCGI records"
+    """Class representing FastCGI records"""
     def __init__(self):
         self.version = FCGI_VERSION_1
         self.recType = FCGI_UNKNOWN_TYPE
         self.reqId   = FCGI_NULL_REQUEST_ID
         self.content = ""
         
-
-    #----------------------------------------
     def readRecord(self, sock):
         s = map(ord, sock.recv(8))
         self.version, self.recType, paddingLength = s[0], s[1], s[6]
-        self.reqId, contentLength = (s[2]<<8)+s[3], (s[4]<<8)+s[5]
+        self.reqId = (s[2]<<8) + s[3]
+        contentLength = (s[4]<<8) + s[5]
         self.content = ""
         while len(self.content) < contentLength:
             data = sock.recv(contentLength - len(self.content))
@@ -121,8 +114,8 @@ class record:
             self.unknownType = ord(c[0])
 
         elif self.recType == FCGI_GET_VALUES or self.recType == FCGI_PARAMS:
-            self.values={}
-            pos=0
+            self.values = {}
+            pos = 0
             while pos < len(c):
                 name, value, pos = readPair(c, pos)
                 self.values[name] = value
@@ -131,7 +124,6 @@ class record:
             self.appStatus = (b[0]<<24) + (b[1]<<16) + (b[2]<<8) + b[3]
             self.protocolStatus = ord(c[4])
 
-    #----------------------------------------
     def writeRecord(self, sock):
         content = self.content
         if self.recType == FCGI_BEGIN_REQUEST:
@@ -140,12 +132,12 @@ class record:
         elif self.recType == FCGI_UNKNOWN_TYPE:
             content = chr(self.unknownType) + 7*'\000'
 
-        elif self.recType==FCGI_GET_VALUES or self.recType==FCGI_PARAMS:
+        elif self.recType == FCGI_GET_VALUES or self.recType == FCGI_PARAMS:
             content = ""
             for i in self.values.keys():
                 content = content + writePair(i, self.values[i])
 
-        elif self.recType==FCGI_END_REQUEST:
+        elif self.recType == FCGI_END_REQUEST:
             v = self.appStatus
             content = chr((v>>24)&255) + chr((v>>16)&255) + chr((v>>8)&255) + chr(v&255)
             content = content + chr(self.protocolStatus) + 3*'\000'
@@ -154,61 +146,64 @@ class record:
         eLen = (cLen + 7) & (0xFFFF - 7)    # align to an 8-byte boundary
         padLen = eLen - cLen
 
-        hdr = [ self.version,
-                self.recType,
-                self.reqId >> 8,
-                self.reqId & 255,
-                cLen >> 8,
-                cLen & 255,
-                padLen,
-                0]
+        hdr = [self.version,
+               self.recType,
+               self.reqId >> 8,
+               self.reqId & 255,
+               cLen >> 8,
+               cLen & 255,
+               padLen,
+               0]
         hdr = string.joinfields(map(chr, hdr), '')
 
         sock.send(hdr + content + padLen*'\000')
 
-#---------------------------------------------------------------------------
-
 def readPair(s, pos):
-    nameLen=ord(s[pos]) ; pos=pos+1
+    nameLen = ord(s[pos])
+    pos += 1
     if nameLen & 128:
-        b=map(ord, s[pos:pos+3]) ; pos=pos+3
-        nameLen=((nameLen&127)<<24) + (b[0]<<16) + (b[1]<<8) + b[2]
-    valueLen=ord(s[pos]) ; pos=pos+1
+        b = map(ord, s[pos:pos+3])
+        pos += 3
+        nameLen = ((nameLen&127)<<24) + (b[0]<<16) + (b[1]<<8) + b[2]
+    valueLen = ord(s[pos])
+    pos += 1
     if valueLen & 128:
-        b=map(ord, s[pos:pos+3]) ; pos=pos+3
-        valueLen=((valueLen&127)<<24) + (b[0]<<16) + (b[1]<<8) + b[2]
-    return ( s[pos:pos+nameLen], s[pos+nameLen:pos+nameLen+valueLen],
-             pos+nameLen+valueLen )
+        b = map(ord, s[pos:pos+3])
+        pos += 3
+        valueLen = ((valueLen&127)<<24) + (b[0]<<16) + (b[1]<<8) + b[2]
+    return (s[pos:pos+nameLen], s[pos+nameLen:pos+nameLen+valueLen],
+            pos+nameLen+valueLen )
 
-#---------------------------------------------------------------------------
 
 def writePair(name, value):
-    l=len(name)
-    if l<128: s=chr(l)
+    l = len(name)
+    if l<128:
+        s = chr(l)
     else:
-        s=chr(128|(l>>24)&255) + chr((l>>16)&255) + chr((l>>8)&255) + chr(l&255)
-    l=len(value)
-    if l<128: s=s+chr(l)
+        s = chr(128|(l>>24)&255) + chr((l>>16)&255) + chr((l>>8)&255) + chr(l&255)
+        
+    l = len(value)
+    
+    if l<128:
+        s = s + chr(l)
     else:
-        s=s+chr(128|(l>>24)&255) + chr((l>>16)&255) + chr((l>>8)&255) + chr(l&255)
+        s = s + chr(128|(l>>24)&255) + chr((l>>16)&255) + chr((l>>8)&255) + chr(l&255)
+        
     return s + name + value
 
-#---------------------------------------------------------------------------
 
 def HandleManTypes(r, conn):
     if r.recType == FCGI_GET_VALUES:
         r.recType = FCGI_GET_VALUES_RESULT
-        v={}
-        vars={'FCGI_MAX_CONNS' : FCGI_MAX_CONNS,
-              'FCGI_MAX_REQS'  : FCGI_MAX_REQS,
-              'FCGI_MPXS_CONNS': FCGI_MPXS_CONNS}
+        v = {}
+        vars = {'FCGI_MAX_CONNS' : FCGI_MAX_CONNS,
+                'FCGI_MAX_REQS'  : FCGI_MAX_REQS,
+                'FCGI_MPXS_CONNS': FCGI_MPXS_CONNS}
         for i in r.values.keys():
-            if vars.has_key(i): v[i]=vars[i]
-        r.values=vars
+            if vars.has_key(i):
+                v[i] = vars[i]
+        r.values = vars
         r.writeRecord(conn)
-
-#---------------------------------------------------------------------------
-#---------------------------------------------------------------------------
 
 
 _isFCGI = 1         # assume it is until we find out for sure
@@ -216,11 +211,6 @@ _isFCGI = 1         # assume it is until we find out for sure
 def isFCGI():
     global _isFCGI
     return _isFCGI
-
-
-
-#---------------------------------------------------------------------------
-
 
 _init = None
 _sock = None
@@ -235,32 +225,35 @@ class FCGI:
             sys.exit(1)
 
         if os.environ.has_key('FCGI_WEB_SERVER_ADDRS'):
-            good_addrs=string.split(os.environ['FCGI_WEB_SERVER_ADDRS'], ',')
-            good_addrs=map(string.strip(good_addrs))        # Remove whitespace
+            good_addrs = string.split(os.environ['FCGI_WEB_SERVER_ADDRS'], ',')
+            good_addrs = map(string.strip(good_addrs))        # Remove whitespace
         else:
-            good_addrs=None
+            good_addrs = None
 
-        self.conn, addr=_sock.accept()
-        stdin, data="", ""
+        self.conn, addr = _sock.accept()
+        stdin = ""
+        data = ""
         self.env = {}
-        self.requestId=0
-        remaining=1
+        self.requestId = 0
+        remaining = 1
 
         # Check if the connection is from a legal address
-        if good_addrs!=None and addr not in good_addrs:
+        if good_addrs != None and addr not in good_addrs:
             raise error, 'Connection from invalid server!'
 
         while remaining:
-            r=record(); r.readRecord(self.conn)
+            r = record()
+            r.readRecord(self.conn)
 
             if r.recType in ManagementTypes:
                 HandleManTypes(r, self.conn)
 
-            elif r.reqId==0:
+            elif r.reqId == 0:
                 # Oh, poopy.  It's a management record of an unknown
                 # type.  Signal the error.
-                r2=record()
-                r2.recType=FCGI_UNKNOWN_TYPE ; r2.unknownType=r.recType
+                r2 = record()
+                r2.recType = FCGI_UNKNOWN_TYPE
+                r2.unknownType = r.recType
                 r2.writeRecord(self.conn)
                 continue                # Charge onwards
 
@@ -281,29 +274,27 @@ class FCGI:
 
             elif r.recType == FCGI_PARAMS:
                 if r.content == "":
-                    remaining=remaining-1
+                    remaining -= 1
                 else:
                     for i in r.values.keys():
                         self.env[i] = r.values[i]
 
             elif r.recType == FCGI_STDIN:
                 if r.content == "":
-                    remaining=remaining-1
+                    remaining -= 1
                 else:
-                    stdin=stdin+r.content
+                    stdin = stdin + r.content
 
-            elif r.recType==FCGI_DATA:
+            elif r.recType == FCGI_DATA:
                 if r.content == "":
-                    remaining=remaining-1
+                    remaining -= 1
                 else:
-                    data=data+r.content
+                    data = data + r.content
         # end of while remaining:
 
         self.inp = StringIO(stdin)
         self.err = StringIO()
         self.out = StringIO()
-
-
         
         self.data = StringIO(data)
 
@@ -314,7 +305,7 @@ class FCGI:
             self.err.seek(0,0)
             self.out.seek(0,0)
 
-            r=record()
+            r = record()
             r.recType = FCGI_STDERR
             r.reqId = self.requestId
             data = self.err.read()
@@ -322,7 +313,8 @@ class FCGI:
                 chunk, data = self.getNextChunk(data)
                 r.content = chunk
                 r.writeRecord(self.conn)
-            r.content="" ; r.writeRecord(self.conn)      # Terminate stream
+            r.content = ""
+            r.writeRecord(self.conn)      # Terminate stream
 
             r.recType = FCGI_STDOUT
             data = self.out.read()
@@ -330,13 +322,14 @@ class FCGI:
                 chunk, data = self.getNextChunk(data)
                 r.content = chunk
                 r.writeRecord(self.conn)
-            r.content="" ; r.writeRecord(self.conn)      # Terminate stream
+            r.content = ""
+            r.writeRecord(self.conn)      # Terminate stream
 
-            r=record()
-            r.recType=FCGI_END_REQUEST
-            r.reqId=self.requestId
-            r.appStatus=status
-            r.protocolStatus=FCGI_REQUEST_COMPLETE
+            r = record()
+            r.recType = FCGI_END_REQUEST
+            r.reqId = self.requestId
+            r.appStatus = status
+            r.protocolStatus = FCGI_REQUEST_COMPLETE
             r.writeRecord(self.conn)
             self.conn.close()
 
@@ -357,17 +350,17 @@ class FCGI:
 
 
 Accept = FCGI       # alias for backwards compatibility
-#---------------------------------------------------------------------------
+
 
 def _startup():
     global _init
     _init = 1
     try:
-        s=socket.fromfd(sys.stdin.fileno(), socket.AF_INET,
-                        socket.SOCK_STREAM)
+        s = socket.fromfd(sys.stdin.fileno(), socket.AF_INET,
+                          socket.SOCK_STREAM)
         s.getpeername()
     except socket.error, (err, errmsg):
-        if err!=errno.ENOTCONN:       # must be a non-fastCGI environment
+        if err != errno.ENOTCONN:       # must be a non-fastCGI environment
             global _isFCGI
             _isFCGI = 0
             return
@@ -376,14 +369,12 @@ def _startup():
     _sock = s
 
 
-#---------------------------------------------------------------------------
-
 def _test():
-    counter=0
+    counter = 0
     try:
         while isFCGI():
             req = Accept()
-            counter=counter+1
+            counter = counter+1
 
             try:
                 fs = req.getFieldStorage()
@@ -433,6 +424,4 @@ def _test():
 #        f.write('%s' % doc)
 
 if __name__=='__main__':
-    #import pdb
-    #pdb.run('_test()')
     _test()
