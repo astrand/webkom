@@ -341,7 +341,7 @@ class LoginPageActions(Action):
     def response(self):
         self.resp.shortcuts_active = 0
         toplink = Href(BASE_URL, "WebKOM")
-        cont = Container(toplink, self._(" : " + "Login"))
+        cont = Container(toplink, " : " + self._("Login"))
         self.append_std_top(cont)
         default_kom_server = DEFAULT_KOM_SERVER
         if self.form.has_key("komserver"):
