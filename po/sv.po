@@ -188,6 +188,9 @@ msgstr "Författare:"
 msgid "Send messages"
 msgstr "Skicka meddelanden"
 
+msgid "You cannot leave a letterbox."
+msgstr "Du kan ej utträda ur en personlig brevlåda."
+
 msgid "Conference name"
 msgstr "Mötesnamn"
 

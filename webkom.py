@@ -432,7 +432,7 @@ class Action:
         try:
             num_unread = self.sess.conn.no_unread[self.sess.current_conf]
         except kom.NotMember:
-            return _("Conferences (you are not a member of)")
+            return self._("Conferences (you are not a member of)")
         
         if num_unread:
             # We are in a conference with unread articles
@@ -2816,6 +2816,11 @@ class LeaveConfActions(Action):
         cont.append(TOPLINK_SEPARATOR, self.action_href("goconf&amp;conf=" + str(conf_num),
                                             conf_name))
 
+        # Not allowed to leave letterbox
+        if self.sess.conn.conferences[conf_num].type.letterbox:
+            self.print_error(self._("You cannot leave a letterbox."))
+            return
+
         submitbutton = Input(type="submit", name="leaveconfsubmit", value=self._("Yes, leave conference"))
         F = Form(BASE_URL, name="set_unread_form", submit=submitbutton)
         self.doc.append(F)
@@ -2823,7 +2828,6 @@ class LeaveConfActions(Action):
         F.append(Heading(2, self._("Leave conference")))
         F.append(self._("Do you really want to leave conference ") + conf_name + "?")
         F.append(BR(2))
-        return
 
 
 class LeaveConfSubmit(Action):
