@@ -42,13 +42,17 @@ Requirements
 
 Installation
 ============
-1. Decide a web root directory, for example /home/httpd. In this
-   documentation, the webroot is denoted <webroot>. The WebKOM
-   distribution directory is denoted <webkom>. 
+1. Decide a web home directory, for example /home/httpd. In this
+   documentation, the web home is denoted <webhome>. 
+
+   Decide a web root directory under <webhome>, for example
+   /home/httpd/html. The web root directory is denoted <webroot>.
+
+   The WebKOM distribution directory is denoted <webkom>. 
 
 2. Copy <webkom>/images to <webroot>/images. 
 
-3. Copy <webkom>/*.py to <webroot>/fcgi-bin. Make sure webkom.py is
+3. Copy <webkom>/*.py to <webhome>/fcgi-bin. Make sure webkom.py is
    executable. 
 
 4. Copy <webkom>/*.html to <webroot>.
@@ -58,9 +62,9 @@ Installation
    parameters:
 
    DocumentRoot "<webroot>"
-   FastCgiServer <webroot>/fcgi-bin/webkom.py -idle-timeout 60
+   FastCgiServer <webhome>/fcgi-bin/webkom.py -idle-timeout 60
 
-   <Directory "<webroot>/fcgi-bin">
+   <Directory "<webhome>/fcgi-bin">
        SetHandler fastcgi-script
    </Directory>
 
