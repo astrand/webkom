@@ -1758,10 +1758,13 @@ class ViewTextActions(Action):
             self.print_error(self._("Invalid article number."))
             return 
 
+        # If current_conf is zero, change to the texts first
+        # recipient.
         if 0 == self.sess.current_conf:
             try:
                 new_current_conf = self.sess.conn.textstats[global_num].misc_info.recipient_list[0].recpt
             except kom.NoSuchText:
+                # Not perfect, but this shouldn't happen anyway. 
                 new_current_conf = self.sess.conn.get_user()
             self.change_conf(new_current_conf)
         
@@ -3085,6 +3088,7 @@ class SearchActions(Action):
             searcher = GlobalArticleSearcher(self.sess.conn, SEARCH_LIMIT)
             title = self._("Search article in all conferences")
             cont.append(self.action_href("search", title))
+            self.sess.current_conf = 0
         self.append_std_top(cont)
 
         F = Form(BASE_URL, name="search_form", submit="")
