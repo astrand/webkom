@@ -1,4 +1,4 @@
-#!/home/astrand/webkom/python/bin/python
+#!/usr/local/bin/python
 
 # WebKOM - a web based LysKOM client
 # 
@@ -38,6 +38,7 @@ import random, time
 import thread
 from webkom_utils import *
 import webkom_js
+import rfc822
 
 
 class SessionSet:
@@ -1143,11 +1144,49 @@ class ViewTextActions(Action):
         header = []
         header.append(["Inläggsnummer:",
                        self.action_href("viewtext&textnum=" + str(global_num), str(global_num))])
-        header.append(["Datum:", ts.creation_time.to_date_and_time()]);
         presentation = str(self.get_presentation(ts.author))
-        header.append(["Författare:",
-                       self.action_href("viewtext&textnum=" + presentation,
-                                        self.get_pers_name(ts.author), presentation)])
+        importdate = kom.first_aux_items_with_tag(ts.aux_items,
+                                                  kom.AI_MX_DATE)
+        if importdate:
+            header.append(["Datum:",
+                           importdate.data])
+        else:
+            header.append(["Datum:", ts.creation_time.to_date_and_time()]);
+        ai_from = kom.first_aux_items_with_tag(ts.aux_items, kom.AI_MX_FROM)
+        if ai_from:
+            ai_author = kom.first_aux_items_with_tag(ts.aux_items,
+                                                     kom.AI_MX_AUTHOR)
+            realname = ""
+            if ai_author:
+                realname = ai_author.data + " "
+            header.append(["Författare:",
+                           realname + str(Href("mailto:" + ai_from.data,
+                                ai_from.data))])
+            
+            header.append(["Importerad:",
+                           ts.creation_time.to_date_and_time() +\
+                           " av " +
+                           str(self.action_href("viewtext&textnum=" +\
+                                                presentation,
+                                                self.get_pers_name(ts.author),
+                                                presentation))])
+            for recipient in kom.all_aux_items_with_tag(ts.aux_items,
+                                                        kom.AI_MX_TO):
+                header.append(["Extern mottagare:",
+                              Href("mailto:" + recipient.data,
+                                   recipient.data)])
+            for recipient in kom.all_aux_items_with_tag(ts.aux_items,
+                                                        kom.AI_MX_CC):
+                header.append(["Extern kopiemottagare:",
+                              Href("mailto:" + recipient.data,
+                                   recipient.data)])
+
+            
+            
+        else:            
+            header.append(["Författare:",
+                           self.action_href("viewtext&textnum=" + presentation,
+                                            self.get_pers_name(ts.author), presentation)])
 
         # Comments-to
         self.add_comments_to(ts, header)
