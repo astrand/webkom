@@ -2007,7 +2007,8 @@ class WriteArticleActions(Action):
             else:
                 page_heading = self._("Write article")
 
-        writeart = self.action_href("writearticle", page_heading)
+        writeart = self.action_href("writearticle&amp;rcpt=" + str(conf_num),
+                                    page_heading)
         
         cont = Container(toplink, TOPLINK_SEPARATOR, self.current_conflink(),
                          TOPLINK_SEPARATOR, thisconf, TOPLINK_SEPARATOR, writeart)
@@ -2199,7 +2200,8 @@ class WriteArticleSubmit(Action):
         
         toplink = Href(self.base_session_url(), "WebKOM")
         thisconf = self.action_href("goconf&amp;conf=" + str(conf_num), conf_name)
-        writeart = self.action_href("writearticle", self._("Write article"))
+        writeart = self.action_href("writearticle&amp;rcpt=" + str(conf_num),
+                                    self._("Write article"))
         
         top_cont = Container(toplink, TOPLINK_SEPARATOR, self.current_conflink(),
                              TOPLINK_SEPARATOR, thisconf, TOPLINK_SEPARATOR, writeart)
