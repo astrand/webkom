@@ -2371,6 +2371,19 @@ def print_logged_out_response(resp):
     resp.sess = None
 
 
+def print_not_implemented(resp):
+    _ = translator_cache.get_translator("en").gettext
+    cont = Container(Href(BASE_URL, "WebKOM"))
+    cont.append(Heading(3, _("Server call not implemented")))
+    cont.append(_("WebKOM made a server call that this server did not "
+                  "understand. WebKOM only works with LysKOM servers with "
+                  "version 2.0 or higher"))
+    cont.append(P())
+    cont.append(Href(BASE_URL, _("Login again")))
+    resp.doc.append(cont)
+    resp.sess = None
+
+
 # Main action routine
 # Note: "func" is a sz_fcgi magic name
 def func(fcg, env, form):
@@ -2380,6 +2393,8 @@ def func(fcg, env, form):
             actions(resp)
         except RemotelyLoggedOutException:
             print_logged_out_response(resp)
+        except kom.NotImplemented:
+            print_not_implemented(resp)
         except:
             write_traceback(resp)
 
