@@ -88,6 +88,7 @@ class SessionSet:
             if self.sessionset[key].conn.get_user() == pno:
                 ret.append(key)
         return ret
+                
 
     def add_session(self, sess):
         "Add session to sessionset. Return sessionkey"
@@ -703,7 +704,8 @@ class MainPageActions(Action):
                                              self._("View marked articles"))))
         cont.append(Heading(3, self.action_href("logout", self._("Logout"))))
         cont.append(Heading(3, self.action_href("logoutothersessions",
-                                                self._("Logout my other sessions"))))
+                                                self._("Logout my other "\
+                                                       "sessions"))))
         cont.append(BR(), Heading(3, self.action_href("whats_implemented",
                                                       self._("What can WebKOM do?"))))
 
@@ -847,7 +849,9 @@ class LogInActions(Action):
             info = kom.ReqGetInfo(conn).response()
             if info.motd_of_lyskom:
                 self.doc.append(Heading(2, self._("Message Of The Day")))
-                self.doc.append(Heading(3, self._("This server have a message of the day:")))
+                self.doc.append(Heading(3,
+                                        self._("This server have a message"\
+                                               " of the day:")))
                 
                 text = kom.ReqGetText(conn, info.motd_of_lyskom).response()
                 (subject, body) = string.split(text, "\n", 1)
@@ -871,7 +875,9 @@ class LogInActions(Action):
                 F.append(Input(type="hidden", name="skipmotd",
                                value="yes"))
                          
-                submitbutton = Input(type="submit", name="loginsubmit", value=self._("Continue Logging in"))
+                submitbutton = Input(type="submit",
+                                     name="loginsubmit",
+                                     value=self._("Continue Logging in"))
                 
                 F.append(submitbutton)
                 return
@@ -901,10 +907,13 @@ class LogInActions(Action):
 
         if LOGOUT_OTHER_SESSIONS:
             # Logout other sessions
-            othersessions_keys = sessionset.get_sessionkeys_by_person_no(pers_num)
+            othersessions_keys = sessionset.\
+                                 get_sessionkeys_by_person_no(pers_num)
             for key in othersessions_keys:
-                if self.komserver == sessionset.get_session(key).conn.host and \
-                   int(self.komport) == sessionset.get_session(key).conn.port:
+                if self.komserver == sessionset.\
+                       get_session(key).conn.host and \
+                       int(self.komport) == sessionset.\
+                       get_session(key).conn.port:
                     sessionset.del_session(key)
 
         # Create new session
@@ -1198,8 +1207,9 @@ class GoConfActions(Action):
                                                    kom.AI_MX_FROM)
             author = ""
             if ai_from:
-                ai_author =  ai_author = kom.first_aux_items_with_tag(ts.aux_items,
-                                                                      kom.AI_MX_AUTHOR)
+                ai_author =  ai_author = kom.\
+                            first_aux_items_with_tag(ts.aux_items,
+                                                     kom.AI_MX_AUTHOR)
                 if ai_author:
                     author = ai_author.data + " "
                 author = author + str(Href("mailto:" + ai_from.data,
@@ -1484,7 +1494,8 @@ class ViewTextActions(Action):
         global_num = int(self.form["textnum"].value)
 
         if 0 == self.sess.current_conf:
-            self.change_conf(self.sess.conn.textstats[global_num].misc_info.recipient_list[0].recpt)
+            self.change_conf(self.sess.conn.textstats[global_num].\
+                             misc_info.recipient_list[0].recpt)
         
         # Toplink
         toplink = Href(self.base_session_url(), "WebKOM")
@@ -1938,8 +1949,11 @@ class WriteArticleActions(Action):
         comment_to_list = get_values_as_list(self.form, "comment_to")
         if presentationfor:
             if 0 != self.sess.conn.conferences[presentationfor].presentation:
-                if not self.sess.conn.conferences[presentationfor].presentation in comment_to_list:
-                    comment_to_list += [self.sess.conn.conferences[presentationfor].presentation]
+                if not self.sess.conn.conferences[presentationfor].\
+                       presentation in comment_to_list:
+                    comment_to_list += [self.sess.conn.\
+                                        conferences[presentationfor].\
+                                        presentation]
         footnote_to_list = get_values_as_list(self.form, "footnote_to")
 
         submitname = "writearticlesubmit"
@@ -1986,7 +2000,8 @@ class WriteArticleActions(Action):
             if not rcptparams:
                 continue
             for rcpt in rcptparams:
-                if not self.form.getvalue("searchrcptsubmit") and comment_to_list and not presentationfor:
+                if not self.form.getvalue("searchrcptsubmit") and \
+                       comment_to_list and not presentationfor:
                     cs = self.sess.conn.conferences[int(rcpt)]
                     # If it's a comment, and the conference is of type
                     # original, replace with it's supermeeting.
@@ -2098,11 +2113,17 @@ class WriteArticleActions(Action):
         F.append(Input(name="articlesubject", value=subject, size=60), BR())
 
         text = self.form.getvalue("text_area", "")
-        if presentationfor and self.sess.conn.conferences[presentationfor].presentation != 0:
+        if presentationfor and \
+               self.sess.conn.conferences[presentationfor].presentation != 0:
             try:
-                ts = self.sess.conn.textstats[self.sess.conn.conferences[presentationfor].presentation]
+                ts = self.\
+                     sess.conn.textstats[self.sess.conn.\
+                                         conferences[presentationfor].\
+                                         presentation]
                 text = kom.ReqGetText(self.sess.conn,
-                                      self.sess.conn.conferences[presentationfor].presentation,
+                                      self.sess.conn.\
+                                      conferences[presentationfor].\
+                                      presentation,
                                       0,
                                       ts.no_of_chars).response()
                 text = text[string.find(text, "\n")+1:]
@@ -2242,12 +2263,17 @@ class WriteArticleSubmit(Action):
         if comment_to_list:
             result_cont.append(self.action_href("viewtext&amp;textnum="+\
                                                 comment_to_list[0],
-                                                self._("Go back to the article you commented")))
+                                                self._("Go back to the "\
+                                                       "article you "\
+                                                       "commented")))
 
         if footnote_to_list:
             result_cont.append(self.action_href("viewtext&amp;textnum="+\
                                                 footnote_to_list[0],
-                                                self._("Go back to the article you footnoted")))                                                
+                                                self._("Go back to the "\
+                                                       "article you "\
+                                                       "footnoted")))
+            
         self.submit_redir(result_cont)
 
         return text_num 
@@ -2268,7 +2294,8 @@ class LogoutOtherSessionsActions(Action):
     "Logout other sessions"
     def response(self):
         toplink = Href(self.base_session_url(), "WebKOM")
-        loslink = self.action_href("logoutothersessions", self._("Logout my other sessions"))
+        loslink = self.action_href("logoutothersessions",
+                                   self._("Logout my other sessions"))
         cont = Container(toplink, " : ", loslink)
         self.append_std_top(cont)
         try:
@@ -2282,12 +2309,14 @@ class LogoutOtherSessionsActions(Action):
             if self.sess.conn.get_user() == who.person and self.sess.session_num != who.session:
                 killring.append(who.session)
         if 0 == len(killring):
-            self.doc.append(Header(3, self._("You do not have any other sessions with this server")))
+            self.doc.append(Header(3, self._("You do not have any other "
+                                             "sessions with this server")))
             return
         self.doc.append(Header(3, self._("Killed the following session(s):")))
         self.doc.append(P())
         for session in killring:
-            static = kom.ReqGetStaticSessionInfo(self.sess.conn, session).response()
+            static = kom.ReqGetStaticSessionInfo(self.sess.conn, session).\
+                     response()
             kom.ReqDisconnect(self.sess.conn, session).response()
             self.doc.append(static.username + "@" + static.hostname)
             self.doc.append(BR())
@@ -2583,7 +2612,8 @@ class SetUnreadSubmit(Action):
         except ValueError:
             result_cont.append(Heading(3, self._("Invalid input")))
             result_cont.append(self._("You must give a number as argument."))
-            result_cont.append(self.action_href("set_unread", self._("Try again!")))
+            result_cont.append(self.action_href("set_unread",
+                                                self._("Try again!")))
             
             self.submit_redir(result_cont)
             return
