@@ -277,31 +277,3 @@ browser_type = """
 
 """
 
-# Loginform
-
-onchange_komserver = """
-function onchange_komserver(field) {
-    document.username_form.komserver.value=field.value;
-    document.password_form.komserver.value=field.value;
-    document.submit_form.komserver.value=field.value;
-}
-"""
-
-
-onchange_username = """
-function onchange_username(field) {
-    document.komserver_form.username.value=field.value;
-    document.password_form.username.value=field.value;
-    document.submit_form.username.value=field.value;
-}
-"""
-
-
-onchange_password = """
-function onchange_password(field) {
-    document.komserver_form.password.value=field.value;
-    document.username_form.password.value=field.value;
-    document.submit_form.password.value=field.value;
-}
-"""
-
