@@ -21,40 +21,6 @@
 # CONTENT_LENGTH and abort the update if the two numbers are not equal.
 #
 
-# Since I've borrowed code from fcgi.py, I must include the following
-# license header.
-
-#------------------------------------------------------------------------
-#               Copyright (c) 1998 by Total Control Software
-#                         All Rights Reserved
-#------------------------------------------------------------------------
-#
-# Module Name:  fcgi.py
-#
-# Description:  Handles communication with the FastCGI module of the
-#               web server without using the FastCGI developers kit, but
-#               will also work in a non-FastCGI environment, (straight CGI.)
-#               This module was originally fetched from someplace on the
-#               Net (I don't remember where and I can't find it now...) and
-#               has been significantly modified to fix several bugs, be more
-#               readable, more robust at handling large CGI data and return
-#               document sizes, and also to fit the model that we had previously
-#               used for FastCGI.
-#
-#     WARNING:  If you don't know what you are doing, don't tinker with this
-#               module!
-#
-# Creation Date:    1/30/98 2:59:04PM
-#
-# License:      This is free software.  You may use this software for any
-#               purpose including modification/redistribution, so long as
-#               this header remains intact and that you do not claim any
-#               rights of ownership or authorship of this software.  This
-#               software has been tested, but no warranty is expressed or
-#               implied.
-#
-#------------------------------------------------------------------------
-
 import os
 import sys
 import select
@@ -64,16 +30,13 @@ import errno
 import cgi
 import thread
 from cStringIO import StringIO
+import struct
 
-# Set various FastCGI constants
 # Maximum number of requests that can be handled
 FCGI_MAX_REQS = 50
 FCGI_MAX_CONNS = 50
-
-# Supported version of the FastCGI protocol
 FCGI_VERSION_1 = 1
-
-# Boolean: can this application multiplex connections?
+# Can this application multiplex connections?
 FCGI_MPXS_CONNS = 0
 
 # Record types
@@ -104,17 +67,23 @@ FCGI_AUTHORIZER = 2
 FCGI_FILTER = 3
 
 # Values for protocolStatus component of FCGI_END_REQUEST
-FCGI_REQUEST_COMPLETE = 0     # Request completed nicely
-FCGI_CANT_MPX_CONN = 1        # This app can't multiplex
-FCGI_OVERLOADED = 2           # New request rejected; too busy
+FCGI_REQUEST_COMPLETE = 0     # Request completed ok
+FCGI_CANT_MPX_CONN = 1        # This app cannot multiplex
+FCGI_OVERLOADED = 2           # Too busy
 FCGI_UNKNOWN_ROLE = 3         # Role value not known
+
+# Struct format types
+FCGI_BeginRequestBody = "!HB5x"
+FCGI_Record_header = "!BBHHBx"
+FCGI_UnknownTypeBody = "!B7x"
+FCGI_EndRequestBody = "!IB3x"
 
 class Record:
     """Class representing FastCGI records"""
     def __init__(self):
         self.version = FCGI_VERSION_1
-        self.recType = FCGI_UNKNOWN_TYPE
-        self.reqId   = FCGI_NULL_REQUEST_ID
+        self.rec_type = FCGI_UNKNOWN_TYPE
+        self.req_id   = FCGI_NULL_REQUEST_ID
         self.content = ""
 
         # Only in FCGI_BEGIN_REQUEST
@@ -129,110 +98,112 @@ class Record:
         self.appStatus = None
         self.protocolStatus = None
 
-    def readPair(self, s, pos):
-        nameLen = ord(s[pos])
-        pos += 1
-        if nameLen & 128:
-            b = map(ord, s[pos:pos+3])
-            pos += 3
-            nameLen = ((nameLen&127)<<24) + (b[0]<<16) + (b[1]<<8) + b[2]
-        valueLen = ord(s[pos])
-        pos += 1
-        if valueLen & 128:
-            b = map(ord, s[pos:pos+3])
-            pos += 3
-            valueLen = ((valueLen&127)<<24) + (b[0]<<16) + (b[1]<<8) + b[2]
-        return (s[pos:pos+nameLen], s[pos+nameLen:pos+nameLen+valueLen],
-                pos+nameLen+valueLen)
-
-    def writePair(self, name, value):
-        l = len(name)
-        if l<128:
-            s = chr(l)
+    def read_pair(self, data, pos):
+        namelen = struct.unpack("!B", data[pos])[0]
+        if namelen & 128:
+            # 4-byte name length
+            namelen = struct.unpack("!I", data[pos:pos+4])[0]
+            pos += 4
         else:
-            s = chr(128|(l>>24)&255) + chr((l>>16)&255) + chr((l>>8)&255) + chr(l&255)
+            pos += 1
 
-        l = len(value)
-
-        if l<128:
-            s = s + chr(l)
+        valuelen = struct.unpack("!B", data[pos])[0]
+        if valuelen & 128:
+            # 4-byte value length
+            valuelen = struct.unpack("!I", data[pos:pos+4])[0]
+            pos += 4
         else:
-            s = s + chr(128|(l>>24)&255) + chr((l>>16)&255) + chr((l>>8)&255) + chr(l&255)
+            pos += 1
 
-        return s + name + value
+        name = data[pos:pos+namelen]
+        pos += namelen
+        value = data[pos:pos+valuelen]
+        pos += valuelen
+
+        return (name, value, pos)
+
+    def write_pair(self, name, value):
+        namelen = len(name)
+        if namelen < 128:
+            data = struct.pack("!B", namelen)
+        else:
+            # 4-byte name length
+            data = struct.pack("!I", namelen)
+
+        valuelen = len(value)
+        if valuelen < 128:
+            data += struct.pack("!B", value)
+        else:
+            # 4-byte value length
+            data += struct.pack("!I", value)
+
+        return data + name + value
         
     def readRecord(self, sock):
-        s = map(ord, sock.recv(8))
-        if not s:
+        data = sock.recv(8)
+        if not data:
             # No data recieved. This means EOF. 
             return None
-            
-        self.version, self.recType, paddingLength = s[0], s[1], s[6]
-        self.reqId = (s[2]<<8) + s[3]
-        contentLength = (s[4]<<8) + s[5]
+        
+        fields = struct.unpack(FCGI_Record_header, data)
+        (self.version, self.rec_type, self.req_id,
+         contentLength, paddingLength) = fields
+        
         self.content = ""
         while len(self.content) < contentLength:
             data = sock.recv(contentLength - len(self.content))
             self.content = self.content + data
         if paddingLength != 0:
-            padding = sock.recv(paddingLength)
-
+            sock.recv(paddingLength)
+        
         # Parse the content information
-        c = self.content
-        if self.recType == FCGI_BEGIN_REQUEST:
-            self.role = (ord(c[0])<<8) + ord(c[1])
-            self.flags = ord(c[2])
+        if self.rec_type == FCGI_BEGIN_REQUEST:
+            (self.role, self.flags) = struct.unpack(FCGI_BeginRequestBody,
+                                                    self.content)
             self.keep_conn = self.flags & FCGI_KEEP_CONN
 
-        elif self.recType == FCGI_UNKNOWN_TYPE:
-            self.unknownType = ord(c[0])
+        elif self.rec_type == FCGI_UNKNOWN_TYPE:
+            self.unknownType = struct.unpack(FCGI_UnknownTypeBody, self.content)
 
-        elif self.recType == FCGI_GET_VALUES or self.recType == FCGI_PARAMS:
+        elif self.rec_type == FCGI_GET_VALUES or self.rec_type == FCGI_PARAMS:
             self.values = {}
             pos = 0
-            while pos < len(c):
-                name, value, pos = self.readPair(c, pos)
+            while pos < len(self.content):
+                name, value, pos = self.read_pair(self.content, pos)
                 self.values[name] = value
-        elif self.recType == FCGI_END_REQUEST:
-            b = map(ord, c[0:4])
-            self.appStatus = (b[0]<<24) + (b[1]<<16) + (b[2]<<8) + b[3]
-            self.protocolStatus = ord(c[4])
+        elif self.rec_type == FCGI_END_REQUEST:
+            (self.appStatus,
+             self.protocolStatus) = struct.unpack(FCGI_EndRequestBody,
+                                                  self.content)
 
         return 1
 
     def writeRecord(self, sock):
         content = self.content
-        if self.recType == FCGI_BEGIN_REQUEST:
-            content = chr(self.role>>8) + chr(self.role & 255) + chr(self.flags) + 5*'\000'
+        if self.rec_type == FCGI_BEGIN_REQUEST:
+            content = struct.pack(FCGI_BeginRequestBody, self.role, self.flags)
 
-        elif self.recType == FCGI_UNKNOWN_TYPE:
-            content = chr(self.unknownType) + 7*'\000'
+        elif self.rec_type == FCGI_UNKNOWN_TYPE:
+            content = struct.pack(FCGI_UnknownTypeBody, self.unknownType)
 
-        elif self.recType == FCGI_GET_VALUES or self.recType == FCGI_PARAMS:
+        elif self.rec_type == FCGI_GET_VALUES or self.rec_type == FCGI_PARAMS:
             content = ""
             for i in self.values.keys():
-                content = content + self.writePair(i, self.values[i])
+                content = content + self.write_pair(i, self.values[i])
 
-        elif self.recType == FCGI_END_REQUEST:
-            v = self.appStatus
-            content = chr((v>>24)&255) + chr((v>>16)&255) + chr((v>>8)&255) + chr(v&255)
-            content = content + chr(self.protocolStatus) + 3*'\000'
+        elif self.rec_type == FCGI_END_REQUEST:
+            content = struct.pack(FCGI_EndRequestBody, self.appStatus,
+                                  self.protocolStatus)
 
-        cLen = len(content)
-        eLen = (cLen + 7) & (0xFFFF - 7)    # align to an 8-byte boundary
-        padLen = eLen - cLen
-
-        hdr = [self.version,
-               self.recType,
-               self.reqId >> 8,
-               self.reqId & 255,
-               cLen >> 8,
-               cLen & 255,
-               padLen,
-               0]
-        hdr = string.joinfields(map(chr, hdr), '')
+        # Align to 8-byte boundary
+        clen = len(content)
+        padlen = ((clen + 7) & 0xfff8) - clen
+        
+        hdr = struct.pack(FCGI_Record_header, self.version, self.rec_type,
+                          self.req_id, clen, padlen)
+        
         try:
-            sock.send(hdr + content + padLen*'\000')
+            sock.send(hdr + content + padlen*"\x00")
         except socket.error:
             # Write error, probably broken pipe. Exit thread. 
             thread.exit()
@@ -247,7 +218,7 @@ class Request:
         self.req_handler = req_handler
         
         self.keep_conn = 0
-        self.reqId = None
+        self.req_id = None
 
         # Input
         self.env = {}
@@ -285,8 +256,8 @@ class Request:
         stream.reset()
 
         rec = Record()
-        rec.recType = FCGI_STDOUT
-        rec.reqId = self.reqId
+        rec.rec_type = FCGI_STDOUT
+        rec.req_id = self.req_id
         data = stream.read()
 
         if not data:
@@ -316,8 +287,8 @@ class Request:
         # stderr
         self.err.reset()
         rec = Record()
-        rec.recType = FCGI_STDERR
-        rec.reqId = self.reqId
+        rec.rec_type = FCGI_STDERR
+        rec.req_id = self.req_id
         data = self.err.read()
         while data:
             chunk, data = self.getNextChunk(data)
@@ -329,8 +300,8 @@ class Request:
         # stdout
         self.out.reset()
         rec = Record()
-        rec.recType = FCGI_STDOUT
-        rec.reqId = self.reqId
+        rec.rec_type = FCGI_STDOUT
+        rec.req_id = self.req_id
         data = self.out.read()
         while data:
             chunk, data = self.getNextChunk(data)
@@ -341,8 +312,8 @@ class Request:
 
         # end request
         rec = Record()
-        rec.recType = FCGI_END_REQUEST
-        rec.reqId = self.reqId
+        rec.rec_type = FCGI_END_REQUEST
+        rec.req_id = self.req_id
         rec.appStatus = status
         rec.protocolStatus = FCGI_REQUEST_COMPLETE
         rec.writeRecord(self.conn)
@@ -355,7 +326,7 @@ class Request:
     #
     def _handle_record(self, rec):
         """Handle record"""
-        if rec.reqId == FCGI_NULL_REQUEST_ID:
+        if rec.req_id == FCGI_NULL_REQUEST_ID:
             # Management record            
             self._handle_man_record(rec)
         else:
@@ -364,21 +335,21 @@ class Request:
 
     def _handle_man_record(self, rec):
         """Handle management record"""
-        recType = rec.recType
-        if recType in KNOWN_MANAGEMENT_TYPES:
+        rec_type = rec.rec_type
+        if rec_type in KNOWN_MANAGEMENT_TYPES:
             self._handle_known_man_types(rec)
         else:
             # It's a management record of an unknown
             # type. Signal the error.
             rec = Record()
-            rec.recType = FCGI_UNKNOWN_TYPE
-            rec.unknownType = recType
+            rec.rec_type = FCGI_UNKNOWN_TYPE
+            rec.unknownType = rec_type
             rec.writeRecord(self.conn)
 
     def _handle_known_man_types(self, rec):
-        if rec.recType == FCGI_GET_VALUES:
+        if rec.rec_type == FCGI_GET_VALUES:
             reply_rec = Record()
-            reply_rec.recType = FCGI_GET_VALUES_RESULT
+            reply_rec.rec_type = FCGI_GET_VALUES_RESULT
 
             params = {'FCGI_MAX_CONNS' : FCGI_MAX_CONNS,
                       'FCGI_MAX_REQS' : FCGI_MAX_REQS,
@@ -392,33 +363,33 @@ class Request:
             rec.writeRecord(self.conn)
 
     def _handle_app_record(self, rec):
-        if rec.recType == FCGI_BEGIN_REQUEST:
+        if rec.rec_type == FCGI_BEGIN_REQUEST:
             # Discrete
             self._handle_begin_request(rec)
             return
-        elif rec.reqId != self.reqId:
-            #print >> sys.stderr, "Recieved unknown request ID", rec.reqId
+        elif rec.req_id != self.req_id:
+            #print >> sys.stderr, "Recieved unknown request ID", rec.req_id
             # Ignore requests that aren't active
             return
-        if rec.recType == FCGI_ABORT_REQUEST:
+        if rec.rec_type == FCGI_ABORT_REQUEST:
             # Discrete
-            rec.recType = FCGI_END_REQUEST
+            rec.rec_type = FCGI_END_REQUEST
             rec.protocolStatus = FCGI_REQUEST_COMPLETE
             rec.appStatus = 0
             rec.writeRecord(self.conn)
             return
-        elif rec.recType == FCGI_PARAMS:
+        elif rec.rec_type == FCGI_PARAMS:
             # Stream
             self._handle_params(rec)
-        elif rec.recType == FCGI_STDIN:
+        elif rec.rec_type == FCGI_STDIN:
             # Stream
             self._handle_stdin(rec)
-        elif rec.recType == FCGI_DATA:
+        elif rec.rec_type == FCGI_DATA:
             # Stream
             self._handle_data(rec)
         else:
             # Should never happen. 
-            #print >> sys.stderr, "Recieved unknown FCGI record type", rec.recType
+            #print >> sys.stderr, "Recieved unknown FCGI record type", rec.rec_type
             pass
 
         if self.env_complete and self.stdin_complete:
@@ -433,13 +404,13 @@ class Request:
     def _handle_begin_request(self, rec):
         if rec.role != FCGI_RESPONDER:
             # Unknown role, signal error.
-            rec.recType = FCGI_END_REQUEST
+            rec.rec_type = FCGI_END_REQUEST
             rec.appStatus = 0
             rec.protocolStatus = FCGI_UNKNOWN_ROLE
             rec.writeRecord(self.conn)
             return
 
-        self.reqId = rec.reqId
+        self.req_id = rec.req_id
         self.keep_conn = rec.keep_conn
         
     def _handle_params(self, rec):
