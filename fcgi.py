@@ -231,10 +231,8 @@ class FCGI:
         if _init == None:
             _startup()
         if not isFCGI():
-            self.haveFinished = 1
-            self.inp, self.out, self.err, self.env = \
-                                sys.stdin, sys.stdout, sys.stderr, os.environ
-            return
+            print >> sys.stderr, "No FastCGI environment found."
+            sys.exit(1)
 
         if os.environ.has_key('FCGI_WEB_SERVER_ADDRS'):
             good_addrs=string.split(os.environ['FCGI_WEB_SERVER_ADDRS'], ',')
@@ -301,9 +299,12 @@ class FCGI:
                     data=data+r.content
         # end of while remaining:
 
-        self.inp = sys.stdin  = StringIO(stdin)
-        self.err = sys.stderr = StringIO()
-        self.out = sys.stdout = StringIO()
+        self.inp = StringIO(stdin)
+        self.err = StringIO()
+        self.out = StringIO()
+
+
+        
         self.data = StringIO(data)
 
     def Finish(self, status=0):
