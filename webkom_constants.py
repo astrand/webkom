@@ -1,7 +1,7 @@
 
 from HTMLcolors import *
 
-VERSION = "0.3"
+VERSION = "0.4"
 BASE_URL = "webkom.py"
 DEFAULT_KOM_SERVER = "kom.lysator.liu.se"
 MAX_SUBJ_PER_PAGE = 25
