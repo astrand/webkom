@@ -20,7 +20,6 @@ class SZ_FCGI:
     def __init__(self, func):
         self.func = func
         self.handles  = {}
-        return None
 
     # create a new thread to handle requests
     def run(self):
