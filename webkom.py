@@ -2556,9 +2556,9 @@ def run_fcgi():
 # MAIN
 #
 # Start console thread
-thread.start_new_thread(run_console,(0,0))
+thread.start_new_thread(run_console,())
 # Start maintenance thread
-thread.start_new_thread(run_maintenance,(0,0))
+thread.start_new_thread(run_maintenance,())
 
 # Create instance of translator
 translator_cache = TranslatorCache.TranslatorCache("webkom", LOCALE_DIR, DEFAULT_LANG)
