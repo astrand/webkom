@@ -1017,6 +1017,7 @@ class ViewTextActions(Action):
                 header.append([self._("Added:"), c.sent_at.to_date_and_time()])
 
     def do_recipients(self, ts, header):
+        "Add recipients to header. Also return a URL substring for commenting."
         comment_url = ""
         for r in ts.misc_info.recipient_list:
             leftcol = mir2caption(r.type)
@@ -1025,7 +1026,9 @@ class ViewTextActions(Action):
             rightcol = str(self.action_href("viewtext&textnum=" + presentation, 
                                             self.get_conf_name(r.recpt), presentation))
             # Prepare comment-url
-            comment_url = comment_url + "&" + mir2keyword(r.type) + "=" + str(r.recpt)
+            # Do not keep CC and BCC recipients when writing comment. 
+            if r.type == kom.MIR_TO:
+                comment_url = comment_url + "&" + mir2keyword(r.type) + "=" + str(r.recpt)
             
             if r.sent_by is not None:
                 leftcol = leftcol + "<br>" + self._("Sent by:")
