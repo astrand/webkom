@@ -1571,7 +1571,7 @@ class ViewTextActions(Action):
         # Upper actions
         #
         std_cmd = Container()
-        self.doc.append("Default command: ", std_cmd)
+        self.doc.append(self._("Default command: "), std_cmd)
 
         # Information about number of unread
         unread_cont = Container()
