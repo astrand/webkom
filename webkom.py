@@ -353,15 +353,19 @@ class Action:
     
     def get_conf_name(self, num):
         "Get conference name"
-        # FIXME: Do linebreaks instead of truncating
         default = self._("Conference %d (does not exist)")
-        return webkom_escape(self.sess.conn.conf_name(num, default=default)[:MAX_CONFERENCE_LEN])
+        return webkom_escape(self.get_truncated_conf_name(num, default))
 
     def get_pers_name(self, num):
         "Get persons name"
-        # FIXME: Do linebreaks instead of truncating
         default = self._("Person %d (does not exist)")
-        return webkom_escape(self.sess.conn.conf_name(num, default=default)[:MAX_CONFERENCE_LEN])
+        return webkom_escape(self.get_truncated_conf_name(num, default))
+
+    def get_truncated_conf_name(self, num, default):
+        name = self.sess.conn.conf_name(num, default=default)
+        if len(name) > MAX_CONFERENCE_LEN:
+            name = name[:MAX_CONFERENCE_LEN] + "..."
+        return name
 
     def get_presentation(self, num):
         "Get presentation of a conference"
@@ -2505,8 +2509,8 @@ class WhoIsOnActions(Action):
                 static = kom.ReqGetStaticSessionInfo(self.sess.conn, who.session).response()
                 name = self.get_pers_name(who.person)
                 user_and_host = static.username + "@" + static.hostname
-                conf_name = self.sess.conn.conf_name(who.working_conference, 
-                                                     default=self._("No working conference"))[:MAX_CONFERENCE_LEN]
+                conf_name = self.get_truncated_conf_name(who.working_conference,
+                                                         default=self._("No working conference"))
             except kom.UndefinedSession:
                 # The session got deleted not long ago. 
                 continue

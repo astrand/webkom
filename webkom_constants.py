@@ -87,7 +87,7 @@ MAINTAINER_NAME = "YOUR NAME HERE"
 MAINTAINER_MAIL = "your.name@example.com"
 CONSOLE_SOCKET = "/tmp/webkom.console"
 
-MAX_CONFERENCE_LEN = 37
+MAX_CONFERENCE_LEN = 50
 # 12 hours auto-logout
 SESSION_TIMEOUT = 60 * 60 * 12 
 DEFAULT_LANG = "sv"
