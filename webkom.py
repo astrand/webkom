@@ -557,7 +557,8 @@ class AboutPageActions(Action):
                                       "Erik Forsberg (implementation)"), BR())
         self.doc.append("Kjell Enblom (miscellaneous)", BR())
         self.doc.append("Niklas Lindgren (miscellaneous)", BR())
-        self.doc.append("Eva Isaksson (finnish translation)", BR())
+        self.doc.append(external_href("http://www.helsinki.fi/~eisaksso/",
+                                      self._("Eva Isaksson (finnish translation)")), BR())
 
         self.doc.append(Heading(3, self._("Technology")))
         self.doc.append(self._("WebKOM is written in Python and is a persistent, threaded "))
@@ -2473,33 +2474,42 @@ def print_not_implemented(resp):
 # Main action routine
 # Note: "func" is a sz_fcgi magic name
 def func(fcg, env, form):
-    try: # Exceptions within this clause are critical. 
+    try: # Exceptions within this clause are critical.
         resp = Response(env, form)
         try: # Exceptions within this clause are sent to the browser. 
             actions(resp)
+
+            # Unlock session (it was probably locked in "actions")
+            if resp.sess:
+                resp.sess.unlock_sess()
+
+            # Produce output
+            fcg.pr(resp.http_header)
+            fcg.pr(str(resp.doc))
+            
         except RemotelyLoggedOutException:
             print_logged_out_response(resp)
         except kom.NotImplemented:
             print_not_implemented(resp)
         except:
             write_traceback(resp)
-
-        # Unlock session (it was probably locked in "actions")
-        if resp.sess:
-            resp.sess.unlock_sess()
-
-        # Produce output
-        fcg.pr(resp.http_header)
-        fcg.pr(str(resp.doc))
-        fcg.finish()
         
     # We are not interested in these exceptions
     except SystemExit:
         pass
+    # Something went wrong when creating Response instance
     except:
         import traceback
         f = open(LOG_DIR + "traceback.func", "w")
         traceback.print_exc(file = f)
+        f.close()
+        fcg.pr("Content-type: text/html\r\n\r\n")
+        fcg.pr("WebKOM internal server error")
+
+    # Always run fcg.finish(). Make sure this line is always reached
+    # (eg. all exceptions are handled)
+    fcg.finish()
+        
     return
 
 
