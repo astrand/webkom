@@ -21,7 +21,7 @@ WebKOM Components
 webkom.py is the central component. It is a threaded, persistent
 FastCGI process. 
 
-httpd is any FastCGI-capable webbserver. 
+httpd is any FastCGI-capable web server. 
 
 console.py is an optional interactive console, mainly used for
 debugging. 
@@ -35,7 +35,11 @@ run om the same machine.
 Requirements
 ============
 * Python 2.0 or newer.
-* FastCGI-capable webbserver (eg. Apache with mod_fastcgi).
+
+* FastCGI- or CGI-capable web server (preferred choice: Apache with 
+  mod_fastcgi). If your web server does not support FastCGI directly,
+  you must use the cgi-fcgi adaptor. See instructions below.
+
 * HTMLgen 2.2 (apply patches found on WebKOM homepage)
 
 
@@ -127,6 +131,27 @@ script apache-setup.py cannot be used.
 5. Use the configuration from the first instance as a template. 
 
 6. Make sure you change CONSOLE_SOCKET to something unique.
+
+
+Using WebKOM with non-FastCGI capable web servers
+=================================================
+If your web server does not support FastCGI, you must the the cgi-fcgi
+adapter. 
+
+1. Install the FastCGI Development Kit. 
+
+2. Create a CGI program like this:
+
+#!/usr/local/bin/cgi-fcgi -f
+-connect /tmp/fcgi/mysock /home/httpd/html/webkom/webkom.py
+
+/tmp/fcgi/mysock is an example socket file; you can use any file. Make
+sure this program is called "webkom.py", is executable and considered
+as a CGI program by the webb server.
+
+3. Start WebKOM manually by running:
+
+   cgi-fcgi -start -connect /tmp/fcgi/mysock /home/httpd/html/webkom/webkom.py
 
 
 Using the interactive console
