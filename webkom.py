@@ -78,7 +78,7 @@ class SessionSet:
 
     def add_session(self, sess):
         "Add session to sessionset. Return sessionkey"
-        system_log.write("Creating session for person %d on server %s"
+        system_log.write(2, "Creating session for person %d on server %s"
                          % (sess.conn.get_user(), sess.komserver))
         key = self.gen_uniq_key()
         self.sessionset_lock.acquire()
@@ -89,17 +89,31 @@ class SessionSet:
 
     def _delete_session(self, key, deltype=""):
         try:
+            # Log this deletion. Don't let exceptions here affect anything. 
             sess = self.sessionset[key]
-            system_log.write("Deleting %ssession for person %d on server %s, sessnum=%d"
+            system_log.write(2, "Deleting %ssession for person %d on server %s, sessnum=%d"
                              % (deltype, sess.conn.get_user(), sess.komserver, sess.session_num))
             del sess
         except:
-            system_log.write("Exception in _delete_session when deleting:" + deltype)
+            system_log.write(1, "Exception in _delete_session when deleting:" + deltype)
 
         try:
+            # Do the actual deletion.
+            # The CachedUserConnection object probably has registered callbacks for
+            # asynchronous messages. These must be removed to prevent circular references.
+            self.sessionset[key].conn.async_handlers = {}
+            # At this point, there should be 4 references to this Session object:
+            # * The reference in the sessionset.sessionset dictionary. 
+            # * Response().sess
+            # * Action().sess (shortcut reference)
+            # * At temporary reference from sys.getrefcount()
+            # If there are more references, we will most likely get a memory "leak".
+            num_refs = sys.getrefcount(self.sessionset[key])
+            if num_refs != 4:
+                system_log.write(1, "INTERNAL ERROR: Wrong number of Session references before deletion")
             del self.sessionset[key]
         except:
-            pass
+            system_log.write(1, "Exception in _delete_session when deleting session.")
 
     def del_session(self, key):
         "Delete session from sessionset"
@@ -181,6 +195,7 @@ class Session:
             kom.ReqDisconnect(self.sess.conn, 0)
         except:
             pass
+        system_log.write(4, "Session object destroyed.")
         self.resp.sess.conn.socket.close()
         
     def lock_sess(self):
@@ -689,13 +704,10 @@ class LogOutActions(Action):
     "Do logout actions"
     def response(self):
         sessionset.del_session(self.key)
-        try:
-            kom.ReqLogout(self.sess.conn).response()
-        except:
-            pass
-        
+        # This session object will sone be destroyed, but lets play it safe
+        # and delete the reference to the session. 
         self.resp.sess = None
-
+        
         self.resp.shortcuts_active = 0
 
         # Redirect to loginpage
@@ -827,7 +839,7 @@ class LogInActions(Action):
         self.resp.sess = Session(conn, self.komserver)
         # Add to sessionset
         self.resp.key = sessionset.add_session(self.resp.sess)
-
+        
         # Setup async handling
         self.setup_asyncs(conn)
 
@@ -839,6 +851,7 @@ class LogInActions(Action):
 
         # Redirect to mainpage
         self.resp.set_redir("?sessionkey=" + self.resp.key)
+
 
 
 class InvalidSessionPageActions(Action):
@@ -2402,7 +2415,9 @@ def actions(resp):
 
     # Create an instance of apropriate class and let it generate response
     action = response_type(resp)
-    # Generate page. Note: if this is the logout page, resp.sess will be cleared. 
+
+    # Generate page. Note: if this is the logout page, resp.sess will be cleared.
+
     action.response()
 
     # Add link to W3C validator
@@ -2487,6 +2502,9 @@ def print_not_implemented(resp):
 # unlock_sess() should always be executed, even after tracebacks. 
 def handle_req(fcg, env, form):
     try: # Exceptions within this clause are critical and not sent to browser.
+        sys.stdout = logging_stdout
+        sys.stderr = logging_stderr
+        
         resp = Response(env, form)
         try:
             actions(resp)
@@ -2502,6 +2520,8 @@ def handle_req(fcg, env, form):
             resp.sess.unlock_sess()
         fcg.pr(resp.http_header)
         fcg.pr(str(resp.doc))
+
+        sys.stdout.flush()
         
     # Something went wrong when creating Response instance or
     # printing response doc. 
@@ -2529,10 +2549,11 @@ class Logger:
     def __del__(self):
         self.log.close()
 
-    def write(self, msg):
-        self.log.write(time.strftime("%Y-%m-%d %H:%M ", time.localtime(time.time())))
-        self.log.write(str(msg) + "\n")
-        self.log.flush()
+    def write(self, level, msg):
+        if level <= LOGLEVEL:
+            self.log.write(time.strftime("%Y-%m-%d %H:%M ", time.localtime(time.time())))
+            self.log.write(str(msg) + "\n")
+            self.log.flush()
 
         
 # Interaction via FIFO
@@ -2561,6 +2582,16 @@ def run_fcgi():
 #
 # MAIN
 #
+# Global log file
+system_log = Logger(LOG_DIR + "system.log")
+system_log.write(1, "WebKOM started, LOGLEVEL=%d" % LOGLEVEL)
+
+# Take care of output to stdout and stderr
+logging_stdout = open(LOG_DIR + "stdout.log", "w")
+sys.stdout = logging_stdout
+logging_stderr = open(LOG_DIR + "stderr.log", "w")
+sys.stderr = logging_stderr
+
 # Start console thread
 thread.start_new_thread(run_console,())
 # Start maintenance thread
@@ -2571,10 +2602,6 @@ translator_cache = TranslatorCache.TranslatorCache("webkom", LOCALE_DIR, DEFAULT
 
 # Create an instance of our FCGI wrapper
 fcgi = sz_fcgi.SZ_FCGI(handle_req)
-
-# Global log file
-system_log = Logger(LOG_DIR + "system.log")
-system_log.write("WebKOM started")
 
 if __name__=="__main__":
     # and let it run
