@@ -1,0 +1,42 @@
+* Dont truncate conference names after 37 characters. Insert <br> instead. 
+
+* Footnotes should be view immediately. 
+
+* Support for AUX-items: Creating client etc. 
+
+* Insert commented text prefixed with ">" when writing comments. 
+
+* Support for server call "user-active [82]".
+
+* View total number of unread somehow. 
+
+* Better and optional reformatting of articles. 
+
+* Support for personal configuration, stored on the server in the user-area. 
+
+* Feature: changing presentation. 
+
+* Better and more intuitive GUI for writing personal letters. 
+
+* Feature: Create new person.
+
+* Feature: Create conferences.
+
+* Feature: View comment-trees (maybe via komgraph.py). 
+
+* Feature: Support for conference catalogs.
+
+* Feature: View only conferences with unread. 
+
+* Feature: Built-in tutorial by providing tips etc on top of page. 
+
+* Feature: Set unread.
+
+* Feature: View article via global number. 
+
+* Feature: Create footnotes. 
+
+* Feature: Leave conference. 
+
+* Feature: Mark/unmark articles. View marked articles. 
+

@@ -1,0 +1,29 @@
+Asynchronous messages in WebKOM
+===============================
+
+WebKOM accepts and listens to:
+
+5 = async-new-name 
+8 = async-leave-conf
+12 = async-send-message 
+14 = async-deleted-text 
+15 = async-new-text 
+16 = async-new-recipient 
+17 = async-sub-recipient 
+18 = async-new-membership 
+
+
+WebKOM does not use:
+
+0 = async-new-text-old 
+1 = async-i-am-off 
+2 = async-i-am-on-obsolete
+6 = async-i-am-on
+7 = async-sync-db
+9 = async-login
+10 = async-broadcast
+11 = async-rejected-connection 
+13 = async-logout
+
+
+

@@ -1,0 +1,10 @@
+Coding standards
+================
+* Use two blank rows between classes and standalone functions, one
+  blank row between methods in the same class.
+
+* Class names as usual: ThisIsAClass.
+
+* Variable names like this: some_nice_variable.
+
+

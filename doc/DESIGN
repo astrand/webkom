@@ -1,0 +1,14 @@
+Design issues
+=============
+
+The goal with WebKOM is an easy to use system, primarily suitable for
+novices but also others. One example of how this is reflected in the
+user interface is the "visible principle": Alla conferences, articles
+etc should be visible, even if an article for example has already been
+read. Most other LysKOM clients only view unread articles and
+conferences. Some users get frustrated when articles "disappear" just
+after they have read them.
+
+All documentationn files etc should be in english, like the source
+code. When the GUI is translated, the source code should not containt
+any swedish. 

@@ -1,0 +1,100 @@
+2001-02-05  Peter 흒trand  <astrand@lysator.liu.se>
+
+	* Fixed a bug in ViewTextActions, causing local_num to be cleared. 
+
+2001-02-03  Peter 흒trand  <astrand@lysator.liu.se>
+
+	* Displays async messages at the top of each page, if any. 
+
+	* Now listens to reasonable asyncs. This, together with a
+	python-lyskom patch, fixes the problem with highest_local_no not
+	being invalidated. 
+
+	* Auto-line-wrap when writing articles. New function reformat_text
+	reformats the text before submission. 
+
+	* Non-existent (or secret) texts are not added to comment_tree. 
+
+	* Smaller cell_padding in tables. 
+
+	* When reading articles, authors of commented article and comments
+	are showed. 
+
+	* Larger input field for subject. 
+
+	* When searching for recipient and the result is just one, add
+	immediately. 
+
+	* Table headings in reciepient table.
+
+	* LogInActions: Allow user to select username if ambigious.
+
+2001-01-31  Peter 흒trand  <astrand@lysator.liu.se>
+
+	* New function: get_active_memberships. Returns a limited number
+	  of active conferences. 
+
+2001-01-30  Peter 흒trand  <astrand@lysator.liu.se>
+
+	* Bumped up version to 0.3.
+
+2001-01-29  Peter 흒trand  <astrand@lysator.liu.se>
+
+	* get_conf_with_unread optimized and more server-friendly.
+	* NBSP:s between some links. 
+	* Link for writing new article when reading articles.
+
+2001-01-28  Peter 흒trand  <astrand@lysator.liu.se>
+
+	* Created texts are marked as read.
+	* Added standard header and links on about page and
+	  Whats-Implemented page. 
+	* Inactive sessions older than 30 minutes are deleted.
+	* Link for going to next conference with unread articles.
+	* get_num_unread_texts returns 500 maximum (to minimize server load)
+
+2001-01-27  Peter 흒trand  <astrand@lysator.liu.se>
+
+	* Re-structuring classes and lots of cleanups
+	* Escape-ing all article text
+	* Linki-fying text that look like URLs. 
+
+2001-01-24  Peter 흒trand  <astrand@lysator.liu.se>
+
+	* Added more HTTP-headers for cache-control. 
+
+2001-01-23  Peter 흒trand  <astrand@lysator.liu.se>
+
+	* "Join conference" is now working. 
+	* Small cleanups. Bumped up version to 0.2. 
+
+2001-01-21  Peter 흒trand  <astrand@lysator.liu.se>
+
+	* Lots of changes: Functionality for reading next comments,
+	cleanups, error handling. 
+	* Added version plus changetime to about-page.
+	* Changed column-order in subject-page. 
+	* Write letter implemented. 
+
+2001-01-19  Peter 흒trand  <astrand@lysator.liu.se>
+
+	* Added interactive console over FIFOs
+
+2001-01-13  Peter 흒trand  <astrand@lysator.liu.se>
+
+	* Moved all session locking to logged_in_actions.
+	* Moved session unlocking to "func", so the session gets unlocked
+	even after a traceback. 
+	* More descriptive tracebacks. 
+	* Removed conference sorting.
+	* Introduced a limit of the total numbers of conferences per
+	page. Added links for previous/next page. 
+	* Inactive previous/next links are showed in grey.
+	* View presentation for a conference implemented.
+	* Fixed navigation between texts in conference.
+	* Added &nbsp; to empty subjects.
+	* Default subject is taken from the first commented text.
+	* On subject page, added a column indicating if the article is
+	unread or not. 
+	
+

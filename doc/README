@@ -1,0 +1,63 @@
+
+System overview
+===============
+
++-------+  1  +---------+  2  +-----+  3  +-------+
+|lyskomd|-----|webkom.py|-----|httpd|-----|browser|
++-------+     +---------+     +-----+     +-------+
+                   | 4
+              +-----------+
+              |fifoterm.py|
+              +-----------+
+
+1) Protocol A
+2) FastCGI sockets
+3) HTTP
+4) FIFO-pair
+
+
+WebKOM Components
+=================
+webkom.py is the central component. It is a threaded, persistent
+FastCGI process. 
+
+httpd is any FastCGI-capable webbserver. 
+
+fifoterm.py is an optional interactive console, mainly used for
+debugging. 
+
+webkom.py and fifoterm.py must be running on the same machine (because
+FIFOs are used for communication). All other components can run on
+different machines. 
+
+
+Requirements
+============
+* Python 2.0 or newer.
+* FastCGI-capable webbserver (eg. Apache with mod_fastcgi).
+* fcgi.py
+* Python-lyskom (kom.py)
+* HTMLgen
+
+
+Installation
+============
+1. Decide a web root directory, for example /home/httpd. In this
+   documentation, the webroot is denoted <webroot>. The WebKOM
+   distribution directory is denoted <webkom>. 
+2. Copy <webkom>/images to <webroot>/images. 
+3. Copy <webkom>/*.py to <webroot>/fcgi-bin. Make sure webkom.py is
+   executable. 
+4. Copy <webkom>/*.html to <webroot>.
+5. Setup webbserver. For Apache, this means compiling with mod_fastcgi
+   and editing httpd.conf. In particular, pay attention to these
+   parameters:
+
+   DocumentRoot "<webroot>"
+   FastCgiServer <webroot>/fcgi-bin/webkom.py -idle-timeout 60
+
+   <Directory "<webroot>/fcgi-bin">
+       SetHandler fastcgi-script
+   </Directory>
+
+
