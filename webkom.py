@@ -796,7 +796,7 @@ class LogInActions(Action):
 
     def print_motd(self, conn):
         info = kom.ReqGetInfo(conn).response()
-        if not info.motd_of_lyskom: return
+        if not info.motd_of_lyskom: return 0
         
         self.doc.append(Heading(2, self._("Message Of The Day")))
         self.doc.append(Heading(3,
@@ -830,7 +830,7 @@ class LogInActions(Action):
                              value=self._("Continue Logging in"))
 
         F.append(submitbutton)
-        return
+        return 1
 
     def response(self):
         self.resp.shortcuts_active = 0
@@ -867,8 +867,7 @@ class LogInActions(Action):
             return
 
         if not self.form.has_key("skipmotd"):
-            self.print_motd(conn)
-            return
+            if self.print_motd(conn): return
 
         matches = conn.lookup_name(self.username, want_pers=1, want_confs=0)
 
