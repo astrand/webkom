@@ -1653,6 +1653,17 @@ class WriteArticleActions(Action):
         F.append(Input(name="articlesubject", value=subject, size=60), BR())
 
         text = self.form.getvalue("text_area", "")
+        if presentationfor and self.sess.conn.conferences[presentationfor].presentation != 0:
+            try:
+                ts = self.sess.conn.textstats[self.sess.conn.conferences[presentationfor].presentation]
+                text = kom.ReqGetText(self.sess.conn,
+                                      self.sess.conn.conferences[presentationfor].presentation,
+                                      0,
+                                      ts.no_of_chars).response()
+                text = text[string.find(text, "\n")+1:]
+            except:
+                self.print_error("Ett fel uppstod vid hämtning av inläggsinformation för text %d" % self.sess.conn.conferences[presentationfor].presentation)
+                
         F.append("Inläggstext:", BR())
         # F.append(Textarea(text, rows=20, cols=70))
         # NOTE: This is non-standardized way to get linewrapping. Then why use it?
