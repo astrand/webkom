@@ -1780,7 +1780,8 @@ class ChangePwActions(Action):
         toplink = Href(self.base_session_url(), "WebKOM")
         cont = Container(toplink, " : " + self._("Change password"))
         self.append_std_top(cont)
-        submitbutton = Center(Input(type="submit", name="changepwsubmit", value="Byt lösenord"))
+        submitbutton = Center(Input(type="submit", name="changepwsubmit",
+                                    value=self._("Change password")))
         F = Form(BASE_URL, name="changepwform", submit=submitbutton)
         self.doc.append(F)
         F.append(self.hidden_key())
