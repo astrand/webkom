@@ -1820,12 +1820,12 @@ class ViewTextActions(Action):
             if "" != viewmailheadercode:
                 lower_actions.append(self.action_href("viewtext&amp;textnum=" +\
                                                       str(global_num),
-                                                      "View without mail headers"))
+                                                      self._("View without mail headers")))
             else:
                 lower_actions.append(self.action_href("viewtext&amp;textnum=" +\
                                                       str(global_num) +\
                                                       "&amp;viewmailheader=true",
-                                                      "View with mail headers"))
+                                                      self._("View with mail headers")))
         return 
 
 
