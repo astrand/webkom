@@ -111,24 +111,33 @@ def get_texts(conn, pers_num, conf_num, max_num, lowest_local=None):
     return texts
 
 
-def get_active_memberships(conn, member_confs, first_pos, max_num):
+def membership_sort_p(first, second):
+    "Sort-predicate for memberships, based on priority"
+    return cmp(second.priority, first.priority)
+
+
+def get_active_memberships(conn, first_pos, max_num):
     "Get a limited number of active memberships, starting at position first_pos"
     retlist = []
-    for conf_num in member_confs[first_pos:]:
+    for conf_num in conn.member_confs[first_pos:]:
         if len(retlist) >= max_num:
-            return retlist
+            break
         retlist.append(conn.memberships[conf_num])
+
+    retlist.sort(membership_sort_p)
     return retlist
 
 
-def get_active_memberships_unread(conn, member_confs, first_pos, max_num):
+def get_active_memberships_unread(conn, first_pos, max_num):
     "Get a limited number of active memberships, starting at position first_pos"
     retlist = []
-    for conf_num in member_confs[first_pos:]:
+    for conf_num in conn.member_confs[first_pos:]:
         if len(retlist) >= max_num:
-            return retlist
+            break
         if conn.no_unread[conf_num]:
             retlist.append(conn.memberships[conf_num])
+
+    retlist.sort(membership_sort_p)
     return retlist
 
 
