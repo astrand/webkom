@@ -97,47 +97,50 @@ disable_shortcuts = """
         alert("Shortcuts disabled.");
         break;
 """
-                    
+
+#
+# Comment from JavaScript client sniff below.
+# Removed to increase performance. 
+#
+## // Revised 17 May 99 to add is_nav5up and is_ie5up (see below).
+## // Revised 20 Dec 00 to add is_gecko and change is_nav5up to is_nav6up
+## //                      also added support for IE5.5 Opera4&5 HotJava3 AOLTV
+## // Everything you always wanted to know about your JavaScript client
+## // but were afraid to ask. Creates "is_" variables indicating:
+## // (1) browser vendor:
+## //     is_nav, is_ie, is_opera, is_hotjava
+## // (2) browser version number:
+## //     is_major (integer indicating major version number: 2, 3, 4 ...)
+## //     is_minor (float   indicating full  version number: 2.02, 3.01, 4.04 ...)
+## // (3) browser vendor AND major version number
+## //     is_nav2, is_nav3, is_nav4, is_nav4up, is_nav6,is_nav6up,is_gecko, is_ie3,
+##     is_ie4, is_ie5, is_ie5up, is_ie4up, is_ie5_5, is_ie5_5up, is_hotjava3,is_hotjava3up,
+##     is_opera4, is_opera5, is_opera5up
+## // (4) JavaScript version number:
+## //     is_js (float indicating full JavaScript version number: 1, 1.1, 1.2 ...)
+## // (5) OS platform and version:
+## //     is_win, is_win16, is_win32, is_win31, is_win95, is_winnt, is_win98
+## //     is_os2
+## //     is_mac, is_mac68k, is_macppc
+## //     is_unix
+## //        is_sun, is_sun4, is_sun5, is_suni86
+## //        is_irix, is_irix5, is_irix6
+## //        is_hpux, is_hpux9, is_hpux10
+## //        is_aix, is_aix1, is_aix2, is_aix3, is_aix4
+## //        is_linux, is_sco, is_unixware, is_mpras, is_reliant
+## //        is_dec, is_sinix, is_freebsd, is_bsd
+## //     is_vms
+## //
+## // Note: you don't want your Nav4 or IE4 code to "turn off" or
+## // stop working when new versions of browsers are released, so
+## // in conditional code forks, use is_ie5up ("IE 5.0 or greater") 
+## // is_opera5up ("Opera 5.0 or greater") instead of is_ie5 or is_opera5
+## // to check version in code which you want to work on future
+## // versions.
 
 browser_type = """
-// Ultimate client-side JavaScript client sniff.
-// (C) Netscape Communications 1999.  Permission granted to reuse and distribute.
-// Revised 17 May 99 to add is_nav5up and is_ie5up (see below).
-// Revised 20 Dec 00 to add is_gecko and change is_nav5up to is_nav6up
-//                      also added support for IE5.5 Opera4&5 HotJava3 AOLTV
-
-// Everything you always wanted to know about your JavaScript client
-// but were afraid to ask. Creates "is_" variables indicating:
-// (1) browser vendor:
-//     is_nav, is_ie, is_opera, is_hotjava
-// (2) browser version number:
-//     is_major (integer indicating major version number: 2, 3, 4 ...)
-//     is_minor (float   indicating full  version number: 2.02, 3.01, 4.04 ...)
-// (3) browser vendor AND major version number
-//     is_nav2, is_nav3, is_nav4, is_nav4up, is_nav6,is_nav6up,is_gecko, is_ie3,
-    is_ie4, is_ie5, is_ie5up, is_ie4up, is_ie5_5, is_ie5_5up, is_hotjava3,is_hotjava3up,
-    is_opera4, is_opera5, is_opera5up
-// (4) JavaScript version number:
-//     is_js (float indicating full JavaScript version number: 1, 1.1, 1.2 ...)
-// (5) OS platform and version:
-//     is_win, is_win16, is_win32, is_win31, is_win95, is_winnt, is_win98
-//     is_os2
-//     is_mac, is_mac68k, is_macppc
-//     is_unix
-//        is_sun, is_sun4, is_sun5, is_suni86
-//        is_irix, is_irix5, is_irix6
-//        is_hpux, is_hpux9, is_hpux10
-//        is_aix, is_aix1, is_aix2, is_aix3, is_aix4
-//        is_linux, is_sco, is_unixware, is_mpras, is_reliant
-//        is_dec, is_sinix, is_freebsd, is_bsd
-//     is_vms
-//
-// Note: you don't want your Nav4 or IE4 code to "turn off" or
-// stop working when new versions of browsers are released, so
-// in conditional code forks, use is_ie5up ("IE 5.0 or greater") 
-// is_opera5up ("Opera 5.0 or greater") instead of is_ie5 or is_opera5
-// to check version in code which you want to work on future
-// versions.
+    // Ultimate client-side JavaScript client sniff.
+    // (C) Netscape Communications 1999.  Permission granted to reuse and distribute.
 
     // convert all characters to lowercase to simplify testing
     var agt=navigator.userAgent.toLowerCase();
