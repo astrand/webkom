@@ -1156,7 +1156,7 @@ class ViewTextActions(Action):
         "Add recipients to header. Also return a URL substring for commenting."
         comment_url = ""
         for r in ts.misc_info.recipient_list:
-            leftcol = mir2caption(r.type)
+            leftcol = mir2caption(self, r.type)
             presentation = str(self.get_presentation(r.recpt))
             # Recepient, with hyperlink to presentation
             rightcol = str(self.action_href("viewtext&amp;textnum=" + presentation, 
@@ -1734,7 +1734,7 @@ class WriteArticleActions(Action):
         type_list = []
         for mir in mir_keywords_dict.keys():
             keyword = mir_keywords_dict[mir]
-            type_list.append( (mir2caption(mir), keyword) )
+            type_list.append( (mir2caption(self, mir), keyword) )
 
         # Add new recipients
         newones = get_values_as_list(self.form, "addrcpt")

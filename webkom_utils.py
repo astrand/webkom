@@ -189,19 +189,21 @@ def is_member(conn, pers_num, conf_num):
 
 
 # MISC helper functions
-mir_caption_dict = {
-    kom.MIR_TO: "Recipient",
-    kom.MIR_CC: "Carbon copy",
-    kom.MIR_BCC: "Blind carbon copy" }
-
 mir_keywords_dict ={
     kom.MIR_TO : "rcpt",
     kom.MIR_CC : "cc",
     kom.MIR_BCC: "bcc" }
 
-def mir2caption(mir):
-    return mir_caption_dict[mir]
-
+def mir2caption(klass, mir):
+    if mir == kom.MIR_TO:
+        return klass._("Recipient")
+    elif mir == kom.MIR_CC:
+        return klass._("Carbon copy")
+    elif mir == kom.MIR_BCC:
+        return klass._("Blind carbon copy")
+    else:
+        raise "Invalid MIR in mir2caption"
+    
 def mir2keyword(mir):
     return mir_keywords_dict[mir]
 
@@ -209,9 +211,6 @@ def keyword2mir(keyword):
     for mir in mir_keywords_dict.keys():
         if mir_keywords_dict[mir] == keyword:
             return mir
-
-def keyword2caption(keyword):
-    return mir2caption(keyword2mir(keyword))
 
 def get_values_as_list(form, keyword):
     data = form.getvalue(keyword)
