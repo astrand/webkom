@@ -190,9 +190,9 @@ def is_member(conn, pers_num, conf_num):
 
 # MISC helper functions
 mir_caption_dict = {
-    kom.MIR_TO: "Mottagare",
-    kom.MIR_CC: "Extra kopiemottagare",
-    kom.MIR_BCC: "För kännedom" }
+    kom.MIR_TO: "Recipient",
+    kom.MIR_CC: "Carbon copy",
+    kom.MIR_BCC: "Blind carbon copy" }
 
 mir_keywords_dict ={
     kom.MIR_TO : "rcpt",
