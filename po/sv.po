@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WebKOM 0.20\n"
-"PO-Revision-Date: 2004-11-11 23:34+0100\n"
+"PO-Revision-Date: 2004-11-11 23:36+0100\n"
 "Last-Translator: Peter Åstrand <astrand@lysator.liu.se>\n"
 "Language-Team: Peter Åstrand <astrand@lysator.liu.se>\n"
 "MIME-Version: 1.0\n"
@@ -457,7 +457,7 @@ msgid "The author requests private replies only."
 msgstr "Författaren har begärt endast personliga svar."
 
 msgid "Regular expressions are allowed."
-msgstr "Reguljära uttryck tillåts"
+msgstr "Reguljära uttryck tillåts."
 
 msgid "No server given."
 msgstr "Ingen server angiven."
