@@ -34,7 +34,7 @@ run om the same machine.
 
 Requirements
 ============
-* Python 2.0 or newer.
+* Python 2.2. 
 
 * FastCGI- or CGI-capable web server (preferred choice: Apache with 
   mod_fastcgi). If your web server does not support FastCGI directly,
