@@ -744,8 +744,8 @@ class LogInActions(Action):
             self.error_message(self._("No username given."))
             return FALSE
 
-        if not self.form.getvalue("password"):
-            self.error_message(self._("No password given."))
+        if not self.form.has_key("password"):
+            self.error_message(self._("Password variable is missing."))
             return FALSE
 
         return TRUE
