@@ -2472,8 +2472,7 @@ def print_not_implemented(resp):
 
 
 # Main action routine
-# Note: "func" is a sz_fcgi magic name
-def func(fcg, env, form):
+def handle_req(fcg, env, form):
     try: # Exceptions within this clause are critical and not sent to browser.
         resp = Response(env, form)
         try:
@@ -2494,7 +2493,7 @@ def func(fcg, env, form):
     # Something went wrong when creating Response instance or
     # printing response doc. 
     except:
-        f = open(LOG_DIR + "traceback.func", "w")
+        f = open(LOG_DIR + "traceback.req", "w")
         traceback.print_exc(file = f)
         f.close()
 
@@ -2546,7 +2545,7 @@ thread.start_new_thread(run_maintenance,(0,0))
 translator_cache = TranslatorCache.TranslatorCache("webkom", LOCALE_DIR, DEFAULT_LANG)
 
 # Create an instance of our FCGI wrapper
-fcgi = sz_fcgi.SZ_FCGI(func)
+fcgi = sz_fcgi.SZ_FCGI(handle_req)
 
 if __name__=="__main__":
     # and let it run
