@@ -578,7 +578,7 @@ class AboutPageActions(Action):
         
         self.doc.append(Heading(3, self._("Bugs")))
         self.doc.append(self._("There is a "),
-                        external_href("http://webkom.lysator.liu.se/bugs.html",
+                        external_href("bugs.html",
                                       self._("list with known bugs")), ".")
 
 
