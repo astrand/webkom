@@ -10,5 +10,4 @@ conferences. Some users get frustrated when articles "disappear" just
 after they have read them.
 
 All documentationn files etc should be in english, like the source
-code. When the GUI is translated, the source code should not containt
-any swedish. 
+code. All strings in the source code should be english. 

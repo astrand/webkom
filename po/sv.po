@@ -176,7 +176,7 @@ msgstr ""
 
 #: ../webkom.py:1837
 msgid "No working conference"
-msgstr "Inget aktuellt möte\n"
+msgstr "Inget aktuellt möte"
 
 #: ../webkom.py:2250
 msgid "Attach the error message below."
