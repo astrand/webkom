@@ -702,7 +702,7 @@ class MainPageActions(Action):
         read_stuff = []
         read_stuff.append(self.action_href("viewconfs_unread", self._("List conferences with unread")))
         read_stuff.append(self.action_href("viewconfs", self._("List all conferences you are a member of")))
-        read_stuff.append(self.action_href("view_markings", self._("View marked articles")))
+        read_stuff.append(self.action_href("view_markings", self._("List marked articles")))
         cont.append(List(read_stuff))
 
         cont.append(Heading(3, self._("Write")))
@@ -723,7 +723,7 @@ class MainPageActions(Action):
         pers_stuff.append(self.action_href("whoison", self._("Who is logged in")))
         pers_stuff.append(self.action_href("changepw", self._("Change password")))
         pers_stuff.append(self.action_href("writepresentation" + "&amp;presentationfor="
-                                           + str(self.sess.conn.get_user()), self._("Write presentation")))
+                                           + str(self.sess.conn.get_user()), self._("Change your presentation")))
         cont.append(List(pers_stuff))
 
         cont.append(Heading(3, self._("Other")))
@@ -2024,7 +2024,7 @@ class WriteArticleActions(Action):
         if presentationfor:
             submitname = "writepresentationsubmit"
             submitvalue = self._("Set as presentation")
-            page_heading = self._("Write presentation")
+            page_heading = self._("Change your presentation")
         else:
             if comment_to_list:
                 page_heading = self._("Write comment")
@@ -2560,9 +2560,9 @@ class ViewMarkingsActions(Action):
         self.append_std_top(cont)
 
         cont.append(TOPLINK_SEPARATOR, self.action_href("view_markings",
-                    self._("View marked articles")))
+                    self._("List marked articles")))
 
-        self.doc.append(Header(2, self._("View marked articles")))
+        self.doc.append(Header(2, self._("List marked articles")))
 
         self.doc.append(Table(heading=headings, body=tab,
                               cell_padding=2,
