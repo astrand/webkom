@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WebKOM 0.20\n"
-"PO-Revision-Date: Sun Mar 18 22:08:39 2001\n"
+"PO-Revision-Date: 2004-11-10 21:59+0100\n"
 "Last-Translator: Peter Åstrand <astrand@lysator.liu.se>\n"
 "Language-Team: Peter Åstrand <astrand@lysator.liu.se>\n"
 "MIME-Version: 1.0\n"
@@ -21,8 +21,8 @@ msgstr "Du har inga andra sessioner på den här servern"
 msgid "Login with selected user"
 msgstr "Logga in med vald användare"
 
-msgid "Unable to join conference."
-msgstr "Kan inte gå med i möte."
+msgid "Peter &Aring;strand (project starter, most of implementation)"
+msgstr "Peter Åstrand (initiativtagare, implementerat det mesta)"
 
 msgid "Author"
 msgstr "Författare"
@@ -39,13 +39,8 @@ msgstr "Ditt lösenord har ändrats"
 msgid "This server has a message of the day:"
 msgstr "Servern har ett dagsmeddelande:"
 
-msgid ""
-"WebKOM made a server call that this server did not understand. WebKOM only "
-"works with LysKOM servers with version 2.0 or higher"
-msgstr ""
-"WebKOM gjorde ett serveranrop som den här servern inte förstod. WebKOM "
-"fungerar\n"
-"bara med LysKOM-servrar med versionsnummer 2.0 eller högre"
+msgid "Search article in %s"
+msgstr "Sök inlägg i %s"
 
 msgid "Subject:"
 msgstr "Ärende:"
@@ -61,6 +56,9 @@ msgstr "Visa FAQ"
 
 msgid "User created."
 msgstr "Användaren skapad."
+
+msgid "Unable to join conference."
+msgstr "Kan inte gå med i möte."
 
 msgid "No recipients!"
 msgstr "Inga mottagare!"
@@ -173,6 +171,9 @@ msgstr "Du är inte längre medlem i mötet "
 msgid "Move articles between conferences"
 msgstr "Flytta inlägg mellan möten"
 
+msgid "The search is not case sensitive."
+msgstr "Sökningen är ej skiftlägeskänslig."
+
 msgid "Someone (probably you) ended this session remotely"
 msgstr "Någon (antagligen du) loggade ut den här sessionen på distans"
 
@@ -254,8 +255,12 @@ msgstr "Bekräftat läsning: "
 msgid "If not, please"
 msgstr "Om inte, var vänlig"
 
-msgid "Blind carbon copy"
-msgstr "Dold kopia"
+msgid ""
+"WebKOM made a server call that this server did not understand. WebKOM only "
+"works with LysKOM servers with version 2.1.0 or higher"
+msgstr ""
+"WebKOM gjorde ett serveranrop som den här servern inte förstod. WebKOM\n"
+"fungerar bara med LysKOM-servrar med versionsnummer 2.1.0 eller högre"
 
 msgid "Sent:"
 msgstr "Skickat:"
@@ -290,6 +295,9 @@ msgstr "Inläggsnummer:"
 msgid "You are now a member of conference "
 msgstr "Du är nu medlem i mötet "
 
+msgid "Search article in all conferences"
+msgstr "Sök inlägg i alla möten"
+
 msgid "Default command: "
 msgstr "Standardkommando: "
 
@@ -317,6 +325,9 @@ msgstr "Följande översättningar finns installerade på det här systemet:"
 msgid "Server"
 msgstr "Server"
 
+msgid "Blind carbon copy"
+msgstr "Dold kopia"
+
 msgid "New password"
 msgstr "Nytt lösenord"
 
@@ -329,8 +340,8 @@ msgstr "Se även inlägg "
 msgid "Create new user"
 msgstr "Skapa ny användare"
 
-msgid "Repeat password"
-msgstr "Upprepa lösenord"
+msgid "Invalid password"
+msgstr "Felaktigt lösenord"
 
 msgid ", marked by you. "
 msgstr ", markerad av dig. "
@@ -362,6 +373,9 @@ msgid ""
 msgstr ""
 "Ett nätverksfel inträffade vid kommunikationen med LysKOM-servern. \n"
 "Det här kan bero på ett nätverksproblem eller ett fel på servern."
+
+msgid "Search article"
+msgstr "Sök inlägg"
 
 msgid "The article does not exist."
 msgstr "Inlägget existerar inte."
@@ -411,8 +425,8 @@ msgstr "Kunde inte ändra aktuellt möte."
 msgid "Technology"
 msgstr "Teknik"
 
-msgid "Peter Åstrand (project starter, most of implementation)"
-msgstr "Peter Åstrand (initiativtagare, implementerat det mesta)"
+msgid "Main Page"
+msgstr "Huvudsida"
 
 msgid "There is a "
 msgstr "Det finns en "
@@ -436,6 +450,9 @@ msgstr "Den bör användas för buggrapporter, önskemål och allmän feedback."
 msgid "The author requests private replies only."
 msgstr "Författaren har begärt endast personliga svar."
 
+msgid "Regular expressions are allowed."
+msgstr "Reguljära uttryck tillåts"
+
 msgid "No server given."
 msgstr "Ingen server angiven."
 
@@ -447,6 +464,9 @@ msgstr "Markeringstyp"
 
 msgid "View in code style"
 msgstr "Visa i kodstil"
+
+msgid "Search for articles and subjects containing some text."
+msgstr ""
 
 msgid "Not logged in"
 msgstr "Ej inloggad"
@@ -492,6 +512,9 @@ msgstr "Logga ut"
 
 msgid "Date"
 msgstr "Datum"
+
+msgid "The search is limited to the last %d articles."
+msgstr "Sökningen är begränsad till de senaste %d inläggen."
 
 msgid "Added by:"
 msgstr "Adderad av:"
@@ -761,9 +784,6 @@ msgstr "Se även möte "
 msgid "Articles"
 msgstr "Inlägg"
 
-msgid "Invalid password"
-msgstr "Felaktigt lösenord"
-
 msgid "Error: "
 msgstr "Fel: "
 
@@ -830,8 +850,8 @@ msgstr "%s: %d -- inlägget finns inte"
 msgid "There are no unread articles."
 msgstr "Det finns inga olästa inlägg."
 
-msgid "Main Page"
-msgstr "Huvudsida"
+msgid "Repeat password"
+msgstr "Upprepa lösenord"
 
 msgid "WebKOM login"
 msgstr "WebKOM inloggning"
