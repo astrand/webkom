@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WebKOM 0.20\n"
-"PO-Revision-Date: 2004-11-11 23:30+0100\n"
+"PO-Revision-Date: 2004-11-11 23:34+0100\n"
 "Last-Translator: Peter Åstrand <astrand@lysator.liu.se>\n"
 "Language-Team: Peter Åstrand <astrand@lysator.liu.se>\n"
 "MIME-Version: 1.0\n"
@@ -472,7 +472,7 @@ msgid "View in code style"
 msgstr "Visa i kodstil"
 
 msgid "Search for articles and subjects containing some text."
-msgstr "Sök efter artiklar och ärenden som innehåller angiven text.\n"
+msgstr "Sök efter artiklar och ärenden som innehåller angiven text."
 
 msgid "Not logged in"
 msgstr "Ej inloggad"
@@ -517,7 +517,7 @@ msgid "Logout"
 msgstr "Logga ut"
 
 msgid "View article with specified number"
-msgstr "Visa inlägg med angivet inläggsnummer\n"
+msgstr "Visa inlägg med angivet inläggsnummer"
 
 msgid "Date"
 msgstr "Datum"
