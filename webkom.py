@@ -123,8 +123,6 @@ class Session:
     "A session class. Lives as long as the session (and connection)"
     def __init__(self, conn):
         self.conn = conn
-        # FIXME: Since CachedUserConnection now contains the user number,
-        # this variable is not neccessary any longer. 
         self.current_conf = 0
         self.comment_tree = []
         self.timestamp = time.time()
