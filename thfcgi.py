@@ -491,7 +491,7 @@ class THFCGI:
         # Apaches mod_fastcgi seems not to use FCGI_WEB_SERVER_ADDRS. 
         if os.environ.has_key('FCGI_WEB_SERVER_ADDRS'):
             good_addrs = string.split(os.environ['FCGI_WEB_SERVER_ADDRS'], ',')
-            good_addrs = map(string.strip(good_addrs)) # Remove whitespace
+            good_addrs = map(string.strip, good_addrs) # Remove whitespace
         else:
             good_addrs = None
         
