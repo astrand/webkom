@@ -52,7 +52,7 @@ msgstr "Kaikki kokoukset joissa olet jäsenenä"
 msgid " conferences."
 msgstr " kokousta."
 
-msgid "Eva Isaksson (finnish translation)"
+msgid "Eva Isaksson (Finnish translation)"
 msgstr "Eva Isaksson (suomennos)"
 
 msgid "Search result will be limited to "
@@ -191,7 +191,7 @@ msgstr ""
 msgid "Blind carbon copy"
 msgstr "Tiedoksi vastaanottajille"
 
-msgid "An user with this name exists."
+msgid "A user with this name exists."
 msgstr "Nimi on jo käytössä"
 
 msgid "Password"
@@ -439,7 +439,7 @@ msgstr "Liity ruksattuun kokoukseen"
 msgid "Translations"
 msgstr "Käännökset"
 
-msgid "An error occured when fetching article information."
+msgid "An error occurred when fetching article information."
 msgstr "Viestin noudossa tapahtui virhe."
 
 msgid "Main Page"
@@ -499,10 +499,10 @@ msgstr "Aktiivisen kokouksen muuttaminen epäonnistui."
 msgid "Author:"
 msgstr "Kirjoittaja:"
 
-msgid "An error occured when fetching article."
+msgid "An error occurred when fetching article."
 msgstr "Artikkelin haku epäonnistui."
 
-msgid "(To many hits, the table is truncated)"
+msgid "(Too many hits, the table is truncated)"
 msgstr "(Liian monta osumaa, listausta lyhennetty)"
 
 msgid "Server"
@@ -568,7 +568,7 @@ msgstr "Vahvistatko lukeneesi tämän tekstin?"
 msgid "List conferences with unread"
 msgstr "Kokoukset joissa uusia viestejä"
 
-msgid "The username is ambigious"
+msgid "The username is ambiguous"
 msgstr "Antamasi nimi ei ollut yksiselitteinen"
 
 msgid "No username given."

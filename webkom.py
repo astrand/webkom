@@ -599,7 +599,7 @@ class AboutPageActions(Action):
         self.doc.append("Kjell Enblom", BR())
         self.doc.append("Niklas Lindgren", BR())
         self.doc.append(external_href("http://www.helsinki.fi/~eisaksso/",
-                                      self._("Eva Isaksson (finnish translation)")), BR())
+                                      self._("Eva Isaksson (Finnish translation)")), BR())
 
         self.doc.append(Heading(3, self._("Technology")))
         self.doc.append(self._("WebKOM is written in Python and is a persistent, threaded "))
@@ -746,7 +746,7 @@ class LogInActions(Action):
         # Create top
         toplink = Href(BASE_URL, "WebKOM")
         self.doc.append(Container(toplink, " : " + self._("Login")))
-        self.doc.append(Heading(2, self._("The username is ambigious")))
+        self.doc.append(Heading(2, self._("The username is ambiguous")))
 
         F = Form(BASE_URL, name="loginform", submit="")
         F.append(Input(type="hidden", name="komserver", value=self.komserver))
@@ -756,7 +756,7 @@ class LogInActions(Action):
         tab=[]
         infotext = None
         if len(matches) > 15:
-            infotext = self._("(To many hits, the table is truncated)")
+            infotext = self._("(Too many hits, the table is truncated)")
         
         for (pers_num, pers_name) in matches[:15]:
             tab.append([pers_name,
@@ -896,7 +896,7 @@ class LogInActions(Action):
             self.error_message(self._("The user %s does not exist." % self.username))
             return
         elif len(matches) > 1:
-            # Name is ambigious. Generate table for selection. 
+            # Name is ambiguous. Generate table for selection. 
             self.gen_table(matches)
             return
 
@@ -1532,7 +1532,7 @@ class ViewTextActions(Action):
             self.print_error(self._("The article does not exist."))
             return 
         except:
-            self.print_error(self._("An error occured when fetching article information."))
+            self.print_error(self._("An error occurred when fetching article information."))
             return 
         
         # Link to current conference
@@ -1573,7 +1573,7 @@ class ViewTextActions(Action):
         try:
             text = kom.ReqGetText(self.sess.conn, global_num, 0, ts.no_of_chars).response()
         except:
-            self.print_error(self._("An error occured when fetching article."))
+            self.print_error(self._("An error occurred when fetching article."))
             return
             
 
@@ -1941,7 +1941,7 @@ class CreateUserSubmit(Action):
             self.print_error(self._("You lack permissions to create new users"))
             return
         except kom.PersonExists:
-            self.print_error(self._("An user with this name exists."))
+            self.print_error(self._("A user with this name exists."))
             return
         except kom.InvalidPassword:
             self.print_error(self._("Invalid password"))
@@ -2075,7 +2075,7 @@ class WriteArticleActions(Action):
             for rcpt in newones:
                 rcpt_dict[int(rcpt)] = "rcpt"
 
-        # If user did a search and the result was not ambigious, add recipient.
+        # If user did a search and the result was not ambiguous, add recipient.
         searchtext = self.form.getvalue("searchtext", None)
         if searchtext:
             matches = self.sess.conn.lookup_name(searchtext, want_pers=1, want_confs=1)
@@ -2168,7 +2168,7 @@ class WriteArticleActions(Action):
                                       ts.no_of_chars).response()
                 text = text[string.find(text, "\n")+1:]
             except:
-                self.print_error("An error occured when fetching article information for text %d" \
+                self.print_error("An error occurred when fetching article information for text %d" \
                                  % self.sess.conn.conferences[presentationfor].presentation)
                 
         F.append("Article text:", BR())

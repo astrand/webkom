@@ -26,7 +26,7 @@ msgid "Author"
 msgstr "Författare"
 
 msgid "Not logged in"
-msgstr "Ej inloggad."
+msgstr "Ej inloggad"
 
 msgid "This server has a message of the day:"
 msgstr "Servern har ett dagsmeddelande:"
@@ -35,7 +35,7 @@ msgid "WebKOM server message"
 msgstr "Meddelande från WebKOM-servern"
 
 msgid "Article number:"
-msgstr "Inläggsnummer"
+msgstr "Inläggsnummer:"
 
 msgid "View FAQ"
 msgstr "Visa FAQ"
@@ -55,17 +55,17 @@ msgstr "De två nya lösenorden var ej lika."
 msgid "New password"
 msgstr "Nytt lösenord"
 
-msgid "The username is ambigious"
+msgid "The username is ambiguous"
 msgstr "Användarnamnet är ej entydigt"
 
 msgid "the login page"
 msgstr "inloggningssidan"
 
 msgid "Old password"
-msgstr "Gammalt lösenord:"
+msgstr "Gammalt lösenord"
 
 msgid "Unread: "
-msgstr "Olästa:"
+msgstr "Olästa: "
 
 msgid "Previous page"
 msgstr "Föregående sida"
@@ -107,10 +107,10 @@ msgid "Confirm reading this text?"
 msgstr "Bekräfta läsning av detta inlägg?"
 
 msgid "Do you really want to leave conference "
-msgstr "Vill du verktligen utträda ur möte "
+msgstr "Vill du verkligen utträda ur möte "
 
 msgid "Please wait while your conference list is loading..."
-msgstr "Vänta medans din möteslista laddas in..."
+msgstr "Vänta medan din möteslista laddas in..."
 
 msgid "Message Of The Day"
 msgstr "Dagens meddelande"
@@ -137,7 +137,7 @@ msgid "Write personal comment"
 msgstr "Skriv personligt svar"
 
 msgid "Time: "
-msgstr "Tid:"
+msgstr "Tid: "
 
 msgid "You are no longer a member of conference "
 msgstr "Du är inte längre medlem i mötet "
@@ -157,14 +157,14 @@ msgstr "Utträd ur möte"
 msgid "Add marked"
 msgstr "Lägg till markerade"
 
-msgid "(To many hits, the table is truncated)"
+msgid "(Too many hits, the table is truncated)"
 msgstr "(För många träffar, sökresultatet har trunkerats)"
 
 msgid "Author:"
 msgstr "Författare:"
 
 msgid "Unable to change current conference."
-msgstr "Kunde inte ändra aktuellt möte"
+msgstr "Kunde inte ändra aktuellt möte."
 
 msgid ""
 "Type in the beginning of the conference name. You can also search via "
@@ -198,10 +198,10 @@ msgid "Mark"
 msgstr "Markera"
 
 msgid " conferences."
-msgstr "möten."
+msgstr " möten."
 
 msgid "WebKOM is a WWW-interface for "
-msgstr "WebKOM är ett WWW-gränssnitt till"
+msgstr "WebKOM är ett WWW-gränssnitt till "
 
 msgid "User number"
 msgstr "Användarnummer"
@@ -231,12 +231,12 @@ msgid "Main Page"
 msgstr "Huvudsida"
 
 msgid "Blind carbon copy"
-msgstr "För kännedom"
+msgstr "Dold kopia"
 
 msgid "(Not readable)"
 msgstr "(Ej läsbar)"
 
-msgid "An error occured when fetching article information."
+msgid "An error occurred when fetching article information."
 msgstr "Ett fel uppstod när inläggen skulle hämtas."
 
 msgid "Continue Logging in"
@@ -249,7 +249,7 @@ msgid "View marked articles"
 msgstr "Visa markerade inlägg"
 
 msgid "the list with known bugs."
-msgstr "listan med kända buggar"
+msgstr "listan med kända buggar."
 
 msgid "Unable to set number of unread."
 msgstr "Kunde inte utföra endast."
@@ -329,8 +329,8 @@ msgstr "Skriv kommentar"
 msgid "The author has requested others not to comment this text."
 msgstr "Författaren har begärt att inte få kommentarer."
 
-msgid "An error occured when fetching article."
-msgstr "Ett fel uppstod när inlägget skulle hämtas"
+msgid "An error occurred when fetching article."
+msgstr "Ett fel uppstod när inlägget skulle hämtas."
 
 msgid "Sent by:"
 msgstr "Sänt av:"
@@ -354,10 +354,10 @@ msgid "Technology"
 msgstr "Teknik"
 
 msgid "Peter Åstrand (project starter, most of implementation)"
-msgstr "Peter Åstrand (initativtagare, implementerat det mesta)"
+msgstr "Peter Åstrand (initiativtagare, implementerat det mesta)"
 
 msgid "There is a "
-msgstr "Det finns en"
+msgstr "Det finns en "
 
 msgid "%s: %s -- bad text number"
 msgstr "%s: %s -- felaktigt inläggsnummer"
@@ -390,8 +390,8 @@ msgid ""
 "Type in the beginning of a conference or person. You can also search via "
 "conference numbers by giving # followed by the conference or person number."
 msgstr ""
-"Mata in början av mötesnamnet. Du kan också söka via mötesnummer genom att "
-"ange # följt av mötets nummer."
+"Mata in början av mötes- eller personnamnet. Du kan också söka via "
+"mötesnummer genom att ange # följt av mötes- eller personnumret."
 
 msgid "Invalid input"
 msgstr "Felaktig inmatning"
@@ -415,7 +415,7 @@ msgid "Write letter"
 msgstr "Skriv brev"
 
 msgid " application."
-msgstr " applikation"
+msgstr " applikation."
 
 msgid "Join marked conference"
 msgstr "Gå med i markerat möte"
@@ -472,7 +472,7 @@ msgid "Bugs"
 msgstr "Buggar"
 
 msgid "Added:"
-msgstr "Adderad"
+msgstr "Adderad:"
 
 msgid ""
 "WebKOM made a server call that this server did not understand. WebKOM only "
@@ -480,7 +480,7 @@ msgid ""
 msgstr ""
 "WebKOM gjorde ett serveranrop som den här servern inte förstod. WebKOM "
 "fungerar\n"
-"bara med LysKOM-servrar med versionsnummer 2.0 eller senare"
+"bara med LysKOM-servrar med versionsnummer 2.0 eller högre"
 
 msgid "Invalid cross reference:"
 msgstr "Ogiltig korsreferens:"
@@ -513,13 +513,13 @@ msgid "Check if this bug is listed on"
 msgstr "Kontrollera ifall den här buggen finns med på"
 
 msgid "See person "
-msgstr "See även person "
+msgstr "Se även person "
 
 msgid ""
 "If certain characters are hard to write with your keyword, you can copy and "
 "paste from the line below:"
 msgstr ""
-"Om vissa tecken är svåra att skriva med ditt tangentbord \n"
+"Om vissa tecken är svåra att skriva med ditt tangentbord "
 "så kan du klippa och klistra från raden nedan:"
 
 msgid "The following people have in one way or another contributed to WebKOM:"
@@ -547,7 +547,7 @@ msgid "Working conference<br>Is doing"
 msgstr "Aktuellt möte<br>Gör"
 
 msgid "Search result:"
-msgstr "Sökresultat"
+msgstr "Sökresultat:"
 
 msgid "You do not have any other sessions with this server"
 msgstr "Du har inga andra sessioner på den här servern"
@@ -562,7 +562,7 @@ msgid "(Too many matches, search result truncated)"
 msgstr "(För många träffar, sökresultatet har trunkerats)"
 
 msgid "From: "
-msgstr "Från:"
+msgstr "Från: "
 
 msgid "Carbon copy"
 msgstr "Extra kopiemottagare"
@@ -595,7 +595,7 @@ msgid "You lack permissions to create new users"
 msgstr "Du har inte rättigheter till att skapa nya användare"
 
 msgid "Unable to create article."
-msgstr "Det gick inte att skapa inlägget"
+msgstr "Det gick inte att skapa inlägget."
 
 msgid "Translations are provided by the GNU gettext library."
 msgstr "Översättningarna görs med biblioteket GNU gettext."
@@ -606,7 +606,7 @@ msgstr "Fotnot till:"
 msgid "Unable to leave conference."
 msgstr "Kunde inte utträda ur möte."
 
-msgid "An user with this name exists."
+msgid "A user with this name exists."
 msgstr "En användare med det namnet finns redan."
 
 msgid "You have confirmed reading text "
@@ -690,7 +690,7 @@ msgstr "Oläst"
 msgid "Search result will be limited to "
 msgstr "Sökresultatet kommer att begränsas till "
 
-msgid "Eva Isaksson (finnish translation)"
+msgid "Eva Isaksson (Finnish translation)"
 msgstr "Eva Isaksson (finsk översättning)"
 
 msgid "List all conferences you are a member of"
@@ -721,7 +721,7 @@ msgid "Group message to "
 msgstr "Gruppmeddelande till "
 
 msgid "Set read marks to "
-msgstr "Sätt läsmarkeringar så att"
+msgstr "Sätt läsmarkeringar så att "
 
 msgid "Comment in article:"
 msgstr "Kommentar i inlägg:"
