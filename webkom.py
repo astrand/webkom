@@ -801,7 +801,7 @@ class ViewConfsActions(Action):
 class GoConfWithUnreadActions(Action):
     "Go to conference with unread articles"
     def response(self):
-        next_conf = get_conf_with_unread(self.sess.conn, self.sess.conn.member_confs)
+        next_conf = get_conf_with_unread(self.sess.conn, self.sess.conn.member_confs, self.sess.current_conf)
         if next_conf:
             GoConfActions(self.resp).response(next_conf)
         else:
