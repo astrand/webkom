@@ -336,9 +336,6 @@ class ViewPendingMessages(Action):
         self.doc.append(Heading(2, text))
     
     def response(self):
-        # Use ReqQueryAsync as a dummy-op for reading the socket.
-        # FIXME: Better way to do this?
-        kom.ReqQueryAsync(self.sess.conn).response()
         was_pending = (self.sess.pending_messages and 1)
 
         while self.sess.pending_messages:
@@ -2285,6 +2282,10 @@ def actions(resp):
     # This is the one place where we fetch and lock the session
     resp.sess = sessionset.get_session(resp.key)
     resp.sess.lock_sess()
+
+    # Parse all responses that have arrived from LysKOM server. This is important
+    # for ViewPendingMessages, auto-logout etc. 
+    resp.sess.conn.parse_present_data()
 
     # View messages
     ViewPendingMessages(resp, trans).response()
