@@ -335,6 +335,7 @@ class AddShortCuts(Action):
 class LoginPageActions(Action):
     "Generate the login page"
     def response(self):
+        self.resp.shortcuts_active = 0
         toplink = Href(BASE_URL, "WebKOM")
         cont = Container(toplink, ": Inloggning")
         self.append_std_top(cont)
@@ -547,6 +548,7 @@ class LogInActions(Action):
 
 
     def response(self):
+        self.resp.shortcuts_active = 0
         # If some keyword is missing, view main page.
         if (not (self.form.has_key("komserver") and
                  (self.form.has_key("username") or self.form.has_key("login_persno"))
@@ -1129,6 +1131,7 @@ class ViewTextActions(Action):
 class ChangePwActions(Action):
     "Generate a page for changing LysKOM password"
     def response(self):
+        self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
         cont = Container(toplink, " : Byt lösenord")
         self.append_std_top(cont)
@@ -1478,6 +1481,7 @@ class WhoIsOnActions(Action):
 class JoinConfActions(Action):
     "Generate a page for joinging a conference"
     def response(self):
+        self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
         joinlink = self.action_href("joinconf", "Gå med i möte")
         cont = Container(toplink, " : ", joinlink)
