@@ -1336,6 +1336,11 @@ class ViewTextActions(Action):
             authstring = " /" + self.get_pers_name(ai_cr.creator)
             self.doc.append(webkom_escape(authstring), BR())
 
+    def print_no_comments(self, ts):
+        if kom.first_aux_items_with_tag(ts.aux_items, kom.AI_NO_COMMENTS):
+            self.doc.append(self._("The author has requested others not to comment this text."), BR())
+    
+
     def response(self):
         # Toplink
         toplink = Href(self.base_session_url(), "WebKOM")
@@ -1515,6 +1520,9 @@ class ViewTextActions(Action):
 
         # Print cross reference aux-items
         self.print_cross_refs(ts)
+
+        # no-comments
+        self.print_no_comments(ts)
 
         # Add all comments.
         new_comments = []
