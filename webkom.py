@@ -1015,6 +1015,19 @@ class GoConfWithUnreadActions(Action):
 
 class GoConfActions(Action):
     "Generate a page with the subjects of articles"
+    def print_faq_link(self, conf_num):
+        aux_items = self.sess.conn.conferences[conf_num].aux_items
+        ai_faq = kom.first_aux_items_with_tag(aux_items, kom.AI_FAQ_TEXT)
+        if ai_faq:
+            textnum = ai_faq.data
+        else:
+            textnum = ""
+
+        link = self.action_href("viewtext&amp;textnum=" + textnum,
+                                self._("View FAQ"), ai_faq)
+        self.doc.append(link)
+
+    
     def response(self, conf_num=None):
         # FIXME: The routines for stepping forward/backward pagewise is
         # more or less broken. Instead of just adding/subtracting MAX_SUBJ_PER_PAGE to the
@@ -1058,6 +1071,7 @@ class GoConfActions(Action):
 
         self.doc.append(self.action_href("set_unread", self._("Set unread")), NBSP)
         self.doc.append(self.action_href("leaveconf", self._("Leave conference")), NBSP)
+        self.print_faq_link(conf_num)
         
         self.doc.append(BR(), Heading(3, self._("Articles")))
 
@@ -1364,6 +1378,20 @@ class ViewTextActions(Action):
             self.doc.append(self._("The author requests read confirmation. "),
                             Bold(confirm_link), BR())
 
+    def print_faq_info(self, ts):
+        ai_list = kom.all_aux_items_with_tag(ts.aux_items, kom.AI_FAQ_FOR_CONF)
+        for ai_faq in ai_list:
+            # FIXME: This is a bit ugly. Make some common method for printing
+            # conferenc links both by number and name. Same goes for print_cross_refs. 
+            conf_num = ai_faq.data
+            confname = self.get_conf_name(int(conf_num))
+            conf_num_link = self.action_href("goconf&amp;conf=" + conf_num,
+                                             "<%s>" % conf_num)
+            conf_name_link = self.action_href("goconf&amp;conf=" + conf_num,
+                                              confname)
+            self.doc.append(self._("This text is FAQ for conference "),
+                            conf_num_link, " ", conf_name_link, BR())
+            
     def response(self):
         # Toplink
         toplink = Href(self.base_session_url(), "WebKOM")
@@ -1550,6 +1578,9 @@ class ViewTextActions(Action):
 
         # request-confirmation
         self.print_read_confirmations(global_num, ts)
+
+        # if this text is FAQ for something, then tell so
+        self.print_faq_info(ts)
 
         # Add all comments.
         new_comments = []
