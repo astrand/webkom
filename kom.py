@@ -2161,7 +2161,7 @@ class CachedConnection(Connection):
         if name[:1] == "#":
             # Numerical case
             try:
-                no = string.atoi(name[1:]) # Exception if not int
+                no = int(name[1:]) # Exception if not int
                 type = self.uconferences[no].type # Exception if not found
                 name = self.uconferences[no].name
                 if (want_pers and type.letterbox) or \
