@@ -26,8 +26,6 @@ import HTMLutil
 from webkom_constants import *
 import re
 import string
-import random
-import sys
 import inspect
 import dircache
 
@@ -38,6 +36,7 @@ TRUE = 1
 
 # Magic!
 class Struct:
+    """Simple structure"""
     pass
 
 # KOM utility functions
@@ -69,7 +68,7 @@ def kom_login(komserver, username, password):
     return (conn, matches[0][0], None)
 
 
-def get_total_num_unread(conn, pers_num, conf_list):
+def get_total_num_unread(conn, conf_list):
     total = 0
     for conf_num in conf_list:
         total = total + conn.no_unread[conf_num]
