@@ -2294,6 +2294,9 @@ def actions(resp):
     resp.sess = sessionset.get_session(resp.key)
     resp.sess.lock_sess()
 
+    # Tell the server the user is active
+    resp.sess.user_is_active()
+
     # Parse all responses that have arrived from LysKOM server. This is important
     # for ViewPendingMessages, auto-logout etc. 
     resp.sess.conn.parse_present_data()
@@ -2303,11 +2306,8 @@ def actions(resp):
 
     # Create an instance of apropriate class and let it generate response
     action = response_type(resp, trans)
-    # Generate page
+    # Generate page. Note: if this is the logout page, resp.sess will be cleared. 
     action.response()
-
-    # Tell the server the user is active
-    resp.sess.user_is_active()
 
     # Add link to W3C validator
     div = Div(align = "right")
