@@ -37,7 +37,7 @@ Requirements
 * FastCGI-capable webbserver (eg. Apache with mod_fastcgi).
 * fcgi.py
 * Python-lyskom (kom.py)
-* HTMLgen
+* HTMLgen (apply included patch HTMLgen.patch for best result)
 
 
 Installation
