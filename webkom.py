@@ -554,9 +554,9 @@ class AboutPageActions(Action):
                         time.strftime("%Y-%m-%d %H:%M",
                                       time.localtime(serverstarttime)))
         timediff = int(time.time() - serverstarttime)
-        days = timediff / 86400
-        hours = (timediff - 86400*days) / 3600
-        minutes = ((timediff - 86400*days) - 3600*hours) / 60
+        days = timediff // 86400
+        hours = (timediff - 86400*days) // 3600
+        minutes = ((timediff - 86400*days) - 3600*hours) // 60
         self.doc.append(self._(", %(days)d days, %(hours)d hours and "\
                                "%(minutes)d minutes ago") % locals())
 
