@@ -2417,7 +2417,6 @@ def actions(resp):
     action = response_type(resp)
 
     # Generate page. Note: if this is the logout page, resp.sess will be cleared.
-
     action.response()
 
     # Add link to W3C validator
@@ -2428,7 +2427,7 @@ def actions(resp):
     div.append(Href("http://validator.w3.org/check/referer", str(image)))
 
     # Add Javascript shortcuts
-    if resp.shortcuts_active:
+    if resp.shortcuts_active and resp.sess:
         # Add global shortcuts
         resp.add_shortcut("v", action.base_session_url() + "&amp;action=whoison")
         resp.add_shortcut("b", action.base_session_url() + "&amp;action=writeletter&amp;rcpt=" 
