@@ -175,6 +175,9 @@ class Session:
         # Result of submission. There is no problem when two submits are done
         # at the same time from one session, since the session is locked. 
         self.submit_result = {}
+
+    def __del__(self):
+        self.resp.sess.conn.socket.close()
         
     def lock_sess(self):
         "Lock session"
@@ -687,7 +690,6 @@ class LogOutActions(Action):
         except:
             pass
         
-        self.resp.sess.conn.socket.close()
         self.resp.sess = None
 
         self.resp.shortcuts_active = 0
