@@ -99,3 +99,31 @@ all required configuration.
 6. Configure constants in webkom_constants.py. Documentation for these
    can be found in the file CONSTANTS.
 
+
+Running multiple WebKOM servers on one machine
+==============================================
+It is possible to run several server applications ("instances") on one
+single machine. For example, sometimes it's useful to run a separate
+instance for testing purposes. Use the instructions below in addition
+to the normal installation instruction for setting up an additional
+server instance. You must setup additional instances manually; the
+script apache-setup.py cannot be used. 
+
+1. The FastCGI application for the extra instance will be 
+   <documentroot>/<instancename>/webkom.py. <instancename> could be,
+   for example, "testwebkom". 
+
+2. You must use a separate installation directory for each
+   instance. It's not necessary to use the same directory name as the
+   instance name. 
+
+3. The links should be:
+
+   <documentroot>/<instancename>/images -> <webkom>/images
+   <documentroot>/<instancename>/webkom.py -> webkom.py.wrapper
+
+4. No additional information. 
+
+5. Use the configuration from the first instance as a template. 
+
+6. Make sure to change FIFO_PREFIX to something uniq.
