@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+tmpdir=`mktemp -d /tmp/$0.XXXXXXXXXX` || exit 1
+tag=`date +kom-py-lyscvs-%Y-%m-%d-%H-%M`
+
+cd "${tmpdir}"
+cvs -d :pserver:anonymous@cvs.lysator.liu.se:/cvsroot/python-lyskom export -r HEAD python-lyskom/kom.py
+cd python-lyskom
+cvs -d astrand@cvs.lysator.liu.se:/cvsroot/webkom import -m "New kom.py snapshot" webkom python-lyskom ${tag}
+cd
+rm -rf "${tmpdir}"
