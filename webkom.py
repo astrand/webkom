@@ -1633,13 +1633,13 @@ class ViewTextActions(Action):
 
         markline = str(ts.no_of_marks)
         if self.sess.marked_texts.has_key(global_num):
-            markline+=self._(", marked by you. ")
-            markline+=str(self.action_href("unmark_text&amp;textnum="+\
+            markline += self._(", marked by you. ")
+            markline += str(self.action_href("unmark_text&amp;textnum="+\
                                            str(global_num),
                                            self._("Unmark")))
         else:
-            markline+=self._(", not marked by you. ")
-            markline+=str(self.action_href("mark_text&amp;textnum="+\
+            markline += self._(", not marked by you. ")
+            markline += str(self.action_href("mark_text&amp;textnum="+\
                                            str(global_num),
                                            self._("Mark")))
 
@@ -2070,7 +2070,7 @@ class WriteArticleActions(Action):
                        cell_align="left", width="100%"))
         
         ## Search and remove submit
-        cont=Container()
+        cont = Container()
         cont.append(self._("Search for new recipient:"))
         cont.append(Input(name="searchtext"))
         cont.append(Input(type="submit", name="searchrcptsubmit", value=self._("Search")))
@@ -2400,7 +2400,7 @@ class JoinConfActions(Action):
             searchtext = ""
 
         ## Search and remove submit
-        cont=Container()
+        cont = Container()
         F.append(self._("Type in the beginning of the conference name. You can also search "
                         "via conference numbers by giving # followed by the conference number."), BR(2))
         cont.append(Input(name="searchtext", value=searchtext))
@@ -2712,7 +2712,7 @@ class ViewPresentationActions(Action):
                         "the conference or person number."), BR())
 
         ## Search and remove submit
-        cont=Container()
+        cont = Container()
         cont.append(self._("Search for conference or person:"))
         cont.append(Input(name="searchtext"))
         cont.append(Input(type="hidden", name="view_presentation_search"))
@@ -2774,7 +2774,7 @@ class ChooseConfActions(Action):
                         "via conference numbers by giving # followed by the conference number."), BR())
 
         ## Search and remove submit
-        cont=Container()
+        cont = Container()
         cont.append(self._("Search for conference:"))
         cont.append(Input(name="searchtext"))
         cont.append(Input(type="hidden", name="choose_conf_search"))
@@ -3110,7 +3110,7 @@ def run_console(*args):
     except SystemExit:
         system_log.level_write(2, "Console thread exited")
     except:
-        f=open(os.path.join(LOG_DIR, "traceback.console"), "w")
+        f = open(os.path.join(LOG_DIR, "traceback.console"), "w")
         traceback.print_exc(file = f)
         f.close()
 
