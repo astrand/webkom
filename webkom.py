@@ -545,7 +545,7 @@ class LoginPageActions(Action):
         self.doc.append(nonjs_cont)
         self.doc.append(webkom_js.noscript_end)
 
-        self.doc.append(Href(BASE_URL + "?action=create_user&komserver=" + default_kom_server, self._("Create new user") + "..."))
+        self.doc.append(Href(BASE_URL + "?action=create_user&amp;komserver=" + default_kom_server, self._("Create new user") + "..."))
 
         return
 
@@ -2055,27 +2055,46 @@ class JoinConfActions(Action):
         F.append(Heading(2, self._("Join conference")))
         F.append(BR())
 
+        # Max hits
+        if self.form.has_key("maxhits"):
+            maxhits = int(self.form.getvalue("maxhits"))
+        else:
+            maxhits = 20
+
+        # Search text
+        if self.form.has_key("searchtext"):
+            searchtext = self.form.getvalue("searchtext")
+        else:
+            searchtext = ""
+
         ## Search and remove submit
         cont=Container()
-        cont.append(self._("Search conference:"))
-        cont.append(Input(name="searchtext"))
+        F.append(self._("Type in the beginning of the conference name. You can also search "
+                        "via conference numbers by giving # followed by the conference number."), BR(2))
+        cont.append(Input(name="searchtext", value=searchtext))
         cont.append(Input(type="hidden", name="searchconfsubmit"))
-        cont.append(Input(type="submit", name="searchconfsubmit", value=self._("Search")), BR())
+        cont.append(Input(type="submit", name="searchconfsubmit", value=self._("Search")), 2*NBSP)
+        cont.append(Input(type="submit", name="searchconfsall", value=self._("View all conferences")), BR(2))
+        cont.append(self._("Search result will be limited to "))
+        cont.append(Input(name="maxhits", size=4, value="%d" % maxhits), self._(" conferences."), BR())
         F.append(cont)
-        
-        ## Search result
-        searchtext = self.form.getvalue("searchtext", None)
+
+        # Viewall overrides the searchtext 
+        if self.form.getvalue("searchconfsall"):
+            searchtext = " "
+
+        # Search result
         if searchtext:
             matches = self.sess.conn.lookup_name(searchtext, want_pers=0, want_confs=1)
             infotext = None
             if len(matches) == 0:
                 infotext = self._("(Nothing matches %s)") % searchtext
-            elif len(matches) > 10:
+            elif len(matches) > maxhits:
                 infotext = self._("(Too many matches, search result truncated)")
                 
             F.append(self._("Search result:"), BR())
             tab=[]
-            for (rcpt_num, rcpt_name) in matches[:10]:
+            for (rcpt_num, rcpt_name) in matches[:maxhits]:
                 tab.append([rcpt_name,
                             Input(type="radio", name="new_conference", value=str(rcpt_num))])
             if infotext:
@@ -2347,6 +2366,7 @@ def actions(resp):
                        "writepresentationsubmit" : WritePresentationSubmit,
                        "joinconfsubmit" : JoinConfSubmit,
                        "searchconfsubmit" : JoinConfActions,
+                       "searchconfsall" : JoinConfActions,
                        "leaveconfsubmit" : LeaveConfSubmit,
                        "set_unread_submit" : SetUnreadSubmit,
                        "choose_conf_search" : ChooseConfActions }
