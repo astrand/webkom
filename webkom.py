@@ -673,6 +673,9 @@ class MainPageActions(Action):
         cont.append(Heading(3, self.action_href("changepw", self._("Change password"))))
         cont.append(Heading(3, self.action_href("writepresentation" + "&amp;presentationfor="
                                                 + str(self.sess.conn.get_user()), self._("Write presentation"))))
+        cont.append(Heading(3,
+                            self.action_href("view_presentation",
+                                             self._("View presentation"))))
         cont.append(Heading(3, self.action_href("logout", self._("Logout"))))
         cont.append(Heading(3, self.action_href("logoutothersessions",
                                                 self._("Logout my other sessions"))))
@@ -1401,14 +1404,17 @@ class ViewTextActions(Action):
             self.doc.append(self._("Created with %s." % ai_cs.data), BR())
             
     def response(self):
+        # Global text number
+        global_num = int(self.form["textnum"].value)
+
+        if 0 == self.sess.current_conf:
+            self.change_conf(self.sess.conn.textstats[global_num].misc_info.recipient_list[0].recpt)
+        
         # Toplink
         toplink = Href(self.base_session_url(), "WebKOM")
         # Link to conferences
         cont = Container(toplink, " : ", self.current_conflink())
         self.append_std_top(cont)
-
-        # Global text number
-        global_num = int(self.form["textnum"].value)
 
         # Valid article?
         try:
@@ -2458,7 +2464,67 @@ class LeaveConfSubmit(Action):
         
         return
 
+class ViewPresentationActions(Action):
+    def response(self):
+        toplink = Href(self.base_session_url(), "WebKOM")
+        golink = self.action_href("view_presentation",
+                                  self._("View presentation"))
+        cont = Container(toplink, ' : ', golink)
+        self.append_std_top(cont)
 
+        F = Form(BASE_URL, name="view_pres_form", submit="")
+        self.doc.append(F)
+        F.append(self.hidden_key())
+
+        F.append(BR())
+        F.append(Heading(2, self._("View presentation")))
+        F.append(BR())
+
+        F.append(self._("Type in the beginning of a conference or person. "\
+                        "You can also search "\
+                        "via conference numbers by giving # followed by "\
+                        "the conference or person number."), BR())
+
+        ## Search and remove submit
+        cont=Container()
+        cont.append(self._("Search for conference or person:"))
+        cont.append(Input(name="searchtext"))
+        cont.append(Input(type="hidden", name="view_presentation_search"))
+        cont.append(Input(type="submit", name="view_presentation_search",
+                          value=self._("Search")), BR())
+        F.append(cont)                         
+        
+        searchtext = self.form.getvalue("searchtext", None)
+        if searchtext:
+            matches = self.sess.conn.lookup_name(searchtext, want_pers=1,
+                                                 want_confs=1)
+            infotext = None
+            if len(matches) == 0:
+                infotext = self._("(Nothing matches %s)") % searchtext
+            elif len(matches) > 10:
+                infotext = self._("(Too many matches, "\
+                                  "search result truncated)")
+                
+            self.doc.append(self._("Search result:"), BR())
+            tab=[]
+            for (rcpt_num, rcpt_name) in matches[:10]:
+                presentation = self.get_presentation(rcpt_num)
+                if 0 == presentation:
+                    tab.append([rcpt_name+self._(" has no presentation")])
+                else:
+                    tab.append([self.action_href("viewtext&amp;textnum=" +\
+                                                 str(presentation),
+                                                 rcpt_name)])
+
+            if infotext:
+                tab.append([infotext, ""])
+                
+            self.doc.append(Table(body=tab,
+                                  cell_padding=2,
+                                  border=3, column1_align="left",
+                                  cell_align="right", width="100%"))
+
+        return        
 
 class ChooseConfActions(Action):
     "Generate a page for choosing active conference"
@@ -2588,7 +2654,8 @@ def actions(resp):
                        "searchconfsall" : JoinConfActions,
                        "leaveconfsubmit" : LeaveConfSubmit,
                        "set_unread_submit" : SetUnreadSubmit,
-                       "choose_conf_search" : ChooseConfActions }
+                       "choose_conf_search" : ChooseConfActions,
+                       "view_presentation_search" : ViewPresentationActions }
     
     action_keywords = {"logout" : LogOutActions,
                        "viewconfs" : ViewConfsActions,
@@ -2610,7 +2677,8 @@ def actions(resp):
                        "logoutothersessions" : LogoutOtherSessionsActions,
                        "submit_result" : SubmitResultActions,
                        "login_progress" : LoginProgressPageActions,
-                       "read_confirmation" : ReadConfirmationActions }
+                       "read_confirmation" : ReadConfirmationActions,
+                       "view_presentation" : ViewPresentationActions }
 
     if not sessionset.valid_session(resp.key):
         InvalidSessionPageActions(resp).response()
