@@ -2046,6 +2046,9 @@ def actions(resp):
         resp.add_shortcut("g", action.base_session_url() + "&action=choose_conf")
         AddShortCuts(resp).response()
 
+    # Set page title
+    resp.doc.title = "WebKOM: " + resp.sess.conn.conf_name(resp.sess.pers_num)[:MAX_CONFERENCE_LEN]
+
     # For debugging 
     #resp.doc.append(str(resp.env))
     #resp.doc.append("<hr>Språket är:" + resp.pref_lang)
