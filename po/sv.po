@@ -63,6 +63,9 @@ msgstr "Inget möte valt."
 msgid "Authors"
 msgstr "Författare"
 
+msgid "User name"
+msgstr "Användarnamn"
+
 msgid "Logout my other sessions"
 msgstr "Logga ut mina andra sessioner"
 
@@ -432,6 +435,9 @@ msgstr "Möten (med olästa)"
 
 msgid " by "
 msgstr " av "
+
+msgid "User number"
+msgstr "Användarnummer"
 
 msgid "Cannot connect to server."
 msgstr "Kan inte ansluta till servern."

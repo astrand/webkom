@@ -713,12 +713,15 @@ class LogInActions(Action):
         
         for (pers_num, pers_name) in matches[:15]:
             tab.append([pers_name,
+                        pers_num,
                         Input(type="radio", name="username", value="#" + str(pers_num))])
         if infotext:
-            tab.append([infotext, ""])
+            tab.append([infotext, "", ""])
 
+        headings = [self._("User name"), self._("User number"), ""]
         F.append(Table(body=tab, border=3, cell_padding=2, column1_align="left",
-                       cell_align="right", width="100%"))
+                       cell_align="right", width="100%", heading=headings))
+
 
         addsubmit = Input(type="submit", name="loginsubmit",
                           value=self._("Login with selected user"))
