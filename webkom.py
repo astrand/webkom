@@ -1934,7 +1934,6 @@ class SetUnreadActions(Action):
 
         F.append(Heading(2, self._("Set unread")))
 
-        F.append(self._("Sätt läsmarkeringar så att du endast har "))
         F.append(self._("Set read marks to "))
         F.append(Input(name="num_unread", size=4, value="20"))
         F.append(self._(" unread articles in this conference."), BR())
