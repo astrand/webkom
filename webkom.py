@@ -3187,6 +3187,13 @@ if __name__=="__main__":
 
     # Get a list of installed languages
     installed_langs = get_installed_languages()
+    # Make sure DEFAULT_LANG is first in list, if it's available
+    try:
+        installed_langs.pop(installed_langs.index(DEFAULT_LANG))
+        installed_langs.insert(0, DEFAULT_LANG)
+    except ValueError:
+        pass
+    
     # Create instance of translator
     translator_cache = TranslatorCache.TranslatorCache("webkom", LOCALE_DIR)
 
