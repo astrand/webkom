@@ -59,6 +59,7 @@ DEFAULT_KOM_SERVER = "kom.lysator.liu.se"
 LOCK_KOM_SERVER = 0
 SERVER_LIST = [
     ("LysKOM", "kom.lysator.liu.se"),
+    ("LysKOM (english)", "com.lysator.liu.se"),
     ("LuddKOM", "kom.ludd.luth.se"),
     ("CdKOM", "kom.cd.chalmers.se"),
     ("UppKOM", "kom.update.uu.se"),
