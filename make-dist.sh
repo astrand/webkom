@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 VERSION=`python -c "from webkom_constants import *; print VERSION"`
 PWD=`pwd`
 SRCDIR=`basename ${PWD}`
@@ -7,7 +7,9 @@ SRCDIR=`basename ${PWD}`
 find . -name '*~' -exec rm \{\} \;
 find . -name '*.pyc' -exec rm \{\} \;
 find . -name '*.pyo' -exec rm \{\} \;
-find logs -mindepth 1 -and -not -name README -exec rm -f \{\} \;
+find logs -mindepth 1 -not -path '*CVS*' \
+ -and -not -name .cvsignore \
+ -and -not -name README -exec rm -f \{\} \;
 cd ..
 rm -f webkom-${VERSION}.tgz
 DISTFILES=`find ${SRCDIR} \
