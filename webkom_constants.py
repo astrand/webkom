@@ -17,10 +17,40 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 
+import os
+import sys
+import string
 
-LOG_DIR = "/home/astrand/webkom/webkom/logs"
-MODULES_PATH = "/home/astrand/webkom/python-modules"
-LOCALE_DIR = "/home/astrand/webkom/locale"
+# FIXME: Remove this function when Python provides realpath. 
+def realpath(filename):
+    """Return the canonical path of the specified filename, eliminating any
+symbolic links encountered in the path."""
+    filename = os.path.abspath(filename)
+
+    bits = ['/'] + string.split(filename, '/')[1:]
+    for i in range(2, len(bits)+1):
+        component = apply(os.path.join, bits[0:i])
+        if os.path.islink(component):
+            resolved = os.readlink(component)
+            (dir, file) = os.path.split(component)
+            resolved = os.path.normpath(os.path.join(dir, resolved))
+            newpath = apply(os.path.join, [resolved] + bits[i:])
+            return realpath(newpath)
+
+    return filename
+
+
+def get_origin_dir(argv0=sys.argv[0]):
+    """Get program origin directory"""
+    
+    abs_path = realpath(os.path.abspath(argv0))
+
+    return os.path.dirname(abs_path)
+
+
+ORIGIN_DIR = get_origin_dir()
+LOG_DIR = os.path.join(ORIGIN_DIR, "logs")
+LOCALE_DIR = os.path.join(ORIGIN_DIR, "locale")
 VERSION = "0.14"
 BASE_URL = "webkom.py"
 DEFAULT_KOM_SERVER = "kom.lysator.liu.se"
