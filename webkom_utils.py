@@ -385,6 +385,24 @@ def existing_locals(conn, conf_num, ask_for, highest_local):
 
     return local_nums
 
+def get_ai_dict(ai_list):
+    d = {}
+    for ai in ai_list:
+        d[ai.tag]
+
+def mime_content_type(str):
+    """Get the type / subtype part of a MIME content type"""
+    return str.split(";")[0]
+
+def mime_content_params(str):
+    """Get parameters of a MIME content type, as a dictionary"""
+    fields = str.split(";")
+    d = {}
+    for param in fields[1:]:
+        (name, value) = param.split("=")
+        d[name] = value
+    return d
+
 
 # FIXME: Unused function. 
 ## def next_local_no(conn, ask_for, conf_num):
