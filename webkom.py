@@ -545,7 +545,7 @@ class LoginPageActions(Action):
         self.doc.append(nonjs_cont)
         self.doc.append(webkom_js.noscript_end)
 
-        self.doc.append(Href(BASE_URL + "?action=create_user", self._("Create new user") + "..."))
+        self.doc.append(Href(BASE_URL + "?action=create_user&komserver=" + default_kom_server, self._("Create new user") + "..."))
 
         return
 
