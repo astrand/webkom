@@ -763,7 +763,7 @@ class AboutPageActions(Action):
         self.doc.append(self._("The following people have in one way or another "
                                "contributed to WebKOM:"), BR(2))
         self.doc.append(self.external_href("http://www.lysator.liu.se/~astrand/",
-                                      self._("Peter Åstrand (project starter, most of implementation)")), BR())
+                                      self._("Peter &Aring;strand (project starter, most of implementation)")), BR())
         self.doc.append("Kent Engström (python-lyskom)", BR())
         self.doc.append("Per Cederqvist (LysKOM server etc.)", BR())
         self.doc.append(self.external_href("http://www.lysator.liu.se/~forsberg/",
