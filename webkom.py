@@ -620,7 +620,7 @@ class AboutPageActions(Action):
         
         self.doc.append(Heading(3, self._("Bugs")))
         self.doc.append(self._("There is a "),
-                        external_href(KNOWN_BUGS_URL, self._("list with known bugs")),
+                        external_href(webkom_escape(KNOWN_BUGS_URL), self._("list with known bugs")),
                         self._(" in the Bugzilla at Lysator"))
 
 
