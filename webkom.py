@@ -2098,6 +2098,11 @@ class JoinConfSubmit(Action):
         joinlink = self.action_href("joinconf", self._("Join conference"))
         top_cont = Container(toplink, " : ", joinlink)
         result_cont.append(self.gen_std_top(top_cont))
+
+        if not self.form.getvalue("new_conference"):
+            self.doc.append(self.gen_std_top(top_cont))
+            self.print_error(self._("No conference selected."))
+            return
         
         conf = int(self.form.getvalue("new_conference"))
         type = kom.ConfType()
