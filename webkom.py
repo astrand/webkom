@@ -2591,7 +2591,7 @@ class Logger:
             self.write(msg)
 
         
-# Interaction via FIFO
+# Console
 def run_console(*args):
     system_log.level_write(2, "Console thread started")
     system_log.level_write(4, "Console using socket " + CONSOLE_SOCKET)
