@@ -196,16 +196,6 @@ def main(dry_run):
     if not dry_run:
         os.symlink(src_img_dir, dst_img_dir)
 
-    # Create link to bugs.html
-    src_img_dir = os.path.join(webkom_dir, "bugs.html")
-    dst_img_dir = os.path.join(web_home, "bugs.html")
-    print "Creating link", dst_img_dir, "->", src_img_dir
-    if lexists(dst_img_dir):
-        print dst_img_dir, "exists, overwriting."
-        if not dry_run:
-            os.remove(dst_img_dir)
-    if not dry_run:
-        os.symlink(src_img_dir, dst_img_dir)
 
     wrapper_file = os.path.join(web_home, "webkom.py.wrapper")
     print "Creating", wrapper_file, "(change Python-interpreter in this file)"
