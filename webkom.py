@@ -702,6 +702,10 @@ class LogInActions(Action):
             LoginPageActions(self.resp, self._).response()
             return
 
+        if not self.form["username"].value:
+            self.error_message(self._("No username specified."))
+            return
+        
         self.komserver = self.form["komserver"].value
         self.password = self.form["password"].value
 
