@@ -92,7 +92,7 @@ def error(msg):
     errf.write(msg+'\n')
     errf.close()
 
-class record:
+class Record:
     """Class representing FastCGI records"""
     def __init__(self):
         self.version = FCGI_VERSION_1
@@ -200,7 +200,7 @@ def writePair(name, value):
     return s + name + value
 
 
-def HandleManTypes(r, conn):
+def handleManTypes(r, conn):
     if r.recType == FCGI_GET_VALUES:
         r.recType = FCGI_GET_VALUES_RESULT
         v = {}
@@ -251,16 +251,16 @@ class FCGI:
             raise error, 'Connection from invalid server!'
 
         while remaining:
-            r = record()
+            r = Record()
             r.readRecord(self.conn)
 
             if r.recType in ManagementTypes:
-                HandleManTypes(r, self.conn)
+                handleManTypes(r, self.conn)
 
             elif r.reqId == 0:
                 # Oh, poopy.  It's a management record of an unknown
                 # type.  Signal the error.
-                r2 = record()
+                r2 = Record()
                 r2.recType = FCGI_UNKNOWN_TYPE
                 r2.unknownType = r.recType
                 r2.writeRecord(self.conn)
@@ -277,9 +277,9 @@ class FCGI:
             # Begin a new request
             if r.recType == FCGI_BEGIN_REQUEST:
                 self.requestId = r.reqId
-                if r.role == FCGI_AUTHORIZER:   remaining=1
-                elif r.role == FCGI_RESPONDER:  remaining=2
-                elif r.role == FCGI_FILTER:     remaining=3
+                if r.role == FCGI_AUTHORIZER: remaining = 1
+                elif r.role == FCGI_RESPONDER: remaining = 2
+                elif r.role == FCGI_FILTER: remaining = 3
 
             elif r.recType == FCGI_PARAMS:
                 if r.content == "":
@@ -302,19 +302,32 @@ class FCGI:
         # end of while remaining:
 
         self.inp = StringIO(stdin)
-        self.err = StringIO()
-        self.out = StringIO()
-        
         self.data = StringIO(data)
+        self.out = StringIO()
+        self.err = StringIO()
 
-    def Finish(self, status=0):
+    def flush(self):
+        self.out.seek(0,0)
+
+        r = Record()
+        r.recType = FCGI_STDOUT
+        data = self.out.read()
+        while data:
+            chunk, data = self.getNextChunk(data)
+            r.content = chunk
+            r.writeRecord(self.conn)
+        self.out.close()
+        self.out = StringIO()
+
+
+    def finish(self, status=0):
         if not self.haveFinished:
             self.haveFinished = 1
 
             self.err.seek(0,0)
             self.out.seek(0,0)
 
-            r = record()
+            r = Record()
             r.recType = FCGI_STDERR
             r.reqId = self.requestId
             data = self.err.read()
@@ -334,7 +347,7 @@ class FCGI:
             r.content = ""
             r.writeRecord(self.conn)      # Terminate stream
 
-            r = record()
+            r = Record()
             r.recType = FCGI_END_REQUEST
             r.reqId = self.requestId
             r.appStatus = status
