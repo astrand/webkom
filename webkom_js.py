@@ -39,13 +39,6 @@ noscript_end = """
 </noscript>
 """
 
-
-focus_username = """
-function focus_username() {
-    document.username_form.username.focus()
-}
-"""
-
 shortcut_functions = """
 function reFocus(e) {
     if (active) {
