@@ -368,13 +368,6 @@ def existing_locals(conn, conf_num, ask_for, highest_local):
 ##     return 0
 
 
-def gen_session_key():
-    key = ""
-    for foo in range(0, 4):
-        key = key + hex(random.randrange(sys.maxint))[2:]
-    return key
-
-
 def get_installed_languages():
     import os.path
     import dircache
