@@ -635,7 +635,7 @@ class WhatsImplementedActions(Action):
         <li>Write articles</li>
         <li>Write comments</li>
         <li>Write personal letters</li>
-        <li>Read conference presentation</li>
+        <li>Read presentation</li>
         <li>Change password</li>
         <li>Read comments in depth-first order</li>
         <li>Join conference</li>
