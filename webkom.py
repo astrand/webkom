@@ -2552,6 +2552,7 @@ class Logger:
         
 # Interaction via FIFO
 def run_console(*args):
+    system_log.write(2, "Console thread started")
     import fifoconsole
     try:
         fifoconsole.interact(local=globals(), fifoprefix="testwebkom")
@@ -2561,6 +2562,7 @@ def run_console(*args):
         f.close()
 
 def run_maintenance(*args):
+    system_log.write(2, "Maintenance thread started")
     while 1:
         time.sleep(60)
         sessionset.del_inactive()
