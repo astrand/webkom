@@ -1763,7 +1763,9 @@ class JoinConfSubmit(Action):
             return
 
         self.doc.append(Heading(3, "Ok"))
-        self.doc.append("Du är nu medlem i mötet \"" + self.get_conf_name(conf) + "\".")
+        self.doc.append("Du är nu medlem i mötet ")
+        self.doc.append(self.action_href("goconf&conf=" + str(conf), self.get_conf_name(conf)))
+        self.doc.append(".")
         
         return
 
