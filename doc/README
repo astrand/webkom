@@ -6,14 +6,14 @@ System overview
 |lyskomd|-----|webkom.py|-----|httpd|-----|browser|
 +-------+     +---------+     +-----+     +-------+
                    | 4
-              +-----------+
-              |fifoterm.py|
-              +-----------+
+              +----------+
+              |console.py|
+              +----------+
 
 1) Protocol A
 2) FastCGI sockets
 3) HTTP
-4) FIFO-pair
+4) Unix Socket
 
 
 WebKOM Components
@@ -23,13 +23,13 @@ FastCGI process.
 
 httpd is any FastCGI-capable webbserver. 
 
-fifoterm.py is an optional interactive console, mainly used for
+console.py is an optional interactive console, mainly used for
 debugging. 
 
-webkom.py and fifoterm.py must be running on the same machine (because
-FIFOs are used for communication). All other components can run on
-different machines. This instruction assumes that all components run
-om the same machine. 
+webkom.py and console.py must be running on the same machine, because
+a UNIX socket is used for communication. All other components can run
+on different machines. This instruction assumes that all components
+run om the same machine. 
 
 
 Requirements
@@ -126,4 +126,13 @@ script apache-setup.py cannot be used.
 
 5. Use the configuration from the first instance as a template. 
 
-6. Make sure to change FIFO_PREFIX to something uniq.
+6. Make sure you change CONSOLE_SOCKET to something unique.
+
+
+Using the interactive console
+=============================
+Run "console.py <socket>", where <socket> is defined in
+webkom_constants.py. The default is /tmp/webkom.console. You can
+access the set of sessions via the dictionary
+"sessionset.sessionset". Please think about user integrity when using
+the console. 
