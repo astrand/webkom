@@ -19,7 +19,7 @@
 
 import kom
 from HTMLgen import *
-from HTMLcolors import *
+import HTMLcolors
 from webkom_constants import *
 import re
 import string
@@ -27,7 +27,7 @@ import random
 import sys
 
 NBSP = "&nbsp;"
-INACTIVE_LINK_COLOR = GREY6
+INACTIVE_LINK_COLOR = HTMLcolors.GREY6
 
 # Magic!
 class Struct:
