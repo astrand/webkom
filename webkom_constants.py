@@ -58,7 +58,7 @@ MAX_SUBJ_PER_PAGE = 25
 MAX_CONFS_PER_PAGE = 15
 MAINTAINER_NAME = "Peter Åstrand"
 MAINTAINER_MAIL = "astrand@lysator.liu.se"
-FIFO_PREFIX = "/tmp/webkom"
+CONSOLE_SOCKET = "/tmp/webkom.console"
 
 MAX_CONFERENCE_LEN = 37
 # 12 hours auto-logout
