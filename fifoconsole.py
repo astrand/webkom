@@ -20,7 +20,7 @@
 
 """Modified version of code.py, as distributed with Python 2.0"""
 
-import sys, os
+import sys, os, stat
 import string
 import traceback
 from codeop import compile_command
@@ -31,8 +31,10 @@ class Outobj:
     def write(self, data):
         os.write(self.fd, data)
 
-    def __getattr__(self, attr):
-        return getattr(sys.stdout, attr)
+## This code gives RuntimeError: Maximum recursion depth exceeded.
+## Not needed anyway now, disabled. 
+##     def __getattr__(self, attr):
+##         return getattr(sys.stdout, attr)
 
 class Inobj:
     def __init__(self, fd):
@@ -44,9 +46,11 @@ class Inobj:
             char = os.read(self.fd, 1)
             output = output + char
         return output
-    
-    def __getattr__(self, attr):
-        return getattr(sys.stdout, attr)
+
+## This code gives RuntimeError: Maximum recursion depth exceeded.
+## Not needed anyway now, disabled. 
+##     def __getattr__(self, attr):
+##         return getattr(sys.stdout, attr)
 
 class InteractiveInterpreter:
     """Base class for InteractiveConsole.
@@ -309,6 +313,18 @@ class InteractiveConsole(InteractiveInterpreter):
         return raw_input(prompt)
 
 
+def verify_fifo(filename):
+    if os.path.exists(filename):
+        if stat.S_ISFIFO(os.stat(filename)[0]):
+            # Yes, fifo. Good.
+            return
+        else:
+            # Exists but not fifo. Abort.
+            raise filename + " exists but is not fifo."
+    else:
+        os.mkfifo(filename, 0600)
+        
+
 def interact(banner=None, readfunc=None, local=None, fifoprefix="unnamed"):
     """Closely emulate the interactive Python interpreter.
 
@@ -324,10 +340,12 @@ def interact(banner=None, readfunc=None, local=None, fifoprefix="unnamed"):
 
     """
     # stderr and stdout
+    verify_fifo(fifoprefix + "." + "outfifo")
     outfifo = os.open(fifoprefix + "." + "outfifo", os.O_RDWR)
     outobj = Outobj(outfifo)
 
     # stdin
+    verify_fifo(fifoprefix + "." + "infifo")
     infifo = os.open(fifoprefix + "." + "infifo", os.O_RDWR)
     inobj = Inobj(infifo)
 
