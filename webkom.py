@@ -754,6 +754,9 @@ class LogInActions(Action):
             self.error_message(self._("Wrong password."))
             return
 
+        # Set user_no in connection
+        conn.set_user(pers_num)
+
         kom.ReqSetClientVersion(conn, "WebKOM", VERSION)
 
         # Create new session
@@ -765,9 +768,6 @@ class LogInActions(Action):
         # Add to sessionset
         sessionset.new_session(sessionkey, self.resp.sess)
         self.resp.key = sessionkey
-
-        # Set user_no in connection
-        conn.set_user(pers_num)
 
         # Handle messages
         conn.add_async_handler(kom.ASYNC_SEND_MESSAGE, self.resp.sess.async_message)
