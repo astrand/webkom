@@ -88,13 +88,13 @@ class SessionSet:
 
     def del_session(self, key):
         "Delete session from sessionset"
+        self.write_log("Deleting session", key)
         self.sessionset_lock.acquire()
         try:
             del self.sessionset[key]
         except:
             pass
         self.sessionset_lock.release()
-        self.write_log("Deleting session", key)
 
     def del_inactive(self):
         "Delete and logout inactive sessions"
