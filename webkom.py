@@ -1622,7 +1622,7 @@ class WriteArticleActions(Action):
         cont=Container()
         cont.append(self._("Search for new recipient:"))
         cont.append(Input(name="searchtext"))
-        cont.append(Input(type="submit", name="searchrcptsubmit", value="Sök"))
+        cont.append(Input(type="submit", name="searchrcptsubmit", value=self._("Search")))
         removesubmit = Input(type="submit", name="removercptsubmit",
                              value=self._("Remove marked recipients"))
         tab = [[cont, removesubmit]]
@@ -1864,7 +1864,7 @@ class JoinConfActions(Action):
         cont.append(self._("Search conference:"))
         cont.append(Input(name="searchtext"))
         cont.append(Input(type="hidden", name="searchconfsubmit"))
-        cont.append(Input(type="submit", name="searchconfsubmit", value="Sök"), BR())
+        cont.append(Input(type="submit", name="searchconfsubmit", value=self._("Search")), BR())
         F.append(cont)
         
         ## Search result
