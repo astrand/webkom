@@ -423,3 +423,27 @@ class FinalizerChecker:
                 self.check_module(attr)
 
 
+class WebKOMSimpleDocument(SimpleDocument):
+    def get_doc_start(self):
+        s = []
+        # build the HEAD and BODY tags
+        s.append(self.html_head())
+        s.append(self.html_body_tag())
+        return string.join(s, '')
+
+    def get_doc_end(self):
+        return '\n</BODY> </HTML>\n' # CLOSE the document
+
+    def get_doc_contents(self):
+        s = []
+        # DOCUMENT CONTENT SECTION and FOOTER added on
+        bodystring = '%s\n' * len(self.contents)
+        s.append((bodystring % tuple(self.contents)))
+        return string.join(s, '')
+
+    def flush_doc_contents(self):
+        s = self.get_doc_contents()
+        self.contents = []
+        return s
+        
+    
