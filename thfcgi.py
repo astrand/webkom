@@ -129,14 +129,14 @@ class Record:
             data = struct.pack("!B", namelen)
         else:
             # 4-byte name length
-            data = struct.pack("!I", namelen | 0x80000000)
+            data = struct.pack("!I", namelen | 0x80000000L)
 
         valuelen = len(value)
         if valuelen < 128:
             data += struct.pack("!B", value)
         else:
             # 4-byte value length
-            data += struct.pack("!I", value | 0x80000000)
+            data += struct.pack("!I", value | 0x80000000L)
 
         return data + name + value
         
