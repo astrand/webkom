@@ -1200,6 +1200,18 @@ class ViewTextActions(Action):
 
         # Local and global text number
         global_num = int(self.form["textnum"].value)
+
+        # Valid article?
+        try:
+            if global_num == 0:
+                raise kom.NoSuchText
+            ts = self.sess.conn.textstats[global_num]
+        except kom.NoSuchText:
+            self.print_error(self._("The article does not exist."))
+            return 
+        except:
+            self.print_error(self._("An error occured when fetching article information."))
+            return 
         
         # Link to current conference
         # Note: It's possible to view texts from other conferences,
@@ -1231,18 +1243,6 @@ class ViewTextActions(Action):
                                               self._("Next conference with unread")), NBSP)
 
         self.doc.append(BR())
-
-        # Valid article?
-        try:
-            if global_num == 0:
-                raise kom.NoSuchText
-            ts = self.sess.conn.textstats[global_num]
-        except kom.NoSuchText:
-            self.print_error(self._("The article does not exist."))
-            return 
-        except:
-            self.print_error(self._("An error occured when fetching article information."))
-            return 
 
         # Fetch text
         try:
