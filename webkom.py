@@ -776,7 +776,13 @@ class LogInActions(Action):
         if not self.valid_parameters():
             return
 
-        self.komserver = self.form["komserver"].value
+        serverfields = self.form["komserver"].value.split(":")
+        self.komserver = serverfields[0]
+        if len(serverfields) > 1:
+            # note: string
+            self.komport = serverfields[1]
+        else:
+            self.komport = "4894"
         self.username = self.form["username"].value
         self.password = self.form["password"].value
 
@@ -788,7 +794,8 @@ class LogInActions(Action):
             remote_host = "(unknown)"
 
         try:
-            conn = kom.CachedUserConnection(self.komserver, 4894, "WebKOM%" + remote_host)
+            conn = kom.CachedUserConnection(self.komserver, int(self.komport),
+                                            "WebKOM%" + remote_host)
         except:
             self.error_message(self._("Cannot connect to server."))
             return
