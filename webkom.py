@@ -84,6 +84,10 @@ class SessionSet:
 # Global sessionset
 sessionset = SessionSet()
 
+# Used for debugging purposes in interactive terminal
+def first_conn():
+    return sessionset.sessionset.items()[0][1].conn
+
 # Messages
 class Message:
     def __init__(self, recipient, sender, message):
@@ -891,10 +895,12 @@ class ViewTextActions(Action):
                                str(self.action_href("viewtext&textnum=" + str(c.text_no), str(c.text_no))) \
                                + c_authortext])
                 
-                # FIXME: Check if in same conference etc.
+                # The text seems to exist. Maybe add it to comment_tree. 
                 if c_authortext:
-                    # The text seems to exist. Add it to comment_tree. 
-                    new_comments.append(c.text_no)
+                    for rcpt in self.sess.conn.textstats[c.text_no].misc_info.recipient_list:
+                        if is_member(self.sess.conn, self.sess.pers_num, rcpt.recpt):
+                            new_comments.append(c.text_no)
+                            break
         self.doc.append(Table(body=header, cell_padding=2, column1_align="right", width="80%"))
 
 
