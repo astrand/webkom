@@ -349,6 +349,3 @@ def gen_session_key():
         key = key + hex(random.randrange(sys.maxint))[2:]
     return key
 
-
-
-
