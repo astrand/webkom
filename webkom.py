@@ -131,14 +131,22 @@ class Session:
 
 class Response:
     "A response class. Used during the construction of a response."
-    def __init__(self, form):
+    def __init__(self, env, form):
         self.doc = SimpleDocument(bgcolor=WHITE, vlinkcolor=BLUE)
+        self.env = env
         self.form = form
         self.key = ""
         self.sess = None
         self.shortcuts = []
         self.shortcuts_active = 1
 
+        # Default HTTP header. 
+        self.http_header = "Content-type: text/html\r\n" \
+                           "Cache-Control: no-cache\r\n" \
+                           "Pragma: no-cache\r\n" \
+                           "Expires: 0\r\n" \
+                           "\r\n"
+        
     def add_shortcut(self, key, url):
         self.shortcuts.append((key, url))
 
@@ -452,7 +460,6 @@ class MainPageActions(Action):
         tab=[[cont]]
         self.doc.append(Table(body=tab, border=0, cell_padding=50, width="100%"))
 
-        
         return
 
 
@@ -593,8 +600,13 @@ class LogInActions(Action):
         for conf_num in conf_list:
             conn.no_unread[conf_num]
 
-        MainPageActions(self.resp).response()
-        
+        # Redirect to mainpage
+        server_name = self.resp.env["HTTP_HOST"]
+        if not server_name:
+            server_name = self.resp.env["SERVER_NAME"]
+        script_name = self.resp.env["SCRIPT_NAME"]
+        self.resp.http_header = "Location: http://" + server_name + \
+                                script_name + "?sessionkey=" + self.resp.key + "\n\n"
 
 
 class InvalidSessionPageActions(Action):
@@ -1633,8 +1645,9 @@ def actions(resp):
 def func(fcg, env, form):
     try: # Catch everything else
         try: # Don't catch SystemExit
-            resp = Response(form)
+            resp = Response(env, form)
             try: # For response generation
+                pass
                 actions(resp)
             except:
                 # Something failed in response generation.
@@ -1667,12 +1680,7 @@ def func(fcg, env, form):
                 resp.sess.unlock_sess()
                 
             # Produce output
-            fcg.pr("Content-type: text/html\r\n"
-                   "Cache-Control: no-cache\r\n"
-                   "Pragma: no-cache\r\n"
-                   "Expires: 0\r\n"
-                   "\r\n")
-            
+            fcg.pr(resp.http_header)
             fcg.pr(str(resp.doc))
             fcg.finish()
         except SystemExit:
