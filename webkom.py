@@ -31,9 +31,8 @@ import cgi
 import sz_fcgi
 import kom
 from HTMLgen import *
-from HTMLcolors import *
 import HTMLutil
-from Formtools import *
+import Formtools
 import random, time
 import thread
 from webkom_utils import *
@@ -372,7 +371,7 @@ class LoginPageActions(Action):
         formtable = [(self._("Server"), F_komserver),
                      (self._("Username"), F_username),
                      (self._("Password"), F_password) ]
-        js_cont.append(InputTable(formtable))
+        js_cont.append(Formtools.InputTable(formtable))
         js_cont.append(F_submit)
         
         # komserver_form
@@ -415,7 +414,7 @@ class LoginPageActions(Action):
                       (self._("Username"), Input(name="username",size=20)),
                       (self._("Password"), Input(type="password",name="password",size=20)) ]
 
-        F.append(Center(InputTable(logintable)))
+        F.append(Center(Formtools.InputTable(logintable)))
         F.append(Center(submitbutton))
 
         
@@ -1356,7 +1355,7 @@ class ChangePwActions(Action):
         logintable = [(self._("Old password"), Input(type="password", name="oldpw",size=20)),
                       (self._("New password"), Input(type="password", name="newpw1", size=20)),
                       (self._("Repeat new password"), Input(type="password", name="newpw2",size=20)) ]
-        F.append(Center(InputTable(logintable)))
+        F.append(Center(Formtools.InputTable(logintable)))
         return
 
 
@@ -1409,7 +1408,7 @@ class CreateUserActions(Action):
                       (self._("Password"), Input(type="password", name="password1", size=20)), 
                       (self._("Repeat password"), Input(type="password", name="password2", size=20)) ]
         
-        F.append(Center(InputTable(logintable)))
+        F.append(Center(Formtools.InputTable(logintable)))
         F.append(Center(submitbutton))
 
         return
