@@ -1553,6 +1553,12 @@ class WhoIsOnActions(Action):
 class JoinConfActions(Action):
     "Generate a page for joinging a conference"
     def response(self):
+        if self.form.getvalue("joinconfsubmit", None):
+            JoinConfSubmit(self).response()
+        else:
+            self.search_page()
+
+    def search_page(self):
         self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
         joinlink = self.action_href("joinconf", "Gå med i möte")
@@ -1855,8 +1861,11 @@ def actions(resp):
 
     actions = get_values_as_list(resp.form, "action")
     
-    # Never two submits at the same time!
-    assert (not (len(submits) > 1))
+    # It's OK with two submits at the same time: Forms with textfields
+    # may be submitted via ENTER and in that case a hidden variable
+    # "<something>submit" is submitted. In addition, the form may have other
+    # submits. Look at how JoinConfSubmit handles this, for example. 
+    
     # Never two actions at the same time!
     assert (not (len(actions) > 1))
     # Never submits and actions at the same time!
