@@ -81,6 +81,15 @@ class SessionSet:
         session.timestamp = time.time()
         return session
 
+    def get_sessionkeys_by_person_no(self, pno):
+        "Fetch session, based on person number"
+        ret = []
+        for key in self.sessionset.keys():
+            if self.sessionset[key].conn.get_user() == pno:
+                ret.append(key)
+        return ret
+                
+
     def add_session(self, sess):
         "Add session to sessionset. Return sessionkey"
         system_log.level_write(2, "Creating session for person %d on server %s"
@@ -851,6 +860,14 @@ class LogInActions(Action):
         # Set user_no in connection
         conn.set_user(pers_num)
         kom.ReqSetClientVersion(conn, "WebKOM", VERSION)
+
+        if LOGOUT_OTHER_SESSIONS:
+            # Logout other sessions
+            othersessions_keys = sessionset.get_sessionkeys_by_person_no(pers_num)
+            for key in othersessions_keys:
+                if self.komserver == sessionset.get_session(key).conn.host and \
+                   int(self.komport) == sessionset.get_session(key).conn.port:
+                    sessionset.del_session(key)
 
         # Create new session
         self.resp.sess = Session(conn, self.komserver)

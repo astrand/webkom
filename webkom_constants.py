@@ -51,10 +51,15 @@ def get_origin_dir(argv0=sys.argv[0]):
 
 ORIGIN_DIR = get_origin_dir()
 LOG_DIR = os.path.join(ORIGIN_DIR, "logs")
+LOG_DIR = "/var/log/webkom"
 LOCALE_DIR = os.path.join(ORIGIN_DIR, "locale")
 VERSION = "0.17"
 BASE_URL = "webkom.py"
 DEFAULT_KOM_SERVER = "kom.lysator.liu.se"
+
+# Log out the users sessions on the same webkom/komserver if this is set to
+# 1.
+LOGOUT_OTHER_SESSIONS=1
 
 # Set LOCALBIND to either None or a tuple (hostname, 0). If set to None,
 # outgoing connections to the LysKOM server(s) will come from the primary
@@ -65,9 +70,9 @@ LOCALBIND = None
 
 MAX_SUBJ_PER_PAGE = 25
 MAX_CONFS_PER_PAGE = 15
-MAINTAINER_NAME = "Peter Åstrand"
-MAINTAINER_MAIL = "astrand@lysator.liu.se"
-CONSOLE_SOCKET = "/tmp/webkom.console"
+MAINTAINER_NAME = "Erik Forsberg"
+MAINTAINER_MAIL = "forsberg@lysator.liu.se"
+FIFO_PREFIX = "/tmp/testwebkom"
 
 MAX_CONFERENCE_LEN = 37
 # 12 hours auto-logout
