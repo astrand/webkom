@@ -29,7 +29,7 @@ sys.path.append(ORIGIN_DIR)
 import os, sys, string, socket, errno
 from cStringIO import StringIO
 import cgi
-import sz_fcgi
+import thfcgi
 import kom
 from HTMLgen import *
 from HTMLcolors import *
@@ -220,14 +220,27 @@ class Session:
 
 class Response:
     "A response class. Used during the construction of a response."
-    def __init__(self, env, form):
-        self.doc = SimpleDocument(title="WebKOM", bgcolor=HTMLcolors.WHITE, vlinkcolor=HTMLcolors.BLUE)
+    def __init__(self, req, env, form):
+        self.req = req
         self.env = env
         self.form = form
+
+        # FIXME: Should only be on pages that uses countdowns. 
+        style = """\
+SPAN.countdownstyle {
+    background-color: #dda0de;
+    position:absolute; 
+    left:40; 
+    top:40; 
+}
+"""
+        self.doc = WebKOMSimpleDocument(title="WebKOM", bgcolor=HTMLcolors.WHITE, vlinkcolor=HTMLcolors.BLUE, style=style)
+        
         self.key = ""
         self.sess = None
         self.shortcuts = []
         self.shortcuts_active = 1
+        self.docstart_written = 0
 
         # Default HTTP header. 
         self.http_header = "Content-type: text/html; charset=iso-8859-1\r\n" \
@@ -235,6 +248,12 @@ class Response:
                            "Pragma: no-cache\r\n" \
                            "Expires: 0\r\n" \
                            "\r\n"
+
+    def write_docstart(self):
+        if not self.docstart_written:
+            self.req.out.write(self.http_header)
+            self.req.out.write(self.doc.get_doc_start())
+            self.docstart_written = 1
 
     def set_redir(self, url_text):
         # Do not print shortcuts code after redirection, this leads to internal error. 
@@ -465,90 +484,21 @@ class LoginPageActions(Action):
             default_kom_server = self.form["komserver"].value
         submitbutton = Input(type="submit", name="loginsubmit", value=self._("Login"))
 
-        # Ugly focus-hack to work around broken Netscape
-        # Non-JS capable browsers should ignore this
-        self.doc.script = webkom_js.code_begin + webkom_js.focus_username + webkom_js.code_end
-        self.doc.onLoad = "setTimeout('focus_username()', 10)"
-        
         cont = Container()
         self.doc.append(Center(cont))
         cont.append(BR(2))
         cont.append(Center(Heading(2, self._("WebKOM login"))))
         cont.append(BR(2))
 
-        #
-        # Code for Javascript-version
-        #
-        js_cont = Container()
-        F_komserver = Form(BASE_URL, name="komserver_form", submit="")
-        F_username = Form(BASE_URL, name="username_form", submit="")
-        F_password = Form(BASE_URL, name="password_form", submit="")
-        F_submit = Form(BASE_URL, name="submit_form", submit="")
-        F_submit.append(submitbutton)
-
-        formtable = [(self._("Server"), F_komserver),
-                     (self._("Username"), F_username),
-                     (self._("Password"), F_password) ]
-        js_cont.append(Formtools.InputTable(formtable))
-        js_cont.append(F_submit)
-        
-        # komserver_form
-        F_komserver.append(Input(name="komserver", size=20, value=default_kom_server, onChange="onchange_komserver(this)"))
-        F_komserver.append(Input(name="username", type="hidden"))
-        F_komserver.append(Input(name="password", type="hidden"))
-        F_komserver.append(Input(name="loginsubmit", type="hidden"))
-
-        # username_form
-        F_username.append(Input(name="komserver", type="hidden", value=default_kom_server))
-        F_username.append(Input(name="username", size=20, onChange="onchange_username(this)"))
-        F_username.append(Input(name="password", type="hidden"))
-        F_username.append(Input(name="loginsubmit", type="hidden"))
-
-        # password_form
-        F_password.append(Input(name="komserver", type="hidden", value=default_kom_server))
-        F_password.append(Input(name="username", type="hidden"))
-        F_password.append(Input(type="password", name="password", size=20, onChange="onchange_password(this)"))
-        F_password.append(Input(name="loginsubmit", type="hidden"))
-
-        # submit_form
-        F_submit.append(Input(name="komserver", type="hidden", value=default_kom_server))
-        F_submit.append(Input(name="username", type="hidden"))
-        F_submit.append(Input(name="password", type="hidden"))
-
-        # Translate abstract container into document.write statements
-        # FIXME: Use string.join instead. 
-        form_code = ""
-        for line in string.split(str(Center(js_cont)), '\n'):
-            line = string.replace(line, "</", "<\/")
-            form_code = form_code + "document.write('" + line + "');\n"
-            
-        #
-        # Non-JS version
-        #
-        nonjs_cont = Container()
         F = Form(BASE_URL, name="loginform", submit="")
 
-        nonjs_cont.append(F)
+        cont.append(F)
         logintable = [(self._("Server"), Input(name="komserver", size=20, value=default_kom_server)),
                       (self._("Username"), Input(name="username",size=20)),
                       (self._("Password"), Input(type="password",name="password",size=20)) ]
 
         F.append(Center(Formtools.InputTable(logintable)))
         F.append(Center(submitbutton))
-
-        
-        # Write out Javascript version
-        self.doc.append(webkom_js.code_begin)
-        self.doc.append(form_code)
-        self.doc.append(webkom_js.onchange_komserver)
-        self.doc.append(webkom_js.onchange_username)
-        self.doc.append(webkom_js.onchange_password)
-        self.doc.append(webkom_js.code_end)
-
-        # Write non-JS version
-        self.doc.append(webkom_js.noscript_begin)
-        self.doc.append(nonjs_cont)
-        self.doc.append(webkom_js.noscript_end)
 
         self.doc.append(Href(BASE_URL + "?action=create_user&amp;komserver=" + default_kom_server, self._("Create new user") + "..."))
 
@@ -610,6 +560,7 @@ class AboutPageActions(Action):
         self.doc.append(self._("There is a "),
                         external_href("http://webkom.lysator.liu.se/bugs.html",
                                       self._("list with known bugs")), ".")
+
 
 class WhatsImplementedActions(Action):
     "Generate a page with implementation details"
@@ -2401,7 +2352,8 @@ def actions(resp):
                        "about" : AboutPageActions,
                        "set_unread" : SetUnreadActions,
                        "logoutothersessions" : LogoutOtherSessionsActions,
-                       "submit_result" : SubmitResultActions }
+                       "submit_result" : SubmitResultActions,
+                       "login_progress" : LoginProgressPageActions }
 
     if not sessionset.valid_session(resp.key):
         InvalidSessionPageActions(resp).response()
@@ -2531,13 +2483,12 @@ def print_not_implemented(resp):
     resp.sess = None
 
 # Main action routine. This function is critical and must obey these rules:
-# fcg.finish() should always be executed. If it failes, a manual thread.exit()
+# req.finish() should always be executed. If it failes, a manual thread.exit()
 # should be done.
-# SystemExit from fcg.finish() should be handled. 
 # unlock_sess() should always be executed, even after tracebacks. 
-def handle_req(fcg, env, form):
+def handle_req(req, env, form):
     try: # Exceptions within this clause are critical and not sent to browser.
-        resp = Response(env, form)
+        resp = Response(req, env, form)
         try:
             actions(resp)
         except RemotelyLoggedOutException:
@@ -2550,8 +2501,12 @@ def handle_req(fcg, env, form):
         # Unlock session (it was probably locked in "actions")
         if resp.sess:
             resp.sess.unlock_sess()
-        fcg.pr(resp.http_header)
-        fcg.pr(str(resp.doc))
+
+        # Print HTTP header and start of document, if not already done. 
+        resp.write_docstart()
+        
+        req.out.write(resp.doc.get_doc_contents())
+        req.out.write(resp.doc.get_doc_end())
 
     # Something went wrong when creating Response instance or
     # printing response doc. 
@@ -2562,7 +2517,7 @@ def handle_req(fcg, env, form):
 
     # Finish thread and send all data back to the FCGI parent
     try:
-        fcg.finish()
+        req.finish()
     except SystemExit:
         pass
     except:
@@ -2639,8 +2594,8 @@ thread.start_new_thread(run_maintenance,())
 # Create instance of translator
 translator_cache = TranslatorCache.TranslatorCache("webkom", LOCALE_DIR, DEFAULT_LANG)
 
-# Create an instance of our FCGI wrapper
-fcgi = sz_fcgi.SZ_FCGI(handle_req)
+# Create an instance of THFCGI 
+fcgi = thfcgi.THFCGI(handle_req)
 
 if __name__=="__main__":
     FinalizerChecker(system_log)
