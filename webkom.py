@@ -526,8 +526,11 @@ class AddShortCuts:
         # Example:
         #ret = ret + self.shortcut_case("q", "http://www.abc.se")
         
-        for s in self.resp.shortcuts:
-            ret = ret + self.shortcut_case(s[0], s[1])
+        for (key, url) in self.resp.shortcuts:
+            if key == " ":
+                ret = ret + webkom_js.space_case % url
+            else:
+                ret = ret + self.shortcut_case(key, url)
 
         ret = ret + webkom_js.end_switch + webkom_js.code_end
         self.resp.doc.append(ret)

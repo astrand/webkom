@@ -40,6 +40,47 @@ noscript_end = """
 """
 
 shortcut_functions = """
+// The next two functions are adapted from
+// http://www.howtocreate.co.uk/tutorials/index.php?tut=0&part=16
+
+function getHeight() {
+    var height = 0;
+    if (typeof(window.innerHeight) == 'number') {
+        //Non-IE
+        height = window.innerHeight;
+    } else {
+        if(document.documentElement && document.documentElement.clientHeight) {
+            //IE 6+ in 'standards compliant mode'
+            height = document.documentElement.clientHeight;
+        } else {
+            if( document.body && document.body.clientHeight ) {
+                //IE 4 compatible
+                height = document.body.clientHeight;
+            }
+        }
+    }
+    return height;
+}
+
+
+function getScrollY() {
+    var ypos = 0;
+    if (typeof(window.pageYOffset) == 'number') {
+        //Netscape compliant
+        ypos = window.pageYOffset;
+    } else {
+        if (document.body && document.body.scrollTop) {
+            //DOM compliant
+            ypos = document.body.scrollTop;
+        } else {
+            if( document.documentElement && document.documentElement.scrollTop ) {
+                //IE6 standards compliant mode
+                ypos = document.documentElement.scrollTop;
+            }
+        }
+    }
+    return ypos;
+}
 
 var active = new Boolean(true);
 
@@ -77,4 +118,19 @@ disable_shortcuts = """
         active = false;
         alert("Shortcuts disabled.");
         break;
+"""
+
+
+space_case = """
+    case ' ':
+        height = getHeight();
+        ypos_before = getScrollY();
+        window.scroll(0, ypos_before + height - 20); // 20 is for easier reading
+        ypos_after = getScrollY();
+        if (ypos_after == ypos_before) {
+            window.location="%s";
+        }
+        return false;
+        break;
+
 """
