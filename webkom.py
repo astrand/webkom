@@ -510,10 +510,8 @@ class AddShortCuts:
     def add(self):
         # Begin Javascript
         ret = webkom_js.code_begin
-        # Determine browser type
-        ret = ret + webkom_js.browser_type
         # Shortcut functions
-        ret = ret + (webkom_js.shortcut_functions % self.base_sess_url)
+        ret = ret + webkom_js.shortcut_functions
         # Begin case
         ret = ret + webkom_js.begin_switch
         # Add case for disabling shortcuts
