@@ -465,18 +465,17 @@ class WhatsImplementedActions(Action):
         <li>Ändra lösenord</li>
         <li>Läsa nästa kommentar (i djupet-först-ordning)</li>
         <li>Bli medlem i möte</li>
+        <li>Endast läsa senaste</li>
+        <li>Utträda ur möte</li>
         </ul>
 
         <h3>Tänkt att implementeras</h3>
         <ul>
         <li>Återse särskilt inlägg via globalt inläggsnummer</li>
-        <li>Endast läsa senaste</li>
         <li>Skriva fotnot</li>
-        <li>Utträda ur möte</li>
         <li>Markera/avmarkera inlägg</li>
         <li>Återse markerade</li>
         <li>Lägga till kommentarslänkar</li>
-
         </ul>
 
         <h3>Ej tänkt att implementeras dem närmsta tiden</h3>
@@ -520,6 +519,7 @@ class MainPageActions(Action):
         cont.append(Heading(3, self.action_href("writeletter&rcpt=" + str(self.sess.pers_num),
                                                 "Skicka brev")))
         cont.append(Heading(3, self.action_href("joinconf", "Gå med i möte")))
+        cont.append(Heading(3, self.action_href("choose_conf", "Gå till möte")))
         cont.append(Heading(3, self.action_href("whoison", "Vilka är inloggade")))
         cont.append(Heading(3, self.action_href("changepw", "Byt lösenord")))
         cont.append(Heading(3, self.action_href("logout", "Logga ut")))
@@ -844,7 +844,8 @@ class GoConfActions(Action):
         self.doc.append(self.action_href("viewtext&textnum=" + str(presentation),
                                          "Visa presentation", presentation), NBSP)
 
-        self.doc.append(self.action_href("set_unread", "Endast"))
+        self.doc.append(self.action_href("set_unread", "Endast"), NBSP)
+        self.doc.append(self.action_href("leaveconf", "Utträda ur möte"), NBSP)
         
         self.doc.append(BR(), Heading(3, "Inläggsrubriker"))
 
@@ -1679,6 +1680,119 @@ class SetUnreadSubmit(Action):
         return
 
 
+
+class LeaveConfActions(Action):
+    "Generate a page for leaving conference"
+    def response(self):
+        self.resp.shortcuts_active = 0
+        toplink = Href(self.base_session_url(), "WebKOM")
+        conflink = self.action_href("viewconfs", "Möten")
+        cont = Container(toplink, " : ", conflink)
+        self.append_std_top(cont)
+
+        conf_num = self.sess.current_conf
+        conf_name = self.get_conf_name(conf_num)
+        cont.append(" : ", self.action_href("goconf&conf=" + str(conf_num),
+                                            conf_name))
+
+        submitbutton = Input(type="submit", name="leaveconfsubmit", value="Ja, utträd ur mötet")
+        F = Form(BASE_URL, name="set_unread_form", submit=submitbutton)
+        self.doc.append(F)
+        F.append(self.hidden_key())
+        F.append(Heading(2, "Utträda ur mötet"))
+        F.append("Vill du verkligen utträda ur mötet " + conf_name + "?")
+        F.append(BR(2))
+        return
+
+
+class LeaveConfSubmit(Action):
+    "Handles submits for leaving a conference."
+    def response(self):
+        toplink = Href(self.base_session_url(), "WebKOM")
+        conflink = self.action_href("viewconfs", "Möten")
+        cont = Container(toplink, " : ", conflink)
+        self.append_std_top(cont)
+
+        conf_num = self.sess.current_conf
+        conf_name = self.get_conf_name(conf_num)
+        cont.append(" : ", conf_name)
+        
+        try:
+            kom.ReqSubMember(self.sess.conn, conf_num, self.sess.conn.user_no).response()
+        except:
+            self.print_error("Det gick ej att utträda ur mötet.")
+            return
+
+        # Note:
+        # We don't need to invalidate any caches, since a async
+        # message should do that for us. 
+        
+        self.doc.append(Heading(3, "Ok"))
+        self.doc.append("Du är nu inte längre medlem i mötet " + conf_name + ".")
+        
+        return
+
+
+
+class ChooseConfActions(Action):
+    "Generate a page for choosing active conference"
+    def response(self):
+        self.resp.shortcuts_active = 0
+        # Non-JS capable browsers should ignore this
+        self.doc.onLoad = "document.choose_conf_form.searchtext.focus()"
+        toplink = Href(self.base_session_url(), "WebKOM")
+        golink = self.action_href("joinconf", "Gå till möte")
+        cont = Container(toplink, " : ", golink)
+        self.append_std_top(cont)
+
+        F = Form(BASE_URL, name="choose_conf_form", submit="")
+        self.doc.append(F)
+        F.append(self.hidden_key())
+
+        F.append(BR())
+        F.append(Heading(2, "Gå till möte (som du är medlem i)"))
+        F.append(BR())
+        F.append("Mata in del av mötesnamnets början. Det går också att söka ")
+        F.append("via mötesnummer genom att ange # följt av mötets nummer.", BR())
+
+        ## Search and remove submit
+        cont=Container()
+        cont.append("Sök möte:")
+        cont.append(Input(name="searchtext"))
+        cont.append(Input(type="hidden", name="choose_conf_search"))
+        cont.append(Input(type="submit", name="choose_conf_search", value="Sök"), BR())
+        F.append(cont)
+        
+        ## Search result
+        searchtext = self.form.getvalue("searchtext", None)
+        if searchtext:
+            matches = self.sess.conn.lookup_name(searchtext, want_pers=0, want_confs=1)
+            member_matches = []
+            for match in matches:
+                if match[0] in self.sess.conn.member_confs:
+                    member_matches.append(match)
+            
+            infotext = None
+            if len(member_matches) == 0:
+                infotext = "(Inget matchar %s)" % searchtext
+            elif len(member_matches) > 10:
+                infotext = "(För många träffar, sökresultatet trunkerat)"
+                
+            self.doc.append("Sökresultat:", BR())
+            tab=[]
+            for (rcpt_num, rcpt_name) in member_matches[:10]:
+                tab.append([self.action_href("goconf&conf=" + str(rcpt_num), rcpt_name)])
+
+            if infotext:
+                tab.append([infotext, ""])
+                
+            self.doc.append(Table(body=tab, cell_padding=2, border=3, column1_align="left",
+                                  cell_align="right", width="100%"))
+
+        return
+
+
+
 def actions(resp):
     "Do requested actions based on CGI keywords"
     if resp.form.has_key("loginsubmit"):
@@ -1703,12 +1817,16 @@ def actions(resp):
                        "writearticlesubmit" : WriteArticleSubmit,
                        "joinconfsubmit" : JoinConfSubmit,
                        "searchconfsubmit" : JoinConfActions,
-                       "set_unread_submit" : SetUnreadSubmit }
+                       "leaveconfsubmit" : LeaveConfSubmit,
+                       "set_unread_submit" : SetUnreadSubmit,
+                       "choose_conf_search" : ChooseConfActions }
+    
     action_keywords = {"logout" : LogOutActions,
                        "viewconfs" : ViewConfsActions,
                        "viewconfs_unread" : ViewConfsUnreadActions,
                        "goconf" : GoConfActions,
                        "goconf_with_unread" : GoConfWithUnreadActions,
+                       "choose_conf" : ChooseConfActions, 
                        "viewtext" : ViewTextActions,
                        "changepw" : ChangePwActions,
                        "whoison" : WhoIsOnActions,
@@ -1716,6 +1834,7 @@ def actions(resp):
                        "writeletter" : WriteLetterActions,
                        "whats_implemented" : WhatsImplementedActions,
                        "joinconf" : JoinConfActions,
+                       "leaveconf" : LeaveConfActions,
                        "about" : AboutPageActions,
                        "set_unread" : SetUnreadActions }
 
@@ -1759,6 +1878,7 @@ def actions(resp):
     # Add global shortcuts
     resp.add_shortcut("v", action.base_session_url() + "&action=whoison")
     resp.add_shortcut("b", action.base_session_url() + "&action=writeletter&rcpt=" + str(resp.sess.pers_num))
+    resp.add_shortcut("g", action.base_session_url() + "&action=choose_conf")
 
     # Add Javascript shortcuts
     if resp.shortcuts_active:
