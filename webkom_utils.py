@@ -28,6 +28,8 @@ import sys
 
 NBSP = "&nbsp;"
 INACTIVE_LINK_COLOR = HTMLcolors.GREY6
+FALSE = 0
+TRUE = 1
 
 # Magic!
 class Struct:
