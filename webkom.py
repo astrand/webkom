@@ -645,13 +645,13 @@ class WhatsImplementedActions(Action):
         <li>Set unread</li>
         <li>Leave conference</li>
         <li>Mark/unmark articles</li>
+        <li>Read marked articles</li>
         </ul>
 
         <h3>May be implemented in a near future</h3>
         <ul>
         <li>Read article by specifying global article number</li>
         <li>Write footnotes</li>
-        <li>Read marked articles</li>
         </ul>
 
         <h3>Things that probably won't be implemented soon</h3>
