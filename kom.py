@@ -1466,8 +1466,8 @@ class CookedMiscInfo:
 
     def to_string(self):
         list = []
-        for r in self.recipient_list + \
-            self.comment_to_list + \
+        for r in self.comment_to_list + \
+            self.recipient_list + \
             self.comment_in_list:
             list = list + r.get_tuples()
         return "%d { %s}" % (len(list),
