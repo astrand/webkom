@@ -203,7 +203,7 @@ class Record:
                           self.req_id, clen, padlen)
         
         try:
-            sock.send(hdr + content + padlen*"\x00")
+            sock.sendall(hdr + content + padlen*"\x00")
         except socket.error:
             # Write error, probably broken pipe. Exit thread. 
             thread.exit()
