@@ -330,17 +330,21 @@ class Action:
         std_url = self.base_session_url() + "&amp;action=" + action
         resp.add_shortcut(" ", std_url)
 
+
     def unread_info(self, current_conf=0):
-        "Return a string with information about number of unread"
+        "Return a string (current/total) with information about number of unread"
         total = get_total_num_unread(self.sess.conn, self.sess.conn.get_user(),
                                      self.sess.conn.member_confs)
-        retval = NBSP*4 + self._("Unread: ")
         if current_conf:
-            unread = self.sess.conn.no_unread[current_conf] 
-            retval = retval + str(unread) + "/" + str(total)
+            try:
+                unread_current_conf = str(self.sess.conn.no_unread[current_conf]) + "/"
+            except:
+                unread_current_conf = "?/"
         else:
-            retval = retval + str(total) 
-        return retval + str(BR())
+            unread_current_conf = ""
+
+        return NBSP*4 + self._("Unread: ") + unread_current_conf + str(total) + str(BR())
+    
 
     def current_conflink(self):
         "Return a link to current conference with correct caption, depending on"
