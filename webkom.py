@@ -695,6 +695,9 @@ class MainPageActions(Action):
         cont.append(Heading(3,
                             self.action_href("view_presentation",
                                              self._("View presentation"))))
+        cont.append(Heading(3,
+                            self.action_href("view_markings",
+                                             self._("View marked articles"))))
         cont.append(Heading(3, self.action_href("logout", self._("Logout"))))
         cont.append(Heading(3, self.action_href("logoutothersessions",
                                                 self._("Logout my other sessions"))))
@@ -2407,6 +2410,57 @@ class JoinConfSubmit(Action):
         
         return
 
+class ViewMarkingsActions(Action):
+    "View marked articles"
+    # Note: It's possible we want to flush output, since this operation
+    # takes long time for the server.
+    def response(self):
+        markings = kom.ReqGetMarks(self.sess.conn).response()
+        headings = [self._("Number"), self._("Author"),
+                     self._("Subject"), self._("Marktype")]
+        tab = []
+
+        toplink = Href(self.base_session_url(), "WebKOM")
+        
+        cont = Container(toplink)
+        self.append_std_top(cont)
+
+        cont.append(" : ", self.action_href("view_markings",
+                    self._("View marked articles")))
+
+        self.doc.append(Header(2, self._("View marked articles")))
+
+        self.doc.append(Table(heading=headings, body=tab,
+                              cell_padding=2,
+                              column1_align="right",
+                              cell_align="left",
+                              width="100%"))
+        for mark in markings:
+            try:
+                ts = self.sess.conn.textstats[mark.text_no]
+            except kom.NoSuchText:
+                continue
+            textnum = self.action_href("viewtext&amp;textnum="+\
+                                       str(mark.text_no),
+                                       str(mark.text_no))
+            ai_from = kom.first_aux_items_with_tag(ts.aux_items,
+                                                   kom.AI_MX_FROM)
+            author = ""
+            if ai_from:
+                ai_author =  ai_author = kom.first_aux_items_with_tag(
+                    ts.aux_items,
+                    kom.AI_MX_AUTHOR)
+                if ai_author:
+                    author = ai_author.data + " "
+                author = author + str(Href("mailto:" + ai_from.data,
+                                       ai_from.data))
+            else:
+                author = self.get_pers_name(ts.author)
+            subject = self.sess.conn.subjects[mark.text_no]
+            tab.append([textnum, author, subject, str(mark.type)])
+        return
+
+
 class SetUnreadActions(Action):
     "Generate a page for setting unread"
     def response(self):
@@ -2737,7 +2791,8 @@ def actions(resp):
                        "submit_result" : SubmitResultActions,
                        "login_progress" : LoginProgressPageActions,
                        "read_confirmation" : ReadConfirmationActions,
-                       "view_presentation" : ViewPresentationActions }
+                       "view_presentation" : ViewPresentationActions,
+                       "view_markings" : ViewMarkingsActions }
 
     if not sessionset.valid_session(resp.key):
         InvalidSessionPageActions(resp).response()
