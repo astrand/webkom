@@ -897,7 +897,7 @@ class GoConfActions(Action):
         texts = get_texts(self.sess.conn, self.sess.pers_num, conf_num, MAX_SUBJ_PER_PAGE, ask_for)
         
         # Prepare for links to earlier/later pages of texts
-        first_local_num = self.sess.conn.conferences[3].first_local_no
+        first_local_num = self.sess.conn.conferences[conf_num].first_local_no
         highest_local_num = self.sess.conn.uconferences[conf_num].highest_local_no
         prev_first = next_first = None
         if len(texts) > 0:
