@@ -19,4 +19,5 @@ Coding standards
 
 
 * Imports: Do not import modules with *. Exceptions to this rule is
-  webkom_constants and HTMLgen. 
+  webkom_constants, HTMLgen and webkom_utils.
+
