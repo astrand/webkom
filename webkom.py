@@ -23,7 +23,8 @@ from webkom_constants import *
 
 # Environment issues
 import sys
-sys.path.append(MODULES_PATH)
+# Not strictly necessary, but it won't hurt. 
+sys.path.append(ORIGIN_DIR)
 
 import os, sys, string, socket, errno
 from cStringIO import StringIO
@@ -2450,7 +2451,7 @@ def actions(resp):
     # Add link to W3C validator
     div = Div(align = "right")
     resp.doc.append(div)
-    image = Image(src="/images/check.png", border=0, height=17, width=22,
+    image = Image(src="/webkom/images/check.png", border=0, height=17, width=22,
                   alt="[check HTML validity]")
     div.append(Href("http://validator.w3.org/check/referer", str(image)))
 
