@@ -2498,6 +2498,60 @@ class CachedConnection(Connection):
                                      want_confs = want_confs).response()
             return map(lambda x: (x.conf_no, x.name), matches)
 
+    def regexp_lookup(self, regexp, want_pers, want_confs,
+                      case_sensitive=0):
+        """Lookup name using regular expression"""
+        if not case_sensitive:
+            regexp = self._case_insensitive_regexp(regexp)
+
+        matches = ReqReZLookup(self, regexp,
+                               want_pers = want_pers,
+                               want_confs = want_confs).response()
+        return map(lambda x: (x.conf_no, x.name), matches)
+
+    def _case_insensitive_regexp(self, regexp):
+        """Make regular expression case insensitive"""
+        result = ""
+        # FIXME: Cache collate_table
+        collate_table = ReqGetCollateTable(self).response()
+        inside_brackets = 0
+        for c in regexp:
+            if c == "[":
+                inside_brackets = 1
+
+            if inside_brackets:
+                eqv_chars = c
+            else:
+                eqv_chars = self._equivalent_chars(c, collate_table)
+                
+            if len(eqv_chars) > 1:
+                result += "[%s]" % eqv_chars
+            else:
+                result += eqv_chars
+
+            if c == "]":
+                inside_brackets = 0
+
+        return result
+
+    def _equivalent_chars(self, c, collate_table):
+        """Find all chars equivalent to c in collate table"""
+        c_ord = ord(c)
+        if c_ord >= len(collate_table):
+            return c
+
+        result = ""
+        norm_char = collate_table[c_ord]
+        next_index = 0
+        while 1:
+            next_index = collate_table.find(norm_char, next_index)
+            if next_index == -1:
+                break
+            result += chr(next_index)
+            next_index += 1
+
+        return result
+
 
     #
     # Get unread texts for a certain person in a certain conference
