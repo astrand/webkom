@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python2.2
 
 # WebKOM - a web based LysKOM client
 # 
