@@ -230,8 +230,8 @@ def external_href(url, text):
 
 def gen_8859_1_invalid_chars():
     delchars = ""
-    # 0-31 and 127-159 are forbidden in ISO-8859-1
-    charset = range(0, 32) + range(127, 160)
+    # 0-31 (except 9, 10 and 13) and 127-159 are forbidden in ISO-8859-1
+    charset = range(0, 9) + range(11, 13) + range(14, 32)
     for charnum in charset:
         delchars += chr(charnum)
     return delchars
