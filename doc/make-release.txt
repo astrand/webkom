@@ -18,6 +18,15 @@ Steps for making a new release
 
   to check which changes were done. 
 
+* Copy the RPM, SRPM and tgz to 
+  www.lysator.liu.se:/web/lysator/lyskom/klienter/webkom/download/
+
+* Update
+  www.lysator.liu.se:/web/lysator/lyskom/klienter/webkom/index.html
+
+* Update the Freshmeat entry. 
+
+
 
 Steps for upgrading a running installation
 ==========================================
