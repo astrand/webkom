@@ -620,7 +620,13 @@ class LogInActions(Action):
         self.password = self.form["password"].value
 
         try:
-            conn = kom.CachedUserConnection(self.komserver, 4894, "WebKOM")
+            remote_addr = self.resp.env["REMOTE_ADDR"]
+            remote_host = socket.gethostbyaddr(remote_addr)[0]
+        except:
+            remote_host = "(unknown)"
+
+        try:
+            conn = kom.CachedUserConnection(self.komserver, 4894, "WebKOM%" + remote_host)
             # Set up asyncs
             ACCEPTING_ASYNCS = [
                 kom.ASYNC_NEW_NAME,
@@ -1897,6 +1903,9 @@ def actions(resp):
                           + str(resp.sess.pers_num))
         resp.add_shortcut("g", action.base_session_url() + "&action=choose_conf")
         AddShortCuts(resp).response()
+
+    # For debugging 
+    #resp.doc.append(str(resp.env))
         
     return 
 
