@@ -245,7 +245,7 @@ class Action:
     def action_href(self, actionstr, text, active_link=1):
         "Return an Href object with base url, sessionkey and more"
         if active_link:
-            return Href(self.base_session_url() + "&action=" + actionstr, text)
+            return Href(self.base_session_url() + "&amp;action=" + actionstr, text)
         else:
             return Font(text, color=INACTIVE_LINK_COLOR)
 
@@ -254,7 +254,7 @@ class Action:
         # Add link to page
         container.append(self.action_href(action, caption))
         # Add keyboard shortcut
-        std_url = self.base_session_url() + "&action=" + action
+        std_url = self.base_session_url() + "&amp;action=" + action
         resp.add_shortcut(" ", std_url)
 
     def unread_info(self, current_conf=0):
@@ -589,13 +589,13 @@ class MainPageActions(Action):
         cont.append(Heading(2, self._("Main Page")))
         cont.append(Heading(3, self.action_href("viewconfs_unread", self._("List conferences with unread"))))
         cont.append(Heading(3, self.action_href("viewconfs", self._("List all conferences you are a member of"))))
-        cont.append(Heading(3, self.action_href("writeletter&rcpt=" + str(self.sess.conn.get_user()),
+        cont.append(Heading(3, self.action_href("writeletter&amp;rcpt=" + str(self.sess.conn.get_user()),
                                                 self._("Write letter"))))
         cont.append(Heading(3, self.action_href("joinconf", self._("Join conference"))))
         cont.append(Heading(3, self.action_href("choose_conf", self._("Go to conference"))))
         cont.append(Heading(3, self.action_href("whoison", self._("Who is logged in"))))
         cont.append(Heading(3, self.action_href("changepw", self._("Change password"))))
-        cont.append(Heading(3, self.action_href("writepresentation" + "&presentationfor="
+        cont.append(Heading(3, self.action_href("writepresentation" + "&amp;presentationfor="
                                                 + str(self.sess.conn.get_user()), self._("Write presentation"))))
         cont.append(Heading(3, self.action_href("logout", self._("Logout"))))
         cont.append(BR(), Heading(3, self.action_href("whats_implemented",
@@ -823,7 +823,7 @@ class ViewConfsActions(Action):
             memberships.pop()
 
         # Add the previous-page-link
-        self.doc.append(self.action_href(action_url + "&first_conf=" + str(prev_first),
+        self.doc.append(self.action_href(action_url + "&amp;first_conf=" + str(prev_first),
                                          self._("Previous page"), prev_first is not None), NBSP)
 
         # Add a table
@@ -844,13 +844,13 @@ class ViewConfsActions(Action):
             else:
                 comment = self._("none")
                 
-            tab.append([self.action_href("goconf&conf=" + str(conf.conference), name),
+            tab.append([self.action_href("goconf&amp;conf=" + str(conf.conference), name),
                         comment])
 
         
 
         # Add the next-page-link
-        self.doc.append(self.action_href(action_url + "&first_conf=" + str(next_first),
+        self.doc.append(self.action_href(action_url + "&amp;first_conf=" + str(next_first),
                                          self._("Next page"), next_first is not None), NBSP)
         # Link for next conference with unread
         self.doc.append(self.action_href("goconf_with_unread",
@@ -900,7 +900,7 @@ class GoConfActions(Action):
         cont = Container(toplink, " : ", self.current_conflink())
         self.append_std_top(cont)
 
-        cont.append(" : ", self.action_href("goconf&conf=" + str(conf_num),
+        cont.append(" : ", self.action_href("goconf&amp;conf=" + str(conf_num),
                                             conf_name))
 
         self.doc.append(Heading(2, conf_name))
@@ -911,11 +911,11 @@ class GoConfActions(Action):
         # Information about number of unread
         self.doc.append(self.unread_info(self.sess.current_conf))
 
-        self.doc.append(self.action_href("writearticle&rcpt=" + str(conf_num),
+        self.doc.append(self.action_href("writearticle&amp;rcpt=" + str(conf_num),
                                          self._("Write article")), NBSP)
         # Link to view presentation for this conference
         presentation = self.get_presentation(conf_num)
-        self.doc.append(self.action_href("viewtext&textnum=" + str(presentation),
+        self.doc.append(self.action_href("viewtext&amp;textnum=" + str(presentation),
                                          self._("View presentation"), presentation), NBSP)
 
         self.doc.append(self.action_href("set_unread", self._("Set unread")), NBSP)
@@ -954,8 +954,8 @@ class GoConfActions(Action):
         if next_first > highest_local_num:
             next_first = None
             
-        self.doc.append(self.action_href("goconf&conf=" + str(conf_num) \
-                                         + "&local_num=" + str(prev_first),
+        self.doc.append(self.action_href("goconf&amp;conf=" + str(conf_num) \
+                                         + "&amp;local_num=" + str(prev_first),
                                          self._("Earlier articles"), prev_first), NBSP)
         
         headings = [self._("Unread"), self._("Subject"), self._("Author"), self._("Date"), self._("Number")]
@@ -967,7 +967,7 @@ class GoConfActions(Action):
         for (local_num, global_num) in texts:
             ts = self.sess.conn.textstats[global_num]
             # Textnum
-            textnum = self.action_href("viewtext&textnum=" + str(global_num), str(global_num))
+            textnum = self.action_href("viewtext&amp;textnum=" + str(global_num), str(global_num))
             # Date
             date = self.sess.conn.textstats[global_num].creation_time.to_date_and_time()
             # Author
@@ -988,7 +988,7 @@ class GoConfActions(Action):
             if not subjtext:
                 # If subject is empty, the table gets ugly
                 subjtext = "&nbsp;"
-            subj = self.action_href("viewtext&textnum=" + str(global_num),
+            subj = self.action_href("viewtext&amp;textnum=" + str(global_num),
                                     subjtext)
             
             if is_unread(self.sess.conn, conf_num, local_num):
@@ -1000,8 +1000,8 @@ class GoConfActions(Action):
 
             tab.append([unreadindicator, subj, author, date, textnum])
                 
-        self.doc.append(self.action_href("goconf&conf=" + str(conf_num) \
-                                         + "&local_num=" + str(next_first),
+        self.doc.append(self.action_href("goconf&amp;conf=" + str(conf_num) \
+                                         + "&amp;local_num=" + str(next_first),
                                          self._("Later articles"), next_first), NBSP)
 
         self.doc.append(self.action_href("goconf_with_unread",
@@ -1012,7 +1012,7 @@ class GoConfActions(Action):
         next_text = get_next_unread(self.sess.conn, self.sess.conn.get_user(),
                                     self.sess.current_conf)
         if next_text:
-            std_url = "viewtext&textnum=" + str(next_text)
+            std_url = "viewtext&amp;textnum=" + str(next_text)
             self.add_stdaction(std_cmd, self.resp, std_url, self._("Read next unread"))
         else:
             self.add_stdaction(std_cmd, self.resp, "goconf_with_unread", self._("Next conference with unread"))
@@ -1039,17 +1039,17 @@ class ViewTextActions(Action):
                 c_authortext = ""
             if c.type == kom.MIC_FOOTNOTE:
                 header.append([self._("Footnote to:"),
-                               str(self.action_href("viewtext&textnum=" + str(c.text_no), str(c.text_no))) \
+                               str(self.action_href("viewtext&amp;textnum=" + str(c.text_no), str(c.text_no))) \
                                + c_authortext])
             else:
                 header.append([self._("Comment to:"),
-                               str(self.action_href("viewtext&textnum=" + str(c.text_no), str(c.text_no))) \
+                               str(self.action_href("viewtext&amp;textnum=" + str(c.text_no), str(c.text_no))) \
                                + c_authortext])
                 
             if c.sent_by is not None:
                 presentation = str(self.get_presentation(c.sent_by))
                 header.append([self._("Added by:"),
-                               self.action_href("viewtext&textnum=" + presentation, 
+                               self.action_href("viewtext&amp;textnum=" + presentation, 
                                                 self.get_pers_name(c.sent_by), presentation)])
             if c.sent_at is not None:
                 header.append([self._("Added:"), c.sent_at.to_date_and_time()])
@@ -1061,12 +1061,12 @@ class ViewTextActions(Action):
             leftcol = mir2caption(r.type)
             presentation = str(self.get_presentation(r.recpt))
             # Recepient, with hyperlink to presentation
-            rightcol = str(self.action_href("viewtext&textnum=" + presentation, 
+            rightcol = str(self.action_href("viewtext&amp;textnum=" + presentation, 
                                             self.get_conf_name(r.recpt), presentation))
             # Prepare comment-url
             # Do not keep CC and BCC recipients when writing comment. 
             if r.type == kom.MIR_TO:
-                comment_url = comment_url + "&" + mir2keyword(r.type) + "=" + str(r.recpt)
+                comment_url = comment_url + "&amp;" + mir2keyword(r.type) + "=" + str(r.recpt)
             
             if r.sent_by is not None:
                 leftcol = leftcol + "<br>" + self._("Sent by:")
@@ -1110,7 +1110,7 @@ class ViewTextActions(Action):
             if c.type == kom.MIC_FOOTNOTE:
                 if "" != c_authortext:
                     header.append([self._("Footnote in article:"),
-                                   str(self.action_href("viewtext&textnum=" + str(c.text_no), str(c.text_no))) \
+                                   str(self.action_href("viewtext&amp;textnum=" + str(c.text_no), str(c.text_no))) \
                                    + c_authortext])
                 else:
                     header.append([self._("Footnote in article:"),
@@ -1119,7 +1119,7 @@ class ViewTextActions(Action):
             else:
                 if "" != c_authortext:
                     header.append([self._("Comment in article:"),
-                                   str(self.action_href("viewtext&textnum=" + str(c.text_no), str(c.text_no))) \
+                                   str(self.action_href("viewtext&amp;textnum=" + str(c.text_no), str(c.text_no))) \
                                    + c_authortext])
                 else:
                     header.append([self._("Comment in article:"),
@@ -1149,11 +1149,11 @@ class ViewTextActions(Action):
         # Note: It's possible to view texts from other conferences,
         # while still staying in another conference
         cont.append(" : ")
-        cont.append(self.action_href("goconf&conf=" + str(self.sess.current_conf),
+        cont.append(self.action_href("goconf&amp;conf=" + str(self.sess.current_conf),
                                      self.get_conf_name(self.sess.current_conf)))
         # Link to this page
         cont.append(" : ")
-        cont.append(self.action_href("viewtext" + "&textnum=" + str(global_num),
+        cont.append(self.action_href("viewtext" + "&amp;textnum=" + str(global_num),
                                      self.sess.conn.subjects[global_num]))
         self.doc.append(BR())
         lower_actions = Container()
@@ -1207,7 +1207,7 @@ class ViewTextActions(Action):
             if self.form.getvalue("viewmailheader"):
                 body = kom.first_aux_items_with_tag(ts.aux_items,
                                                     kom.AI_MX_MISC).data + body
-                viewmailheadercode = "&viewmailheader=true"                
+                viewmailheadercode = "&amp;viewmailheader=true"                
             else:
                 body = body[1:]
         else:
@@ -1215,7 +1215,7 @@ class ViewTextActions(Action):
 
         header = []
         header.append([self._("Article number:"),
-                       self.action_href("viewtext&textnum=" + str(global_num), str(global_num))])
+                       self.action_href("viewtext&amp;textnum=" + str(global_num), str(global_num))])
 
         presentation = str(self.get_presentation(ts.author))
         importdate = kom.first_aux_items_with_tag(ts.aux_items,
@@ -1241,7 +1241,7 @@ class ViewTextActions(Action):
             header.append([self._("Imported:"),
                            ts.creation_time.to_date_and_time() +\
                            self._(" by ") +
-                           str(self.action_href("viewtext&textnum=" +\
+                           str(self.action_href("viewtext&amp;textnum=" +\
                                                 presentation,
                                                 self.get_pers_name(ts.author),
                                                 presentation))])
@@ -1258,7 +1258,7 @@ class ViewTextActions(Action):
             
         else:            
             header.append([self._("Author:"),
-                           self.action_href("viewtext&textnum=" + presentation,
+                           self.action_href("viewtext&amp;textnum=" + presentation,
                                             self.get_pers_name(ts.author), presentation)])
 
         # Comments-to
@@ -1332,7 +1332,7 @@ class ViewTextActions(Action):
         # Add links for reading next unread
         next_text = get_next_unread(self.sess.conn, self.sess.conn.get_user(),
                                     self.sess.current_conf)
-        next_text_url = "viewtext&textnum=" + str(next_text)
+        next_text_url = "viewtext&amp;textnum=" + str(next_text)
         lower_actions.append(self.action_href(next_text_url, self._("Read next unread"),
                                               next_text), NBSP)
 
@@ -1346,7 +1346,7 @@ class ViewTextActions(Action):
             next_comment = self.sess.comment_tree[0]
         else:
             next_comment = None
-        next_comment_url = "viewtext&textnum=" + str(next_comment) + "&reading_comment=1"
+        next_comment_url = "viewtext&amp;textnum=" + str(next_comment) + "&amp;reading_comment=1"
         lower_actions.append(self.action_href(next_comment_url, self._("Read next comment"),
                                               next_comment), NBSP)
 
@@ -1360,26 +1360,26 @@ class ViewTextActions(Action):
             
             
         # Maybe the user want to comment?
-        comment_url = comment_url + "&comment_to=" + str(global_num)
+        comment_url = comment_url + "&amp;comment_to=" + str(global_num)
         lower_actions.append(self.action_href("writearticle" + comment_url,
                                               self._("Write comment")), NBSP)
 
         if format:
-            lower_actions.append(self.action_href("viewtext&textnum=" + str(global_num),
+            lower_actions.append(self.action_href("viewtext&amp;textnum=" + str(global_num),
                                                   self._("View in normal style")))
         else:
-            lower_actions.append(self.action_href("viewtext&textnum=" + str(global_num) + "&viewformat=code",
+            lower_actions.append(self.action_href("viewtext&amp;textnum=" + str(global_num) + "&amp;viewformat=code",
                                                   self._("View in code style")))
 
         if ismail:
             if "" != viewmailheadercode:
-                lower_actions.append(self.action_href("viewtext&textnum=" +\
+                lower_actions.append(self.action_href("viewtext&amp;textnum=" +\
                                                       str(global_num),
                                                       "View without mail headers"))
             else:
-                lower_actions.append(self.action_href("viewtext&textnum=" +\
+                lower_actions.append(self.action_href("viewtext&amp;textnum=" +\
                                                       str(global_num) +\
-                                                      "&viewmailheader=true",
+                                                      "&amp;viewmailheader=true",
                                                       "View with mail headers"))
         return 
 
@@ -1539,7 +1539,7 @@ class WriteArticleActions(Action):
         conf_name = self.get_conf_name(conf_num)
         
         toplink = Href(self.base_session_url(), "WebKOM")
-        thisconf = self.action_href("goconf&conf=" + str(conf_num), conf_name)
+        thisconf = self.action_href("goconf&amp;conf=" + str(conf_num), conf_name)
 
         comment_to_list = get_values_as_list(self.form, "comment_to")
         if presentationfor:
@@ -1733,7 +1733,7 @@ class WriteArticleSubmit(Action):
         conf_name = self.get_conf_name(conf_num)
         
         toplink = Href(self.base_session_url(), "WebKOM")
-        thisconf = self.action_href("goconf&conf=" + str(conf_num), conf_name)
+        thisconf = self.action_href("goconf&amp;conf=" + str(conf_num), conf_name)
         writeart = self.action_href("writearticle", self._("Write article"))
         
         cont = Container(toplink, " : ", self.current_conflink(), " : ", thisconf, " : ", writeart)
@@ -1955,7 +1955,7 @@ class JoinConfSubmit(Action):
 
         self.doc.append(Heading(3, self._("Ok")))
         self.doc.append(self._("You are now a member of conference "))
-        self.doc.append(self.action_href("goconf&conf=" + str(conf), self.get_conf_name(conf)))
+        self.doc.append(self.action_href("goconf&amp;conf=" + str(conf), self.get_conf_name(conf)))
         self.doc.append(".")
         
         return
@@ -1970,7 +1970,7 @@ class SetUnreadActions(Action):
 
         conf_num = self.sess.current_conf
         conf_name = self.get_conf_name(conf_num)
-        cont.append(" : ", self.action_href("goconf&conf=" + str(conf_num),
+        cont.append(" : ", self.action_href("goconf&amp;conf=" + str(conf_num),
                                             conf_name))
 
         submitbutton = Input(type="submit", name="set_unread_submit", value="Utför")
@@ -1996,7 +1996,7 @@ class SetUnreadSubmit(Action):
 
         conf_num = self.sess.current_conf
         conf_name = self.get_conf_name(conf_num)
-        cont.append(" : ", self.action_href("goconf&conf=" + str(conf_num),
+        cont.append(" : ", self.action_href("goconf&amp;conf=" + str(conf_num),
                                             conf_name))
         
         
@@ -2028,7 +2028,7 @@ class LeaveConfActions(Action):
 
         conf_num = self.sess.current_conf
         conf_name = self.get_conf_name(conf_num)
-        cont.append(" : ", self.action_href("goconf&conf=" + str(conf_num),
+        cont.append(" : ", self.action_href("goconf&amp;conf=" + str(conf_num),
                                             conf_name))
 
         submitbutton = Input(type="submit", name="leaveconfsubmit", value="Ja, utträd ur mötet")
@@ -2116,7 +2116,7 @@ class ChooseConfActions(Action):
             self.doc.append(self._("Search result:"), BR())
             tab=[]
             for (rcpt_num, rcpt_name) in member_matches[:10]:
-                tab.append([self.action_href("goconf&conf=" + str(rcpt_num), rcpt_name)])
+                tab.append([self.action_href("goconf&amp;conf=" + str(rcpt_num), rcpt_name)])
 
             if infotext:
                 tab.append([infotext, ""])
@@ -2231,10 +2231,10 @@ def actions(resp):
     # Add Javascript shortcuts
     if resp.shortcuts_active:
         # Add global shortcuts
-        resp.add_shortcut("v", action.base_session_url() + "&action=whoison")
-        resp.add_shortcut("b", action.base_session_url() + "&action=writeletter&rcpt=" 
+        resp.add_shortcut("v", action.base_session_url() + "&amp;action=whoison")
+        resp.add_shortcut("b", action.base_session_url() + "&amp;action=writeletter&amp;rcpt=" 
                           + str(resp.sess.conn.get_user()))
-        resp.add_shortcut("g", action.base_session_url() + "&action=choose_conf")
+        resp.add_shortcut("g", action.base_session_url() + "&amp;action=choose_conf")
         AddShortCuts(resp, trans).response()
 
     # Set page title
