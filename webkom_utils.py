@@ -77,7 +77,10 @@ def get_total_num_unread(conn, conf_list):
 
 def get_next_unread(conn, conf_num):
     "Get next unread text in a conference and return as a global number"
-    ms = conn.memberships[conf_num]
+    try:
+        ms = conn.memberships[conf_num]
+    except kom.NotMember:
+        return 0
 
     # Start asking for translations
     ask_for = ms.last_text_read + 1
