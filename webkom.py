@@ -148,7 +148,7 @@ class Session:
 class Response:
     "A response class. Used during the construction of a response."
     def __init__(self, env, form):
-        self.doc = SimpleDocument(title="WebKOM", bgcolor=WHITE, vlinkcolor=BLUE)
+        self.doc = SimpleDocument(title="WebKOM", bgcolor=HTMLcolors.WHITE, vlinkcolor=HTMLcolors.BLUE)
         self.env = env
         self.form = form
         self.key = ""
