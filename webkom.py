@@ -3155,33 +3155,34 @@ def run_fcgi():
 #
 # MAIN
 #
-# Global log file
-system_log = Logger(os.path.join(LOG_DIR, "system.log"))
-system_log.level_write(1, "WebKOM started, LOGLEVEL=%d" % LOGLEVEL)
-
-# Take care of output to stdout and stderr. 
-# Note: stdout and stderr should not normally be used for any output. 
-sys.stdout = system_log
-sys.stderr = system_log
-
-# Start console thread
-thread.start_new_thread(run_console,())
-# Start maintenance thread
-thread.start_new_thread(run_maintenance,())
-
-# Get a list of installed languages
-installed_langs = get_installed_languages()
-# Create instance of translator
-translator_cache = TranslatorCache.TranslatorCache("webkom", LOCALE_DIR)
-
-# Create an instance of THFCGI 
-fcgi = thfcgi.THFCGI(handle_req)
-
-# Save time of server start.
-serverstarttime = time.time()
-
 if __name__=="__main__":
+    # Global log file
+    system_log = Logger(os.path.join(LOG_DIR, "system.log"))
+    system_log.level_write(1, "WebKOM started, LOGLEVEL=%d" % LOGLEVEL)
+
+    # Take care of output to stdout and stderr. 
+    # Note: stdout and stderr should not normally be used for any output. 
+    sys.stdout = system_log
+    sys.stderr = system_log
+
+    # Start console thread
+    thread.start_new_thread(run_console,())
+    # Start maintenance thread
+    thread.start_new_thread(run_maintenance,())
+
+    # Get a list of installed languages
+    installed_langs = get_installed_languages()
+    # Create instance of translator
+    translator_cache = TranslatorCache.TranslatorCache("webkom", LOCALE_DIR)
+
+    # Save time of server start.
+    serverstarttime = time.time()
+
     FinalizerChecker(system_log)
-    # and let it run
+
+    # Create an instance of THFCGI...
+    fcgi = thfcgi.THFCGI(handle_req)
+
+    # ...and let it run
     run_fcgi()
 
