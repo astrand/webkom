@@ -224,7 +224,7 @@ def get_values_as_list(form, keyword):
         return data
 
 def external_href(url, text):
-    return Href(url, text + str(Image(src="/images/offsite.png", border=0,
+    return Href(url, text + str(Image(src="/webkom/images/offsite.png", border=0,
                                       height=13, width=17, alt="[extern länk]")))
 
 
