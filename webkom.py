@@ -508,7 +508,6 @@ class WhatsImplementedActions(Action):
 class MainPageActions(Action):
     "Generate the mainpage"
     def response(self):
-        self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
         cont = Container(toplink)
         cont.append(" : ")
@@ -1710,8 +1709,9 @@ def actions(resp):
     action = response_type(resp)
     action.response()
 
-    # Add global shortcuts XXX
-    resp.add_shortcut("v", action.base_session_url() + "whoison")
+    # Add global shortcuts
+    resp.add_shortcut("v", action.base_session_url() + "&action=whoison")
+    resp.add_shortcut("b", action.base_session_url() + "&action=writeletter&rcpt=" + str(resp.sess.pers_num))
 
     # Add Javascript shortcuts
     if resp.shortcuts_active:
