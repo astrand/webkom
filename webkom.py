@@ -503,6 +503,7 @@ class AddShortCuts:
     def shortcut_case(self, key, location):
         ret = """    case '%s':
             window.location="%s";
+            return false;
             break;
 """ % (key, location)
         return ret
