@@ -1562,7 +1562,7 @@ class WriteArticleActions(Action):
 
         writeart = self.action_href("writearticle", page_heading)
         
-        cont = Container(toplink, " : ", self.sess.current_conflink(), " : ", thisconf, " : ", writeart)
+        cont = Container(toplink, " : ", self.current_conflink(), " : ", thisconf, " : ", writeart)
 
         self.append_std_top(cont)
 
@@ -1736,7 +1736,7 @@ class WriteArticleSubmit(Action):
         thisconf = self.action_href("goconf&conf=" + str(conf_num), conf_name)
         writeart = self.action_href("writearticle", self._("Write article"))
         
-        cont = Container(toplink, " : ", self.sess.current_conflink(), " : ", thisconf, " : ", writeart)
+        cont = Container(toplink, " : ", self.current_conflink(), " : ", thisconf, " : ", writeart)
         self.append_std_top(cont)
 
         self.doc.append(Heading(2, self._("Write article")))
@@ -1965,7 +1965,7 @@ class SetUnreadActions(Action):
     def response(self):
         self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
-        cont = Container(toplink, " : ", self.sess.current_conflink())
+        cont = Container(toplink, " : ", self.current_conflink())
         self.append_std_top(cont)
 
         conf_num = self.sess.current_conf
@@ -1991,7 +1991,7 @@ class SetUnreadSubmit(Action):
     "Handles submits for joining a conference."
     def response(self):
         toplink = Href(self.base_session_url(), "WebKOM")
-        cont = Container(toplink, " : ", self.sess.current_conflink())
+        cont = Container(toplink, " : ", self.current_conflink())
         self.append_std_top(cont)
 
         conf_num = self.sess.current_conf
@@ -2023,7 +2023,7 @@ class LeaveConfActions(Action):
     def response(self):
         self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
-        cont = Container(toplink, " : ", self.sess.current_conflink())
+        cont = Container(toplink, " : ", self.current_conflink())
         self.append_std_top(cont)
 
         conf_num = self.sess.current_conf
@@ -2045,7 +2045,7 @@ class LeaveConfSubmit(Action):
     "Handles submits for leaving a conference."
     def response(self):
         toplink = Href(self.base_session_url(), "WebKOM")
-        cont = Container(toplink, " : ", self.sess.current_conflink())
+        cont = Container(toplink, " : ", self.current_conflink())
         self.append_std_top(cont)
 
         conf_num = self.sess.current_conf
