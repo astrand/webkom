@@ -275,7 +275,7 @@ msgid "Default command: "
 msgstr "Standardkommando: "
 
 msgid "Article text:"
-msgstr "Inläggsnummer:"
+msgstr "Inläggstext:"
 
 msgid ", not marked by you. "
 msgstr ", ej markerad av dig. "
