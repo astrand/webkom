@@ -438,7 +438,7 @@ msgstr "lista med kända buggar"
 
 #: ../webkom.py:1116 ../webkom.py:1120
 msgid "Footnote in article:"
-msgstr "Fotnot till inlägg:"
+msgstr "Fotnot i inlägg:"
 
 #: ../webkom.py:1665
 msgid "Remove?"
