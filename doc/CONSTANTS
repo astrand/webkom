@@ -75,3 +75,9 @@ Specifies the amount of logging information:
 
 Specifies an optional stylesheet to use. If None, no stylesheet will
 be used.
+
+* GLOBAL_SEARCH_LIMIT
+
+Maximum number of articles to search in, when doing a global
+search. If 0, global searches are disabled. If None, there is no
+limit.

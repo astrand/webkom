@@ -356,6 +356,38 @@ def existing_locals(conn, conf_num, ask_for, highest_local):
 
     return local_nums
 
+
+def search_articles(conn, needle, limit=None):
+    """Search articles for needle. Returns a list of global article
+    numbers, where needle is either in the subject or body. The limit
+    argument specifies the maximum number of articles to look through."""
+
+    max_int32 = int(2**31L-1)
+    if limit is None:
+        limit = max_int32
+    result = []
+    reo = re.compile(needle, re.I)
+    textnum = max_int32
+
+    while limit > 0:
+        limit -= 1
+        try:
+            textnum = kom.ReqFindPreviousTextNo(conn, textnum).response()
+            try:
+                text = kom.ReqGetText(conn, textnum).response()
+                if reo.search(text):
+                    result.append(textnum)
+            except kom.NoSuchText:
+                # Either the text was just removed, or we have no read
+                # permission
+                pass
+        except kom.NoSuchText:
+            # There are no more texts
+            break
+
+    return result
+
+
 def get_ai_dict(ai_list):
     d = {}
     for ai in ai_list:

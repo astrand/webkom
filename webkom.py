@@ -886,11 +886,14 @@ class MainPageActions(Action):
         cont.append(Heading(2, self._("Main Page")))
 
         cont.append(Heading(3, self._("Read")))
-        cont.append(List([
+        l = List([
             self.action_href("viewconfs_unread", self._("List conferences with unread")),
             self.action_href("viewconfs", self._("List all conferences you are a member of")),
-            self.action_href("view_markings", self._("List marked articles"))]))
-            # self.action_href("specify_article_number", self._("View article with specified number"))]))
+            self.action_href("view_markings", self._("List marked articles"))])
+        # self.action_href("specify_article_number", self._("View article with specified number"))]))
+        if GLOBAL_SEARCH_LIMIT != 0:
+            l.append(self.action_href("search", self._("Search article")))
+        cont.append(l)
 
         cont.append(Heading(3, self._("Write")))
         cont.append(List([
@@ -3044,6 +3047,66 @@ class ReadConfirmationActions(Action):
         self.doc.append(BR(), self._("You have confirmed reading text "),
                         textlink, ".", BR())
 
+
+class SearchActions(Action):
+    def response(self):
+        self.resp.shortcuts_active = 0
+        toplink = Href(self.base_session_url(), "WebKOM")
+        golink = self.action_href("search",
+                                  self._("Search article"))
+        self.append_std_top(Container(toplink, ' : ', golink))
+        F = Form(BASE_URL, name="search_form", submit="")
+        self.doc.append(F)
+        F.append(self.hidden_key())
+        F.append(BR())
+        F.append(Heading(2, self._("Search article")))
+
+        helpstring = self._("Search for articles and subjects containing some text.")
+        helpstring += " " + self._("The search is not case sensitive.")
+        helpstring += " " + self._("Regular expressions are allowed.")
+        if GLOBAL_SEARCH_LIMIT is not None:
+            helpstring += " " + self._("The search is limited to the last %d articles.") % GLOBAL_SEARCH_LIMIT
+        F.append(helpstring, BR(2))
+        
+        F.append(Input(name="searchtext", value=self.form.getvalue("searchtext")))
+        F.append(Input(type="hidden", name="search_submit"))
+        F.append(Input(type="submit", name="search_submit",
+                       value=self._("Search")), BR())
+        self.resp.flush()
+
+        searchtext = self.form.getvalue("searchtext", None)
+        if searchtext:
+            matches = search_articles(self.sess.conn, searchtext, GLOBAL_SEARCH_LIMIT)
+            self.doc.append(self._("Search result:"), BR())
+            self.print_matches(matches)
+        return
+
+    def print_matches(self, matches):
+        # FIXME: The code below is duplicated in many places. Make common method. 
+        headings = [self._("Subject"), self._("Author"),
+                    self._("Date"), self._("Number")]
+        tab = []
+        self.doc.append(Table(heading=headings, body=tab,
+                              cell_padding=2,
+                              cell_align="left",
+                              width="100%"))
+        for match in matches:
+            try:
+                ts = self.sess.conn.textstats[match]
+            except kom.NoSuchText:
+                # Perhaps the text just disappeared or access was revoked.
+                continue
+            # FIXME: Support AI_MX_FROM
+            author = self.get_pers_name(ts.author)
+            subject = webkom_escape(self.sess.conn.subjects[match])
+            textnum = self.action_href("viewtext&amp;textnum="+\
+                                       str(match),
+                                       str(match))
+            tab.append([subject, author,
+                        ts.creation_time.to_date_and_time(),
+                        textnum])
+    
+
 def actions(resp):
     "Do requested actions based on CGI keywords"
     if resp.form.has_key("loginsubmit"):
@@ -3085,6 +3148,7 @@ def actions(resp):
                        "leaveconfsubmit" : LeaveConfSubmit,
                        "set_unread_submit" : SetUnreadSubmit,
                        "choose_conf_search" : ChooseConfActions,
+                       "search_submit" : SearchActions,
                        "view_presentation_search" : ViewPresentationActions }
     
     action_keywords = {"logout" : LogOutActions,
@@ -3112,6 +3176,7 @@ def actions(resp):
                        "unmark_text" : UnmarkTextActions,
                        "mark_text" : MarkTextActions,
                        "view_markings" : ViewMarkingsActions,
+                       "search" : SearchActions,
                        "internal_error": TriggerInternalErrorActions}
                        # "specify_article_number" : SpecifyArticleNumberPageActions}
 
@@ -3232,7 +3297,7 @@ def print_not_implemented(resp):
     cont.append(Heading(3, _("Server call not implemented")))
     cont.append(_("WebKOM made a server call that this server did not "
                   "understand. WebKOM only works with LysKOM servers with "
-                  "version 2.0 or higher"))
+                  "version 2.1.0 or higher"))
     cont.append(P())
     cont.append(Href(BASE_URL, _("Login again")))
     resp.doc.append(cont)
