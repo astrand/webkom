@@ -79,7 +79,7 @@ function keyPress(e) {
 
 end_switch = """
         }
-    return false;
+    return true;
 }
 """
 
