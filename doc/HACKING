@@ -11,3 +11,10 @@ Coding standards
   names rather than "no". Example: conf_num (conference number). NOTE:
   kom.py uses "no". 
 
+* Python files that are specific to webkom should have a name
+  beginning with "webkom_" (like webkom_utils.py). Python files that
+  are not specific to WebKOM should not have this prefix. If the
+  module contains a single class, it should names with the first
+  letter capitalized (like TranslatorCache.py). 
+
+
