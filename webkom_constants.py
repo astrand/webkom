@@ -37,7 +37,7 @@ symbolic links encountered in the path."""
             resolved = os.path.normpath(os.path.join(dir, resolved))
             newpath = apply(os.path.join, [resolved] + bits[i:])
             return realpath(newpath)
-
+        
     return filename
 
 
