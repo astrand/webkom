@@ -180,7 +180,7 @@ msgstr "Det gick inte att skapa inlägget"
 
 #: ../webkom.py:1356 ../webkom.py:1361
 msgid "Read next comment"
-msgstr "Läsa nästa olästa"
+msgstr "Läsa nästa kommentar"
 
 #: ../webkom.py:799 ../webkom.py:913
 msgid "Default command: "
