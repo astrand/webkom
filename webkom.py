@@ -29,6 +29,7 @@ sys.path.append(ORIGIN_DIR)
 import os, string, socket
 from cStringIO import StringIO
 import thfcgi
+import urllib
 import kom
 from HTMLgen import *
 # Override default escape
@@ -58,7 +59,7 @@ class SessionSet:
         key = ""
         for foo in range(0, 4):
             key = key + hex(random.randrange(sys.maxint))[2:]
-            return key
+        return key
 
     def gen_uniq_key(self):
         "Generate a uniq session key"
@@ -281,6 +282,9 @@ class Response:
             server_name = "http://" + server_name
         script_name = self.env["SCRIPT_NAME"]
         return server_name + script_name
+
+    def _get_my_url(self):
+        return self._get_url_base() + "?" + self.env["QUERY_STRING"]
         
     def set_redir(self, url_text):
         # Do not print shortcuts code after redirection, this leads to internal error.
@@ -431,7 +435,8 @@ class Action:
         div.append(NBSP*4)
         image = Image(src="/webkom/images/check.png", border=0, height=17, width=22,
                       alt="[check HTML validity]")
-        div.append(Href("http://validator.w3.org/check/referer", str(image)))
+        div.append(Href("http://validator.w3.org/check?uri=%s" % (urllib.quote(self.resp._get_my_url())),
+                        str(image)))
         
     def submit_redir(self, submit_result):
         self.sess.submit_result = submit_result
@@ -622,6 +627,7 @@ class AboutPageActions(Action):
         self.doc.append(self._("There is a "),
                         external_href(webkom_escape(KNOWN_BUGS_URL), self._("list with known bugs")),
                         self._(" in the Bugzilla at Lysator"))
+        self.append_right_footer()
 
 
 class WhatsImplementedActions(Action):
