@@ -345,6 +345,9 @@ class LoginPageActions(Action):
         toplink = Href(BASE_URL, "WebKOM")
         cont = Container(toplink, ": Inloggning")
         self.append_std_top(cont)
+        default_kom_server = DEFAULT_KOM_SERVER
+        if self.form.has_key("komserver"):
+            default_kom_server = self.form["komserver"].value
         submitbutton = Input(type="submit", name="loginsubmit", value="Logga in")
 
         # Ugly focus-hack to work around broken Netscape
@@ -375,25 +378,25 @@ class LoginPageActions(Action):
         js_cont.append(F_submit)
         
         # komserver_form
-        F_komserver.append(Input(name="komserver", size=20, value=DEFAULT_KOM_SERVER, onChange="onchange_komserver(this)"))
+        F_komserver.append(Input(name="komserver", size=20, value=default_kom_server, onChange="onchange_komserver(this)"))
         F_komserver.append(Input(name="username", type="hidden"))
         F_komserver.append(Input(name="password", type="hidden"))
         F_komserver.append(Input(name="loginsubmit", type="hidden"))
 
         # username_form
-        F_username.append(Input(name="komserver", type="hidden", value=DEFAULT_KOM_SERVER))
+        F_username.append(Input(name="komserver", type="hidden", value=default_kom_server))
         F_username.append(Input(name="username", size=20, onChange="onchange_username(this)"))
         F_username.append(Input(name="password", type="hidden"))
         F_username.append(Input(name="loginsubmit", type="hidden"))
 
         # password_form
-        F_password.append(Input(name="komserver", type="hidden", value=DEFAULT_KOM_SERVER))
+        F_password.append(Input(name="komserver", type="hidden", value=default_kom_server))
         F_password.append(Input(name="username", type="hidden"))
         F_password.append(Input(type="password", name="password", size=20, onChange="onchange_password(this)"))
         F_password.append(Input(name="loginsubmit", type="hidden"))
 
         # submit_form
-        F_submit.append(Input(name="komserver", type="hidden", value=DEFAULT_KOM_SERVER))
+        F_submit.append(Input(name="komserver", type="hidden", value=default_kom_server))
         F_submit.append(Input(name="username", type="hidden"))
         F_submit.append(Input(name="password", type="hidden"))
 
@@ -410,7 +413,7 @@ class LoginPageActions(Action):
         F = Form(BASE_URL, name="loginform", submit="")
 
         nonjs_cont.append(F)
-        logintable = [("Server", Input(name="komserver", size=20, value=DEFAULT_KOM_SERVER)),
+        logintable = [("Server", Input(name="komserver", size=20, value=default_kom_server)),
                       ("Användarnamn", Input(name="username",size=20)),
                       ("Lösenord", Input(type="password",name="password",size=20)) ]
 
