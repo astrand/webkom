@@ -2360,6 +2360,17 @@ def write_traceback(resp):
     f.close()
 
 
+def print_logged_out_response(resp):
+    _ = translator_cache.get_translator("en").gettext
+    cont = Container(Href(BASE_URL, "WebKOM"))
+    cont.append(Heading(3, _("Logged out remotely")))
+    cont.append(_("Someone (probably you) ended this session remotely"))
+    cont.append(P())
+    cont.append(Href(BASE_URL, _("Login again")))
+    resp.doc.append(cont)
+    resp.sess = None
+
+
 # Main action routine
 # Note: "func" is a sz_fcgi magic name
 def func(fcg, env, form):
@@ -2368,14 +2379,7 @@ def func(fcg, env, form):
         try: # Exceptions within this clause are sent to the browser. 
             actions(resp)
         except RemotelyLoggedOutException:
-            _ = translator_cache.get_translator("en").gettext
-            cont = Container(Href(BASE_URL, "WebKOM"))
-            cont.append(Heading(3, _("Logged out remotely")))
-            cont.append(_("Someone (probably you) ended this session remotely"))
-            cont.append(P())
-            cont.append(Href(BASE_URL, _("Login again")))
-            resp.doc.append(cont)
-            resp.sess = None
+            print_logged_out_response(resp)
         except:
             write_traceback(resp)
 
