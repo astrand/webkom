@@ -1473,7 +1473,10 @@ class WriteArticleActions(Action):
         self.resp.shortcuts_active = 0
         # Fetch conference name
         conf_num = self.sess.current_conf
-        conf_name = self.get_conf_name(conf_num)
+#        cs = self.sess.conn.conferences[conf_num]
+#        if cs.type.original:
+#            conf_num = cs.super_conf
+#        conf_name = self.get_conf_name(conf_num)
         
         toplink = Href(self.base_session_url(), "WebKOM")
         conflink = self.action_href("viewconfs", "Möten")
@@ -1512,7 +1515,17 @@ class WriteArticleActions(Action):
             if not rcptparams:
                 continue
             for rcpt in rcptparams:
+                if not self.form.getvalue("searchrcptsubmit") and comment_to_list:
+                    cs = self.sess.conn.conferences[int(rcpt)]
+                    # If it's a comment, and the conference is of type
+                    # original, replace with it's supermeeting.
+                    # Don't do this if the user explicitly adds the meeting.
+                    if cs.type.original:
+                        rcpt_dict[int(cs.super_conf)] = rcpt_type
+                        continue
                 rcpt_dict[int(rcpt)] = rcpt_type
+
+        
 
         # Remove removed recipients
         removed = get_values_as_list(self.form, "removercpt")
