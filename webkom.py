@@ -464,6 +464,7 @@ class WhatsImplementedActions(Action):
 class MainPageActions(Action):
     "Generate the mainpage"
     def response(self):
+        self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
         cont = Container(toplink)
         cont.append(" : ")
