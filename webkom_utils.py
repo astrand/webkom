@@ -231,36 +231,6 @@ def del_8859_1_invalid_chars(text):
     return string.translate(text, invalid_chars_trans, invalid_chars_delchars)
     
 
-def linkify_text(text):
-    # FIXME: Linkify everything that looks like an URL or mail adress.
-    # Do a better job. 
-    # NOTE:
-    # < = \001
-    # > = \002
-    # This is because otherwise these are quoted by HTMLgen.escape. 
-    
-    # http URLs
-    pat = re.compile("(?P<fullurl>(http://|(?=www\\.))(?P<url>[^\t \012\014\"<>|\\\]*[^\t \012\014\"<>|.,!(){}?'`:]))")
-    repl = '\001a href="http://\\g<url>"\002\\g<fullurl>\001/a\002'
-    text = pat.sub(repl, text)
-
-    # https URLs
-    pat = re.compile("(?P<fullurl>(https://)(?P<url>[^\t \012\014\"<>|\\\]*[^\t \012\014\"<>|.,!(){}?'`:]))")
-    repl = '\001a href="https://\\g<url>"\002\\g<fullurl>\001/a\002'
-    text = pat.sub(repl, text)
-
-    # ftp URLs
-    pat = re.compile("(?P<fullurl>(ftp://|(?=ftp\\.))(?P<url>[^\t \012\014\"<>|\\\]*[^\t \012\014\"<>|.,!(){}?'`:]))")
-    repl = '\001a href="ftp://\\g<url>"\002\\g<fullurl>\001/a\002'
-    text = pat.sub(repl, text)
-
-    # file URLs
-    pat = re.compile("(?P<fullurl>(file://)(?P<url>[^\t \012\014\"<>|\\\]*[^\t \012\014\"<>|.,!(){}?'`:]))")
-    repl = '\001a href="file://\\g<url>"\002\\g<fullurl>\001/a\002'
-    text = pat.sub(repl, text)
-    return text
-
-
 def unquote_specials(text):
     text = string.replace(text, "\001","<")
     text = string.replace(text, "\002",">")
@@ -270,14 +240,6 @@ def unquote_specials(text):
 def webkom_escape(s):
     s = del_8859_1_invalid_chars(s)
     s = HTMLutil.latin1_escape(escape(s))
-    return s
-
-
-def webkom_escape_linkify(s):
-    s = del_8859_1_invalid_chars(s)
-    s = linkify_text(s)
-    s = HTMLutil.latin1_escape(escape(s))
-    s = unquote_specials(s)
     return s
 
 
