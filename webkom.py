@@ -2549,9 +2549,6 @@ class Logger:
     def __init__(self, filename):
         self.log = open(filename, "a")
 
-    def __del__(self):
-        self.log.close()
-
     def write(self, level, msg):
         if level <= LOGLEVEL:
             self.log.write(time.strftime("%Y-%m-%d %H:%M ", time.localtime(time.time())))
