@@ -145,7 +145,7 @@ class RemotelyLoggedOutException(Exception):
 
 class Session:
     "A session class. Lives as long as the session (and connection)"
-    def __init__(self, conn, pers_no):
+    def __init__(self, conn):
         self.conn = conn
         self.current_conf = 0
         self.comment_tree = []
@@ -156,7 +156,6 @@ class Session:
         # Holds pending messages
         self.pending_messages = []
         self.whoami = kom.ReqWhoAmI(self.conn).response()
-        self.pers_no = pers_no
         
     def lock_sess(self):
         "Lock session"
@@ -759,7 +758,7 @@ class LogInActions(Action):
         # If the sessionkey is valid, someone else is using it. 
         while sessionset.valid_session(sessionkey):
             sessionkey = gen_session_key()
-        self.resp.sess = Session(conn, pers_num)
+        self.resp.sess = Session(conn)
         # Add to sessionset
         sessionset.new_session(sessionkey, self.resp.sess)
         self.resp.key = sessionkey
@@ -1882,7 +1881,7 @@ class LogoutOtherSessionsActions(Action):
             self.doc.append(self._("Request failed"))
         killring = []
         for who in who_list:
-            if self.sess.pers_no == who.person and self.sess.whoami != who.session:
+            if self.sess.conn.get_user() == who.person and self.sess.whoami != who.session:
                 killring.append(who.session)
         if 0 == len(killring):
             self.doc.append(Header(3, self._("You do not have any other sessions with this server")))
