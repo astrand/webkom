@@ -2108,7 +2108,17 @@ class Connection:
     # Parse all present data
     def parse_present_data(self):
         while select.select([self.socket], [], [], 0)[0]:
-            self.parse_server_message()
+            ch = self.receive_char()
+            if ch in whitespace:
+                continue
+            if ch == "=":
+                self.parse_response()
+            elif ch == "%":
+                self.parse_error()
+            elif ch == ":":
+                self.parse_asynchronous_message()
+            else:
+                raise ProtocolError
             
     # Enable request histogram
     def enable_req_histo(self):
