@@ -13,6 +13,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8-bit\n"
 "Generated-By: pygettext.py 1.1\n"
 
+#, fuzzy
+msgid "Prioritize conferences"
+msgstr "Liity kokoukseen"
+
 msgid "Number of conferences loaded:"
 msgstr "Lukemattomien lukum‰‰r‰"
 
@@ -28,8 +32,11 @@ msgstr "Kokoukseen liittyminen ei onnistunut."
 msgid "Author"
 msgstr "Kirjoittaja"
 
-msgid "Not logged in"
-msgstr "Ei sis‰‰nkirjautuneena"
+msgid "Set/remove notes on letterbox"
+msgstr ""
+
+msgid "Your password has been changed"
+msgstr "Salasanan vaihto onnistui"
 
 msgid "This server has a message of the day:"
 msgstr ""
@@ -39,6 +46,10 @@ msgstr "Aihe:"
 
 msgid "Unread"
 msgstr "Lukematon"
+
+#, fuzzy
+msgid "the list with known bugs."
+msgstr "luettelo tunnetuista bugeista"
 
 msgid "View FAQ"
 msgstr "N‰yt‰ FAQ"
@@ -52,8 +63,8 @@ msgstr "Vastaanottajat puuttuvat!"
 msgid "No unread"
 msgstr "Ei lukemattomia"
 
-msgid "The two new passwords didn't match."
-msgstr "Salasana ei t‰sm‰‰."
+msgid "Add recipients and comments to existing articles"
+msgstr ""
 
 msgid "Try again!"
 msgstr ""
@@ -82,11 +93,12 @@ msgstr "%s: %s -- huono tekstin numero"
 msgid "Go to main page"
 msgstr "sis‰‰nkirjoittautumissivu"
 
-msgid "Wrong password."
-msgstr "V‰‰r‰ salasana."
+msgid "Authors"
+msgstr "Tekij‰t"
 
-msgid "The number of unread articles is now "
-msgstr "Lukemattomia on nyt "
+#, fuzzy
+msgid "Mark/unmark articles"
+msgstr "Aiemmat viestit"
 
 msgid "You can find more information about WebKOM on the"
 msgstr "Lis‰tietoa WebKOMista"
@@ -100,11 +112,15 @@ msgstr "Et ole antanut k‰ytt‰j‰nime‰."
 msgid "List conferences with unread"
 msgstr "Kokoukset joissa uusia viestej‰"
 
+#, fuzzy
+msgid "Read comments"
+msgstr "Lue seuraava kommentti"
+
 msgid "Go back to the article you footnoted"
 msgstr ""
 
-msgid "User<br>From"
-msgstr "K‰ytt‰j‰<br>Mist‰"
+msgid "Set as presentation"
+msgstr "Aseta esittelyksi"
 
 msgid "Confirm reading this text?"
 msgstr "Vahvistatko lukeneesi t‰m‰n tekstin?"
@@ -112,8 +128,8 @@ msgstr "Vahvistatko lukeneesi t‰m‰n tekstin?"
 msgid "Do you really want to leave conference "
 msgstr "Haluatko varmasti erota kokouksesta "
 
-msgid "An error occurred when fetching article information."
-msgstr "Viestin noudossa tapahtui virhe."
+msgid "Request personal answer"
+msgstr ""
 
 msgid "Please wait while your conference list is loading..."
 msgstr "Odota kokouslistauksen latautumista..."
@@ -133,8 +149,15 @@ msgstr "kotisivu."
 msgid "Conferences (you are a member of)"
 msgstr "Kokoukset (joissa olet j‰senen‰)"
 
-msgid "Overview"
-msgstr "Yhteenveto"
+#, fuzzy
+msgid "Prevent comments"
+msgstr "Kirjoita kommentti"
+
+msgid "Leave conference"
+msgstr "Poistu kokouksesta"
+
+msgid "Unable to create article."
+msgstr "Viesti‰ ei voitu lis‰t‰"
 
 msgid "WebKOM is a WWW-interface for "
 msgstr "WebKOM on WWW-k‰yttˆliittym‰ ohjelmalle "
@@ -145,20 +168,25 @@ msgstr "Aika: "
 msgid "You are no longer a member of conference "
 msgstr "Et ole en‰‰ mukana kokouksessa "
 
-msgid "Sent:"
-msgstr "L‰hetetty:"
+msgid "View sessionstatus for persons"
+msgstr ""
 
 msgid "Someone (probably you) ended this session remotely"
 msgstr "Joku (sin‰ itse?) et‰loggasi ulos t‰st‰ istunnosta"
 
-msgid "Leave conference"
-msgstr "Poistu kokouksesta"
+msgid "Overview"
+msgstr "Yhteenveto"
+
+#, fuzzy
+msgid "Implemented"
+msgstr "Noudettu:"
 
 msgid "Author:"
 msgstr "Kirjoittaja:"
 
-msgid "Unable to change current conference."
-msgstr "Aktiivisen kokouksen muuttaminen ep‰onnistui."
+#, fuzzy
+msgid "Send messages"
+msgstr "Henkilˆkohtainen viesti"
 
 msgid ""
 "Type in the beginning of the conference name. You can also search via "
@@ -193,6 +221,9 @@ msgstr "Et antanut salasanaa."
 msgid "Mark"
 msgstr "Merkkaukset:"
 
+msgid "Invalid cross reference:"
+msgstr "Ep‰kelpo ristiviittaus:"
+
 msgid " conferences."
 msgstr " kokousta."
 
@@ -215,8 +246,8 @@ msgstr "Lukemattomien lukum‰‰r‰"
 msgid "Type"
 msgstr "Tyyppi"
 
-msgid "A total of %s active users."
-msgstr "Yhteens‰ %s aktiivista k‰ytt‰j‰‰."
+msgid "Repeat new password"
+msgstr "Uusi salasana uudestaan"
 
 msgid "Username"
 msgstr "K‰ytt‰j‰nimi"
@@ -227,6 +258,9 @@ msgstr "Vahvistanut lukemisen: "
 msgid "Blind carbon copy"
 msgstr "Tiedoksi vastaanottajille"
 
+msgid "Sent:"
+msgstr "L‰hetetty:"
+
 msgid "Continue Logging in"
 msgstr ""
 
@@ -236,13 +270,11 @@ msgstr "K‰‰nnˆkset"
 msgid "Server communications error"
 msgstr ""
 
-#, fuzzy
-msgid "View marked articles"
-msgstr "Aiemmat viestit"
+msgid "Cannot connect to server."
+msgstr "Ei voi kirjautua serverille."
 
-#, fuzzy
-msgid "the list with known bugs."
-msgstr "luettelo tunnetuista bugeista"
+msgid "Ok"
+msgstr "Ok"
 
 msgid "Unable to set number of unread."
 msgstr "Lukemattomien lukum‰‰r‰‰ ei voitu asettaa."
@@ -261,6 +293,10 @@ msgstr ""
 
 msgid "A user with this name exists."
 msgstr "Nimi on jo k‰ytˆss‰"
+
+#, fuzzy
+msgid "Write footnotes"
+msgstr "Kirjoita kirje"
 
 msgid "Write article"
 msgstr "Kirjoita viesti"
@@ -289,6 +325,10 @@ msgstr "V‰‰r‰ salasana"
 msgid ", marked by you. "
 msgstr ""
 
+#, fuzzy
+msgid "Not Implemented"
+msgstr "Palvelinkutsua ei asennettu"
+
 msgid "Later articles"
 msgstr "Myˆhemm‰t viestit"
 
@@ -315,17 +355,14 @@ msgstr ""
 msgid "The article does not exist."
 msgstr "Viesti‰ ei lˆydy."
 
-msgid "Repeat new password"
-msgstr "Uusi salasana uudestaan"
+msgid "Subject"
+msgstr "Aihe"
 
 msgid "Write comment"
 msgstr "Kirjoita kommentti"
 
 msgid "The username is ambiguous"
 msgstr "Antamasi nimi ei ollut yksiselitteinen"
-
-msgid "Cannot connect to server."
-msgstr "Ei voi kirjautua serverille."
 
 msgid "See person "
 msgstr "N‰yt‰ henkilˆ "
@@ -336,23 +373,30 @@ msgstr "Kirjoittajan toivomuksesta t‰t‰ teksti‰ ei voi kommentoida."
 msgid "Footnote to:"
 msgstr "Viittaus viestiin:"
 
+msgid "Jump"
+msgstr ""
+
 msgid "Sent by:"
 msgstr "L‰hett‰j‰:"
 
-msgid "Session"
-msgstr "Istunto"
+msgid "The two new passwords didn't match."
+msgstr "Salasana ei t‰sm‰‰."
+
+#, fuzzy
+msgid "List unread articles"
+msgstr "Myˆhemm‰t viestit"
 
 msgid "Set unread"
 msgstr "Lue vain"
 
-msgid "Go to "
-msgstr "Mene "
+msgid "The HTML code is generated by "
+msgstr "HTML-koodin generoi "
 
 msgid "The author requests read confirmation. "
 msgstr "Kirjoittaja pyyt‰‰ vahvistusta lukemisesta. "
 
-msgid "Subject"
-msgstr "Aihe"
+msgid "Unable to change current conference."
+msgstr "Aktiivisen kokouksen muuttaminen ep‰onnistui."
 
 msgid "Technology"
 msgstr "Toteutustapa"
@@ -369,8 +413,9 @@ msgstr ""
 msgid "An error occurred when fetching article."
 msgstr "Artikkelin haku ep‰onnistui."
 
-msgid "External recipient:"
-msgstr "Ulkoinen vastaanottaja:"
+#, fuzzy
+msgid "Conference"
+msgstr "Kokouksen nimi"
 
 msgid "Join conference"
 msgstr "Liity kokoukseen"
@@ -390,6 +435,9 @@ msgstr ""
 msgid "View in code style"
 msgstr "N‰yt‰ koodatussa muodossa"
 
+msgid "Not logged in"
+msgstr "Ei sis‰‰nkirjautuneena"
+
 msgid "Imported:"
 msgstr "Noudettu:"
 
@@ -405,8 +453,8 @@ msgstr ""
 msgid "Invalid input"
 msgstr "V‰‰r‰ salasana"
 
-msgid " and login again."
-msgstr " ja kirjaudu uudelleen sis‰‰n."
+msgid "Web page"
+msgstr "Seuraava sivu"
 
 msgid "Login progress"
 msgstr "Sis‰‰nkirjautumisen kulku"
@@ -416,6 +464,10 @@ msgstr "Tavoitteena on yksinkertainen, helppok‰yttˆinen asiakas."
 
 msgid "Received:"
 msgstr "Vastaanotettu:"
+
+#, fuzzy
+msgid "Check who is logged in"
+msgstr "N‰yt‰ l‰sn‰olijat"
 
 msgid "View in normal style"
 msgstr "N‰yt‰ tavallisessa muodossa"
@@ -429,8 +481,9 @@ msgstr " sovellus."
 msgid "Join marked conference"
 msgstr "Liity ruksattuun kokoukseen"
 
-msgid "Set as presentation"
-msgstr "Aseta esittelyksi"
+#, fuzzy
+msgid "Create conferences"
+msgstr "Poistu kokouksesta"
 
 msgid "Logout"
 msgstr "Loggaa ulos"
@@ -445,8 +498,9 @@ msgstr "P‰iv‰ys"
 msgid "Added by:"
 msgstr "Lis‰‰j‰:"
 
-msgid "Login failed"
-msgstr "Sis‰‰nkirjoittautuminen ep‰onnistui"
+#, fuzzy
+msgid "Read presentation"
+msgstr "Aseta esittelyksi"
 
 msgid "Person %d (does not exist)"
 msgstr "Henkilˆ %d (ei ole olemassa)"
@@ -463,14 +517,18 @@ msgstr "Etsi"
 msgid "This text is FAQ for conference "
 msgstr "Kokouksen FAQ-teksti"
 
+#, fuzzy
+msgid "Request read confirmation"
+msgstr "Kirjoittaja pyyt‰‰ vahvistusta lukemisesta. "
+
 msgid "Showing all sessions active within the last 30 minutes."
 msgstr "Viimeisten 30 minuutin aikana aktiiviset istunnot"
 
 msgid "Go to conference"
 msgstr "Valitse kokous"
 
-msgid "Authors"
-msgstr "Tekij‰t"
+msgid "Wrong password."
+msgstr "V‰‰r‰ salasana."
 
 msgid "Logins are not accepted right now. Try again later."
 msgstr "Uusia istuntoja ei nyt k‰ynnistet‰. Yrit‰ myˆhemmin uudestaan."
@@ -478,8 +536,8 @@ msgstr "Uusia istuntoja ei nyt k‰ynnistet‰. Yrit‰ myˆhemmin uudestaan."
 msgid "Bugs"
 msgstr "Bugit"
 
-msgid "Added:"
-msgstr "Lis‰tty:"
+msgid " and login again."
+msgstr " ja kirjaudu uudelleen sis‰‰n."
 
 msgid ""
 "WebKOM made a server call that this server did not understand. WebKOM only "
@@ -488,8 +546,12 @@ msgstr ""
 "WebKOM teki palvelinpyynnˆn jota palvelin ei osannut tulkita. WebKOM toimii "
 "vain palvelinversion 2.0 tai uudempien kanssa"
 
-msgid "Invalid cross reference:"
-msgstr "Ep‰kelpo ristiviittaus:"
+#, fuzzy
+msgid "Person"
+msgstr "Istunto"
+
+msgid "Read article by specifying global article number"
+msgstr ""
 
 msgid "Remove marked recipients"
 msgstr "Poista valinnat edelt‰"
@@ -503,8 +565,15 @@ msgstr "N‰yt‰ kaikki kokoukset"
 msgid "WebKOM server message"
 msgstr "Viesti WebKOM-palvelimelta"
 
+#, fuzzy
+msgid "Write articles"
+msgstr "Kirjoita viesti"
+
 msgid "Remove?"
 msgstr "Poista?"
+
+msgid "(Too many hits, the table is truncated)"
+msgstr "(Liian monta osumaa, listausta lyhennetty)"
 
 msgid "none"
 msgstr "ei"
@@ -515,6 +584,10 @@ msgstr "Etsi kokous:"
 
 msgid "Check if this bug is listed on"
 msgstr "Katso onko t‰m‰ bugi listattu "
+
+#, fuzzy
+msgid "Move articles between conferences"
+msgstr " lukematonta t‰ss‰ kokouksessa."
 
 msgid "Search result:"
 msgstr "Hakutulokset:"
@@ -543,8 +616,9 @@ msgstr "Istunto et‰katkaistiin"
 msgid "(Nothing matches %s)"
 msgstr "(Mik‰‰n ei vastaa merkkijonon %s alkua)"
 
-msgid "Your password has been changed"
-msgstr "Salasanan vaihto onnistui"
+#, fuzzy
+msgid "Status for conference/persons"
+msgstr "Etsi kokous:"
 
 #, fuzzy
 msgid "This server instance started "
@@ -552,6 +626,10 @@ msgstr "Palvelimen aikaleima oli: "
 
 msgid "Go back to the article you commented"
 msgstr ""
+
+#, fuzzy
+msgid "Delete articles"
+msgstr "Myˆhemm‰t viestit"
 
 msgid "WebKOM is free software, licensed under GPL."
 msgstr ""
@@ -561,6 +639,9 @@ msgstr ""
 msgid "Working conference<br>Is doing"
 msgstr "Kokouksessa<br>Tekee"
 
+msgid "Login failed"
+msgstr "Sis‰‰nkirjoittautuminen ep‰onnistui"
+
 msgid "Add marked"
 msgstr "Lis‰‰ ylle valittuihin"
 
@@ -569,6 +650,10 @@ msgstr "Eva Isaksson (suomennos)"
 
 msgid "Next page"
 msgstr "Seuraava sivu"
+
+#, fuzzy
+msgid "Change name"
+msgstr "Kokouksen nimi"
 
 msgid "Change password"
 msgstr "Vaihda salasanasi"
@@ -591,8 +676,14 @@ msgstr "Liit‰ virheilmoitus alle."
 msgid "Submit"
 msgstr "L‰het‰"
 
-msgid "(Too many hits, the table is truncated)"
-msgstr "(Liian monta osumaa, listausta lyhennetty)"
+msgid "User<br>From"
+msgstr "K‰ytt‰j‰<br>Mist‰"
+
+msgid "Write"
+msgstr ""
+
+msgid "Other"
+msgstr ""
 
 msgid "What can WebKOM do?"
 msgstr "Mit‰ WebKOM osaa?"
@@ -603,8 +694,9 @@ msgstr "Ulkoinen kopio:"
 msgid " (last modified "
 msgstr " (viimeksi muokattu "
 
-msgid "Ok"
-msgstr "Ok"
+#, fuzzy
+msgid "Read marked articles"
+msgstr "Aiemmat viestit"
 
 msgid " in the Bugzilla at Lysator"
 msgstr ""
@@ -612,11 +704,15 @@ msgstr ""
 msgid "Repeat password"
 msgstr "Uusi salasana uudestaan"
 
-msgid "Unable to create article."
-msgstr "Viesti‰ ei voitu lis‰t‰"
+msgid "An error occurred when fetching article information."
+msgstr "Viestin noudossa tapahtui virhe."
 
 msgid "Conferences (with unread)"
 msgstr "Kokouksia (joissa lukemattomia)"
+
+#, fuzzy
+msgid "Change your presentation"
+msgstr "Aseta esittelyksi"
 
 msgid "Unable to leave conference."
 msgstr "Kokouksesta eroaminen ep‰onnistui"
@@ -627,8 +723,12 @@ msgstr "WebKOM on kirjoitettu Pythonilla ja se on pitk‰ik‰inen, s‰ikeistetty "
 msgid "You have confirmed reading text "
 msgstr "Olet vahvistanut lukeneesi viestin "
 
-msgid "The HTML code is generated by "
-msgstr "HTML-koodin generoi "
+#, fuzzy
+msgid "Read"
+msgstr "Lukematon"
+
+msgid "Quote"
+msgstr ""
 
 msgid "Personal message"
 msgstr "Henkilˆkohtainen viesti"
@@ -636,8 +736,14 @@ msgstr "Henkilˆkohtainen viesti"
 msgid "Choose user:"
 msgstr "Valitse nimi:"
 
+msgid "A total of %s active users."
+msgstr "Yhteens‰ %s aktiivista k‰ytt‰j‰‰."
+
 msgid "Choose working conference"
 msgstr "Valitse kokous"
+
+msgid "Session"
+msgstr "Istunto"
 
 msgid "Request failed"
 msgstr "Kysely ep‰onnistui"
@@ -659,6 +765,9 @@ msgstr "Etsi uusi vastaanottaja:"
 
 msgid "Password"
 msgstr "Salasana"
+
+msgid "External recipient:"
+msgstr "Ulkoinen vastaanottaja:"
 
 msgid "No working conference"
 msgstr "Ei kokousta"
@@ -684,6 +793,10 @@ msgstr "Sinulla ei ole riitt‰v‰sti oikeuksia luoda uutta k‰ytt‰j‰‰"
 msgid "Logout my other sessions"
 msgstr "Loggaa ulos muut istuntoni"
 
+#, fuzzy
+msgid "Write personal letters"
+msgstr "Kirjoita kommentti"
+
 msgid "User name"
 msgstr "K‰ytt‰j‰nimi"
 
@@ -694,11 +807,14 @@ msgstr "Palvelimelle on kirjauduttava ennen uuden k‰ytt‰j‰n luomista"
 msgid "Article submitted."
 msgstr "Artikkeli j‰tetty"
 
+msgid "Added:"
+msgstr "Lis‰tty:"
+
 msgid "Killed the following session(s):"
 msgstr "Seuraavat istunnot katkaistiin:"
 
-msgid "Write presentation"
-msgstr "Kirjoita esittely"
+msgid "Go to "
+msgstr "Mene "
 
 msgid "No conference selected."
 msgstr "Et ole valinnut kokousta."
@@ -706,8 +822,9 @@ msgstr "Et ole valinnut kokousta."
 msgid "Login"
 msgstr "Loggaa sis‰‰n"
 
-msgid "Web page"
-msgstr "Seuraava sivu"
+#, fuzzy
+msgid "Write comments"
+msgstr "Kirjoita kommentti"
 
 msgid "Search result will be limited to "
 msgstr "Osumien lukum‰‰r‰ enint‰‰n "
@@ -733,6 +850,9 @@ msgstr "Peter ≈strand (projektin k‰ynnist‰j‰ ja p‰‰kehitt‰j‰)"
 msgid "WebKOM login"
 msgstr "WebKOM-sis‰‰nkirjautuminen"
 
+msgid "The number of unread articles is now "
+msgstr "Lukemattomia on nyt "
+
 msgid "Earlier articles"
 msgstr "Aiemmat viestit"
 
@@ -748,5 +868,12 @@ msgstr "Palvelinkutsua ei asennettu"
 msgid "Read next comment"
 msgstr "Lue seuraava kommentti"
 
+#, fuzzy
+msgid "List marked articles"
+msgstr "Aiemmat viestit"
+
 msgid "Comment in article:"
 msgstr "Kommentti viestiss‰:"
+
+#~ msgid "Write presentation"
+#~ msgstr "Kirjoita esittely"
