@@ -301,8 +301,8 @@ class AddShortCuts(Action):
         
         for s in self.resp.shortcuts:
             ret = ret + self.shortcut_case(s[0], s[1])
-        
-        ret = ret + webkom_js.code_end
+
+        ret = ret + webkom_js.end_switch + webkom_js.code_end
         self.doc.append(ret)
     
     
@@ -314,16 +314,84 @@ class LoginPageActions(Action):
         cont = Container(toplink, ": Inloggning")
         self.append_std_top(cont)
         submitbutton = Center(Input(type="submit", name="loginsubmit", value="Logga in"))
+
+        # Non-JS capable browsers should ignore this
+        self.doc.onLoad = "document.username_form.username.focus()"
+        
+        cont = Container()
+        self.doc.append(Center(cont))
+        cont.append(BR(2))
+        cont.append(Center(Heading(2, "WebKOM inloggning")))
+        cont.append(BR(2))
+
+        #
+        # Code for Javascript-version
+        #
+        js_cont = Container()
+        F_komserver = Form(BASE_URL, name="komserver_form", submit="")
+        F_username = Form(BASE_URL, name="username_form", submit="")
+        F_password = Form(BASE_URL, name="password_form", submit="")
+        F_submit = Form(BASE_URL, name="submit_form", submit=submitbutton)
+
+        formtable = [("Server", F_komserver),
+                     ("Användarnamn", F_username),
+                     ("Lösenord", F_password),
+                     ("", F_submit)]
+        js_cont.append(InputTable(formtable))
+        
+        # komserver_form
+        F_komserver.append(Input(name="komserver", size=20, value=DEFAULT_KOM_SERVER, onChange="onchange_komserver(this)"))
+        F_komserver.append(Input(name="username", type="hidden"))
+        F_komserver.append(Input(name="password", type="hidden"))
+        F_komserver.append(Input(name="loginsubmit", type="hidden"))
+
+        # username_form
+        F_username.append(Input(name="komserver", type="hidden", value=DEFAULT_KOM_SERVER))
+        F_username.append(Input(name="username", size=20, onChange="onchange_username(this)"))
+        F_username.append(Input(name="password", type="hidden"))
+        F_username.append(Input(name="loginsubmit", type="hidden"))
+
+        # password_form
+        F_password.append(Input(name="komserver", type="hidden", value=DEFAULT_KOM_SERVER))
+        F_password.append(Input(name="username", type="hidden"))
+        F_password.append(Input(type="password", name="password", size=20, onChange="onchange_password(this)"))
+        F_password.append(Input(name="loginsubmit", type="hidden"))
+
+        # submit_form
+        F_submit.append(Input(name="komserver", type="hidden", value=DEFAULT_KOM_SERVER))
+        F_submit.append(Input(name="username", type="hidden"))
+        F_submit.append(Input(name="password", type="hidden"))
+
+        # Translate abstract container into document.write statements
+        form_code = ""
+        for line in string.split(str(Center(js_cont)), '\n'):
+            form_code = form_code + "document.write('" + line + "');\n"
+            
+        #
+        # Non-JS version
+        #
+        nonjs_cont = Container()
+        submitbutton = Center(Input(type="submit", name="loginsubmit", value="Logga in"))
         F = Form(BASE_URL, name="loginform", submit=submitbutton)
-        self.doc.append(F)
-        F.append(BR(2))
-        F.append(Center(Heading(2, "WebKOM inloggning")))
-        F.append(BR(2))
-        self.doc.onLoad = "document.loginform.username.focus()"
+        nonjs_cont.append(F)
         logintable = [("Server", Input(name="komserver", size=20, value=DEFAULT_KOM_SERVER)),
                       ("Användarnamn", Input(name="username",size=20)),
                       ("Lösenord", Input(type="password",name="password",size=20)) ]
         F.append(Center(InputTable(logintable)))
+
+        
+        # Write out Javascript version
+        self.doc.append(webkom_js.code_begin)
+        self.doc.append(form_code)
+        self.doc.append(webkom_js.onchange_komserver)
+        self.doc.append(webkom_js.onchange_username)
+        self.doc.append(webkom_js.onchange_password)
+        self.doc.append(webkom_js.code_end)
+
+        # Write non-JS version
+        self.doc.append(webkom_js.noscript_begin)
+        self.doc.append(nonjs_cont)
+        self.doc.append(webkom_js.noscript_end)
         return
 
 
