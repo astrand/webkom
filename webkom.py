@@ -2543,6 +2543,12 @@ class ViewMarkingsActions(Action):
             tab.append([textnum, author, subject, tpe])
         return
 
+
+class TriggerInternalErrorActions(Action):
+    def response(self):
+        return this_variable_does_not_exist
+        
+
 class MarkTextActions(Action):
     "Mark a text"
     def response(self):
@@ -2554,6 +2560,7 @@ class MarkTextActions(Action):
         self.resp.set_redir("?sessionkey="+self.resp.key+\
                             "&action=viewtext&textnum="+str(textnum))
         return
+
 
 class UnmarkTextActions(Action):
     "Unmark a text"
@@ -2912,7 +2919,8 @@ def actions(resp):
                        "view_presentation" : ViewPresentationActions,
                        "unmark_text" : UnmarkTextActions,
                        "mark_text" : MarkTextActions,
-                       "view_markings" : ViewMarkingsActions }
+                       "view_markings" : ViewMarkingsActions,
+                       "internal_error": TriggerInternalErrorActions }
 
     if not sessionset.valid_session(resp.key):
         InvalidSessionPageActions(resp).response()
@@ -2991,6 +2999,8 @@ def actions(resp):
 
 def write_traceback(resp):
     # Something failed in response generation.
+    # Note: You can trigger an internal server error by specifying
+    # ?action=internal_error. Useful for testing. 
     _ = resp.get_translator()
     
     # Save a copy on disk
@@ -3001,8 +3011,6 @@ def write_traceback(resp):
     f.close()
     
     # Put it on the web.
-    # (Is it possible to print it directly, without going via the file?
-    # Then tell me!)
     resp.doc.append(Heading(3, "Internal server error"))
     resp.doc.append(_("Check if this bug is listed on"))
     resp.doc.append(external_href(KNOWN_BUGS_URL,
