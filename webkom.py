@@ -2863,11 +2863,6 @@ class ReadConfirmationActions(Action):
 
 def actions(resp):
     "Do requested actions based on CGI keywords"
-    try:
-        lang_string = resp.env["HTTP_ACCEPT_LANGUAGE"]
-    except KeyError:
-        lang_string = ""
-
     if resp.form.has_key("loginsubmit"):
         LogInActions(resp).response()
         return
