@@ -43,12 +43,11 @@ import traceback
 
 class SessionSet:
     "A set of active sessions"
+    # This class has knowledge about Sessions
     def __init__(self):
         self.sessionset = {}
         # Lock variable, for updating "sessions"
         self.sessionset_lock = thread.allocate_lock()
-        # Global session log
-        self.log = open(LOG_DIR + "session.log", "a")
 
     def gen_session_key(self):
         key = ""
@@ -77,23 +76,35 @@ class SessionSet:
         session.timestamp = time.time()
         return session
 
-    def add_session(self, session):
+    def add_session(self, sess):
         "Add session to sessionset. Return sessionkey"
+        system_log.write("Creating session for person %d on server %s"
+                         % (sess.conn.get_user(), sess.komserver))
         key = self.gen_uniq_key()
         self.sessionset_lock.acquire()
-        self.sessionset[key] = session
+        self.sessionset[key] = sess
         self.sessionset_lock.release()
-        self.write_log("Creating session", key)
+
         return key
 
-    def del_session(self, key):
-        "Delete session from sessionset"
-        self.write_log("Deleting session", key)
-        self.sessionset_lock.acquire()
+    def _delete_session(self, key, deltype=""):
+        try:
+            sess = self.sessionset[key]
+            system_log.write("Deleting %ssession for person %d on server %s, sessnum=%d"
+                             % (deltype, sess.conn.get_user(), sess.komserver, sess.whoami))
+            del sess
+        except:
+            pass
+
         try:
             del self.sessionset[key]
         except:
             pass
+
+    def del_session(self, key):
+        "Delete session from sessionset"
+        self.sessionset_lock.acquire()
+        self._delete_session(key)
         self.sessionset_lock.release()
 
     def del_inactive(self):
@@ -102,16 +113,9 @@ class SessionSet:
         curtime = time.time()
         for key in self.sessionset.keys():
             if self.sessionset[key].timestamp + SESSION_TIMEOUT < curtime:
-                self.write_log("Deleting inactive session", key)
-                del self.sessionset[key]
+                self._delete_session(key, "inactive ")
 
         self.sessionset_lock.release()
-
-    def write_log(self, msg, key):
-        self.log.write(time.strftime("%Y-%m-%d %H:%M ", time.localtime(time.time())))
-        self.log.write(msg +", key=" + str(key) + " pers_num=" +
-                       str(self.sessionset[key].conn.get_user()) + "\n")
-        self.log.flush()
 
     def notify_all_users(self, msg):
         m = Message(-1, "WebKOM administrator", msg)
@@ -123,8 +127,8 @@ class SessionSet:
         self.sessionset_lock.acquire()
         for key in self.sessionset.keys():
             if self.sessionset[key] == session:
-                self.write_log("Deleting remotely logged out session", key)
-                del self.sessionset[key]
+                self._delete_session(key, "remotely logged out ")
+                
         self.sessionset_lock.release()
              
 
@@ -155,8 +159,9 @@ class RemotelyLoggedOutException(Exception):
 
 class Session:
     "A session class. Lives as long as the session (and connection)"
-    def __init__(self, conn):
+    def __init__(self, conn, komserver):
         self.conn = conn
+        self.komserver = komserver # For debugging and logging
         self.current_conf = 0
         self.comment_tree = []
         self.timestamp = time.time()
@@ -813,7 +818,7 @@ class LogInActions(Action):
         kom.ReqSetClientVersion(conn, "WebKOM", VERSION)
 
         # Create new session
-        self.resp.sess = Session(conn)
+        self.resp.sess = Session(conn, self.komserver)
         # Add to sessionset
         self.resp.key = sessionset.add_session(self.resp.sess)
 
@@ -2508,6 +2513,21 @@ def handle_req(fcg, env, form):
         f = open(LOG_DIR + "traceback.finish", "w")
         traceback.print_exc(file = f)
         f.close()
+
+
+class Logger:
+    "Write log messages to files, with current time prefixed"
+    def __init__(self, filename):
+        self.log = open(filename, "a")
+
+    def __del__(self):
+        self.log.close()
+
+    def write(self, msg):
+        self.log.write(time.strftime("%Y-%m-%d %H:%M ", time.localtime(time.time())))
+        self.log.write(str(msg) + "\n")
+        self.log.flush()
+
         
 # Interaction via FIFO
 def run_console(self, *args):
@@ -2546,9 +2566,10 @@ translator_cache = TranslatorCache.TranslatorCache("webkom", LOCALE_DIR, DEFAULT
 # Create an instance of our FCGI wrapper
 fcgi = sz_fcgi.SZ_FCGI(handle_req)
 
+# Global log file
+system_log = Logger(LOG_DIR + "system.log")
+system_log.write("WebKOM started")
+
 if __name__=="__main__":
     # and let it run
     run_fcgi()
-
-
- 
