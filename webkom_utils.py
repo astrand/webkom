@@ -257,6 +257,11 @@ def linkify_text(text):
     repl = '\001a href="http://\\g<url>"\002\\g<fullurl>\001/a\002'
     text = pat.sub(repl, text)
 
+    # https URLs
+    pat = re.compile("(?P<fullurl>(https://|(?=www\\.))(?P<url>[^\t \012\014\"<>|\\\]*[^\t \012\014\"<>|.,!(){}?'`:]))")
+    repl = '\001a href="https://\\g<url>"\002\\g<fullurl>\001/a\002'
+    text = pat.sub(repl, text)
+
     # ftp URLs
     pat = re.compile("(?P<fullurl>(ftp://|(?=ftp\\.))(?P<url>[^\t \012\014\"<>|\\\]*[^\t \012\014\"<>|.,!(){}?'`:]))")
     repl = '\001a href="ftp://\\g<url>"\002\\g<fullurl>\001/a\002'
