@@ -2585,8 +2585,7 @@ class SetUnreadActions(Action):
         F.append(self._("Set read marks to "))
         F.append(Input(name="num_unread", size=4, value="20"))
         F.append(self._(" unread articles in this conference."), BR())
-        F.append(Input(type="hidden", name="set_unread_submit",
-                       value="foo"))
+        F.append(Input(type="hidden", name="set_unread_submit"))
 
         return
 
