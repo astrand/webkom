@@ -844,7 +844,7 @@ class InvalidSessionPageActions(Action):
 
 class ViewConfsUnreadActions(Action):
     def response(self):
-        ViewConfsActions(self.resp, self._).response(only_unread=1)
+        ViewConfsActions(self.resp).response(only_unread=1)
         
 class ViewConfsActions(Action):
     "Generate a page with all member conferences"
@@ -939,7 +939,7 @@ class GoConfWithUnreadActions(Action):
     def response(self):
         next_conf = get_conf_with_unread(self.sess.conn, self.sess.conn.member_confs, self.sess.current_conf)
         if next_conf:
-            GoConfActions(self.resp, self._).response(next_conf)
+            GoConfActions(self.resp).response(next_conf)
         else:
             toplink = Href(self.base_session_url(), "WebKOM")
             conflink = self.action_href("viewconfs", self._("Conferences (you are a member of)"))
@@ -1601,18 +1601,18 @@ class WritePresentationActions(Action):
         presfor = self.form.getvalue("presentationfor")
         if int(presfor) == self.sess.conn.get_user():
             self.change_conf(serverinfo.pers_pres_conf)
-            WriteArticleActions(self.resp, self._).response(presentationfor = int(presfor), presconf = serverinfo.pers_pres_conf)
+            WriteArticleActions(self.resp).response(presentationfor = int(presfor), presconf = serverinfo.pers_pres_conf)
         else:
             self.change_conf(serverinfo.conf_pres_conf)
             # FIXME: Shouldn't it be presconf = serverinfo.conf_pres_conf?
-            WriteArticleActions(self.resp, self._).response(presentationfor = int(presfor), presconf = serverinfo.pers_pres_conf)
+            WriteArticleActions(self.resp).response(presentationfor = int(presfor), presconf = serverinfo.pers_pres_conf)
 
 
 class WriteLetterActions(Action):
     "Write personal letter"
     def response(self):
         self.change_conf(self.sess.conn.get_user())
-        WriteArticleActions(self.resp, self._).response()
+        WriteArticleActions(self.resp).response()
         return 
 
     
@@ -1930,7 +1930,7 @@ class WriteArticleSubmit(Action):
 class WritePresentationSubmit(Action):
     "Submit a presentation"
     def response(self):
-        text_num = WriteArticleSubmit(self.resp, self._).response()
+        text_num = WriteArticleSubmit(self.resp).response()
         presentation_for = int(self.form.getvalue("presentationfor"))
         if text_num:
             kom.ReqSetPresentation(self.sess.conn,
@@ -2012,7 +2012,7 @@ class JoinConfActions(Action):
     "Generate a page for joinging a conference"
     def response(self):
         if self.form.getvalue("joinconfsubmit", None):
-            JoinConfSubmit(self.resp, self._).response()
+            JoinConfSubmit(self.resp).response()
         else:
             self.search_page()
 
