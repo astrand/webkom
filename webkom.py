@@ -723,10 +723,12 @@ class AboutPageActions(Action):
         self.doc.append(external_href("http://www.lysator.liu.se/lyskom/klienter/webkom/",
                                       self._("homepage.")))
         
-        self.doc.append(Heading(3, self._("Bugs")))
+        self.doc.append(Heading(3, self._("Bugs and feedback")))
         self.doc.append(self._("There is a "),
                         external_href(webkom_escape(KNOWN_BUGS_URL), self._("list with known bugs")),
-                        self._(" in the Bugzilla at Lysator"))
+                        self._(" in the Bugzilla at Lysator. "))
+        self.doc.append(self._("It should be used for bug reports, feature requests and general feedback."))
+        
         self.append_right_footer()
 
 
