@@ -1297,9 +1297,14 @@ class ViewTextActions(Action):
                                  webkom_escape(charset), BR()))
 
     def print_fast_replies(self, ts):
-        ai_fr = kom.first_aux_items_with_tag(ts.aux_items, kom.AI_FAST_REPLY)
-        replystring = ai_fr.data + " /" + self.get_pers_name(ai_fr.creator)
-        self.doc.append(webkom_escape(replystring), BR())
+        ai_fr_list = kom.all_aux_items_with_tag(ts.aux_items, kom.AI_FAST_REPLY)
+        for ai_fr in ai_fr_list:
+            replystring = ai_fr.data + " /" + self.get_pers_name(ai_fr.creator)
+            self.doc.append(webkom_escape(replystring), BR())
+
+    def print_cross_refs(self, ts):
+        pass
+        #ai_cr = kom.first_aux_items_with_tag(ts.aux_items, kom.AI_CROSS_REFERENCE)
 
     def response(self):
         # Toplink
