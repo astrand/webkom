@@ -13,629 +13,165 @@ msgstr ""
 "Content-Transfer-Encoding: 8-bit\n"
 "Generated-By: pygettext.py 1.1\n"
 
-msgid "Comment in article:"
-msgstr "Kommentti viestissä:"
-
-msgid "Server call not implemented"
-msgstr "Palvelinkutsua ei asennettu"
-
-msgid "Set read marks to "
-msgstr "Aseta niin että sinulla on vain "
-
-msgid "Group message to "
-msgstr "Joukkotiedote "
-
-msgid "Earlier articles"
-msgstr "Aiemmat viestit"
-
-msgid "WebKOM login"
-msgstr "WebKOM-sisäänkirjautuminen"
-
-msgid "Repeat password"
-msgstr "Uusi salasana uudestaan"
-
-msgid "There are no unread articles."
-msgstr "Ei enää lukemattomia viestejä."
-
-msgid "%s: %d -- text not found"
-msgstr "%s: %d -- tekstiä ei löydy"
-
-msgid "Conference %d (does not exist)"
-msgstr "Kokous %d (ei ole olemassa)"
-
-msgid "WebKOM server message"
-msgstr "Viesti WebKOM-palvelimelta"
-
-msgid "List all conferences you are a member of"
-msgstr "Kaikki kokoukset joissa olet jäsenenä"
-
-msgid " conferences."
-msgstr " kokousta."
-
-msgid "Eva Isaksson (Finnish translation)"
-msgstr "Eva Isaksson (suomennos)"
-
-msgid "Search result will be limited to "
-msgstr "Osumien lukumäärä enintään "
-
-msgid " and login again."
-msgstr " ja kirjaudu uudelleen sisään."
-
-msgid "Login"
-msgstr "Loggaa sisään"
-
-msgid "No conference selected."
-msgstr "Et ole valinnut kokousta."
-
-msgid "Do you really want to leave conference "
-msgstr "Haluatko varmasti erota kokouksesta "
-
-msgid "User name"
-msgstr "Käyttäjänimi"
-
-msgid "Logout my other sessions"
-msgstr "Loggaa ulos muut istuntoni"
-
-msgid "License"
-msgstr "Lisenssi"
-
-msgid "Name"
-msgstr "Nimi"
-
-msgid "Error: "
-msgstr "Virhe: "
-
-msgid "Articles"
-msgstr "Viestien otsikot"
-
-msgid "See conference "
-msgstr "Poistu kokouksesta "
-
-msgid "No working conference"
-msgstr "Ei kokousta"
-
-msgid "Web page"
-msgstr "Seuraava sivu"
-
-msgid "Search for new recipient:"
-msgstr "Etsi uusi vastaanottaja:"
-
-msgid "About WebKOM"
-msgstr "Tietoa WebKOMista"
-
-msgid "Who is logged in"
-msgstr "Näytä läsnäolijat"
-
-msgid "Next conference with unread"
-msgstr "Seuraava kokous jossa lukemattomia viestejä"
-
-msgid "Request failed"
-msgstr "Kysely epäonnistui"
-
-msgid "Choose working conference"
-msgstr "Valitse kokous"
-
-msgid "Choose user:"
-msgstr "Valitse nimi:"
-
-msgid "Personal message"
-msgstr "Henkilökohtainen viesti"
-
-msgid "The following people have in one way or another contributed to WebKOM:"
-msgstr ""
-"Seuraavat henkilöt ovat tavalla tai toisella osallistuneet WebKOMin "
-"tekemiseen:"
-
-msgid "Invalid password"
-msgstr "Väärä salasana"
-
-msgid "Unable to leave conference."
-msgstr "Kokouksesta eroaminen epäonnistui"
-
-msgid "You lack permissions to create new users"
-msgstr "Sinulla ei ole riittävästi oikeuksia luoda uutta käyttäjää"
-
-msgid " (last modified "
-msgstr " (viimeksi muokattu "
-
-msgid "Add marked"
-msgstr "Lisää ylle valittuihin"
-
-msgid "What can WebKOM do?"
-msgstr "Mitä WebKOM osaa?"
-
-msgid "Submit"
-msgstr "Lähetä"
-
-msgid "WebKOM is written in Python and is a persistent, threaded "
-msgstr "WebKOM on kirjoitettu Pythonilla ja se on pitkäikäinen, säikeistetty "
-
-msgid "Attach the error message below."
-msgstr "Liitä virheilmoitus alle."
-
-msgid "Version running: "
-msgstr "Käytössä oleva versio: "
-
-msgid "Carbon copy"
-msgstr "Muut vastaanottajat"
-
-msgid "From: "
-msgstr "Lähettäjä: "
-
-msgid "(Too many matches, search result truncated)"
-msgstr "(Liian monta osumaa, hakutulosta lyhennetty)"
-
-msgid "Change password"
-msgstr "Vaihda salasanasi"
-
-msgid "Next page"
-msgstr "Seuraava sivu"
+msgid "Number of conferences loaded:"
+msgstr "Lukemattomien lukumäärä"
 
 msgid "You do not have any other sessions with this server"
 msgstr "Sinulla ei ole tällä palvelimella muita istuntoja"
 
-msgid "If it doesn't, please report this problem to"
-msgstr "Ellei, ilmoita ongelmasta tälle henkilölle: "
+msgid "Login with selected user"
+msgstr "Kirjaudu sisään valitulla käyttäjänimellä"
 
-msgid "Working conference<br>Is doing"
-msgstr "Kokouksessa<br>Tekee"
+msgid "Unable to join conference."
+msgstr "Kokoukseen liittyminen ei onnistunut."
 
-msgid "Unread"
-msgstr "Lukematon"
+msgid "Author"
+msgstr "Kirjoittaja"
 
-msgid "WebKOM is free software, licensed under GPL."
+msgid "Not logged in"
+msgstr "Ei sisäänkirjautuneena"
+
+msgid "This server has a message of the day:"
 msgstr ""
-"WebKOM on vapaa ohjelma ja se on lisensoitu GNU General Public Licensen "
-"(GPL) alle."
 
-msgid "Blind carbon copy"
-msgstr "Tiedoksi vastaanottajille"
-
-msgid "A user with this name exists."
-msgstr "Nimi on jo käytössä"
-
-msgid "Password"
-msgstr "Salasana"
-
-msgid "Logged out remotely"
-msgstr "Istunto etäkatkaistiin"
-
-msgid "Number"
-msgstr "Numero"
-
-msgid "Read next unread"
-msgstr "Lue seuraava lukematon"
-
-msgid ""
-"If certain characters are hard to write with your keyword, you can copy and "
-"paste from the line below:"
-msgstr ""
-"jos seuraavia merkkejä on vaikea muuten kirjoittaa, leikkaa ja liimaa ne "
-"alla olevalta riviltä:"
-
-msgid "Search result:"
-msgstr "Hakutulokset:"
-
-msgid "Check if this bug is listed on"
-msgstr "Katso onko tämä bugi listattu "
-
-msgid "Article submitted"
-msgstr "Artikkeli jätetty"
-
-msgid "none"
-msgstr "ei"
-
-msgid "Remove?"
-msgstr "Poista?"
-
-msgid "Subject:"
-msgstr "Aihe:"
-
-msgid "All conferences loaded. "
-msgstr "kokousta."
-
-msgid "Remove marked recipients"
-msgstr "Poista valinnat edeltä"
-
-msgid "Subject"
-msgstr "Aihe"
-
-msgid "Added:"
-msgstr "Lisätty:"
-
-msgid "Repeat new password"
-msgstr "Uusi salasana uudestaan"
-
-msgid "Logins are not accepted right now. Try again later."
-msgstr "Uusia istuntoja ei nyt käynnistetä. Yritä myöhemmin uudestaan."
-
-msgid "Go to conference"
-msgstr "Valitse kokous"
-
-msgid "Showing all sessions active within the last 30 minutes."
-msgstr "Viimeisten 30 minuutin aikana aktiiviset istunnot"
-
-msgid "Unable to set number of unread."
-msgstr "Lukemattomien lukumäärää ei voitu asettaa."
-
-msgid "Leave conference"
-msgstr "Poistu kokouksesta"
-
-msgid "This text is FAQ for conference "
-msgstr "Kokouksen FAQ-teksti"
-
-msgid "Search"
-msgstr "Etsi"
-
-msgid " unread articles in this conference."
-msgstr " lukematonta tässä kokouksessa."
-
-msgid "The user %s does not exist."
-msgstr "Käyttäjää %s ei löydy."
-
-msgid "Person %d (does not exist)"
-msgstr "Henkilö %d (ei ole olemassa)"
-
-msgid "(Nothing matches %s)"
-msgstr "(Mikään ei vastaa merkkijonon %s alkua)"
-
-msgid "Added by:"
-msgstr "Lisääjä:"
-
-msgid "Date"
-msgstr "Päiväys"
-
-msgid "External carbon copy:"
-msgstr "Ulkoinen kopio:"
-
-msgid "Logout"
-msgstr "Loggaa ulos"
-
-msgid "Set as presentation"
-msgstr "Aseta esittelyksi"
-
-msgid "No server given."
-msgstr "Et ole valinnut palvelinta."
-
-msgid "Ok"
-msgstr "Ok"
-
-msgid "Write letter"
-msgstr "Kirjoita kirje"
-
-msgid "View in normal style"
-msgstr "Näytä tavallisessa muodossa"
-
-msgid "Received:"
-msgstr "Vastaanotettu:"
-
-msgid "The goal is a simple, easy-to-use client."
-msgstr "Tavoitteena on yksinkertainen, helppokäyttöinen asiakas."
-
-msgid "No recipients!"
-msgstr "Vastaanottajat puuttuvat!"
-
-msgid "Imported:"
-msgstr "Noudettu:"
-
-msgid "Killed the following session(s):"
-msgstr "Seuraavat istunnot katkaistiin:"
-
-msgid "View in code style"
-msgstr "Näytä koodatussa muodossa"
-
-msgid "Footnote in article:"
-msgstr "Viite viestissä:"
-
-msgid "Read next comment"
-msgstr "Lue seuraava kommentti"
-
-msgid "Join conference"
-msgstr "Liity kokoukseen"
-
-msgid "You have confirmed reading text "
-msgstr "Olet vahvistanut lukeneesi viestin "
-
-msgid "External recipient:"
-msgstr "Ulkoinen vastaanottaja:"
-
-msgid "%s: %s -- bad text number"
-msgstr "%s: %s -- huono tekstin numero"
-
-msgid "There is a "
-msgstr "On "
-
-msgid "Peter Åstrand (project starter, most of implementation)"
-msgstr "Peter Åstrand (projektin käynnistäjä ja pääkehittäjä)"
-
-msgid "Technology"
-msgstr "Toteutustapa"
-
-msgid "The author requests read confirmation. "
-msgstr "Kirjoittaja pyytää vahvistusta lukemisesta. "
-
-msgid "The HTML code is generated by "
-msgstr "HTML-koodin generoi "
-
-msgid "Set unread"
-msgstr "Lue vain"
-
-msgid "Unable to create article."
-msgstr "Viestiä ei voitu lisätä"
-
-msgid "Session"
-msgstr "Istunto"
-
-msgid ""
-"WebKOM made a server call that this server did not understand. WebKOM only "
-"works with LysKOM servers with version 2.0 or higher"
-msgstr ""
-"WebKOM teki palvelinpyynnön jota palvelin ei osannut tulkita. WebKOM "
-"toimii vain palvelinversion 2.0 tai uudempien kanssa"
-
-msgid "Sent by:"
-msgstr "Lähettäjä:"
-
-msgid "Footnote to:"
-msgstr "Viittaus viestiin:"
-
-msgid "The author has requested others not to comment this text."
-msgstr "Kirjoittajan toivomuksesta tätä tekstiä ei voi kommentoida."
-
-msgid "Your password has been changed"
-msgstr "Salasanan vaihto onnistui"
-
-msgid "The server rejected your password change request"
-msgstr "Palvelin ei hyväksynyt salasanan vaihtoa"
-
-msgid "The article does not exist."
-msgstr "Viestiä ei löydy."
-
-msgid "The server time was: "
-msgstr "Palvelimen aikaleima oli: "
-
-msgid "View presentation"
-msgstr "Näytä esittely"
-
-msgid "Comment to:"
-msgstr "Kommentti viestiin:"
-
-msgid "Later articles"
-msgstr "Myöhemmät viestit"
-
-msgid "Create new user"
-msgstr "Luo uusi käyttäjä"
-
-msgid "New password"
-msgstr "Uusi salasana"
-
-msgid "Login failed"
-msgstr "Sisäänkirjoittautuminen epäonnistui"
-
-msgid "The following translations are installed on this system:"
-msgstr "Seuraavat käännökset on asennettu tähän järjestelmään"
-
-msgid "Write article"
-msgstr "Kirjoita viesti"
-
-msgid "See person "
-msgstr "Näytä henkilö "
-
-msgid "Default command: "
-msgstr "Standardivalinta: "
-
-msgid "You are now a member of conference "
-msgstr "Olet nyt kokouksen jäsen "
-
-msgid "The number of unread articles is now "
-msgstr "Lukemattomia on nyt "
-
-msgid "homepage."
-msgstr "kotisivu."
-
-msgid "Join marked conference"
-msgstr "Liity ruksattuun kokoukseen"
-
-msgid "Translations"
-msgstr "Käännökset"
-
-msgid "An error occurred when fetching article information."
-msgstr "Viestin noudossa tapahtui virhe."
-
-msgid "Main Page"
-msgstr "Pääsivulle"
-
-msgid "Login progress"
-msgstr "Sisäänkirjautumisen kulku"
-
-msgid "Confirmed reading: "
-msgstr "Vahvistanut lukemisen: "
-
-msgid "Username"
-msgstr "Käyttäjänimi"
-
-msgid "View all conferences"
-msgstr "Näytä kaikki kokoukset"
-
-msgid "A total of %s active users."
-msgstr "Yhteensä %s aktiivista käyttäjää."
-
-msgid "Type"
-msgstr "Tyyppi"
-
-msgid "Number of unread"
-msgstr "Lukemattomien lukumäärä"
-
-msgid "Conferences (with unread)"
-msgstr "Kokouksia (joissa lukemattomia)"
-
-msgid " by "
-msgstr " kirjoittaja "
-
-msgid "User number"
-msgstr "Käyttäjänimi"
-
-msgid "Cannot connect to server."
-msgstr "Ei voi kirjautua serverille."
-
-msgid "Password variable is missing."
-msgstr "Et antanut salasanaa."
-
-msgid "Yes, leave conference"
-msgstr "Kyllä, eroa kokouksesta"
-
-msgid "Date:"
-msgstr "Päiväys:"
-
-msgid "Marks:"
-msgstr "Merkkaukset:"
-
-msgid "Conference name"
-msgstr "Kokouksen nimi"
-
-msgid "Unable to change current conference."
-msgstr "Aktiivisen kokouksen muuttaminen epäonnistui."
-
-msgid "Author:"
-msgstr "Kirjoittaja:"
-
-msgid "An error occurred when fetching article."
-msgstr "Artikkelin haku epäonnistui."
-
-msgid "(Too many hits, the table is truncated)"
-msgstr "(Liian monta osumaa, listausta lyhennetty)"
-
-msgid "Server"
-msgstr "Palvelin"
-
-msgid "the list with known bugs"
-msgstr "luettelo tunnetuista bugeista"
-
-msgid "Someone (probably you) ended this session remotely"
-msgstr "Joku (sinä itse?) etäloggasi ulos tästä istunnosta"
-
-msgid "Sent:"
-msgstr "Lähetetty:"
-
-msgid "You are no longer a member of conference "
-msgstr "Et ole enää mukana kokouksessa "
-
-msgid "Write comment"
-msgstr "Kirjoita kommentti"
-
-msgid "WebKOM is a WWW-interface for "
-msgstr "WebKOM on WWW-käyttöliittymä ohjelmalle "
-
-msgid "Login again"
-msgstr "Loggaa sisään uudelleen"
-
-msgid "Overview"
-msgstr "Yhteenveto"
-
-msgid " application."
-msgstr " sovellus."
-
-msgid "The server requires login before new users can be created"
-msgstr "Palvelimelle on kirjauduttava ennen uuden käyttäjän luomista"
-
-msgid "list with known bugs"
-msgstr "lista tunnetuista bugeista"
-
-msgid "User<br>From"
-msgstr "Käyttäjä<br>Mistä"
-
-msgid "Invalid cross reference:"
-msgstr "Epäkelpo ristiviittaus:"
-
-msgid "View FAQ"
-msgstr "Näytä FAQ"
-
-msgid "Write presentation"
-msgstr "Kirjoita esittely"
-
-msgid "The two new passwords didn't match."
-msgstr "Salasana ei täsmää."
-
-msgid "Please wait while your conference list is loading..."
-msgstr "Odota kokouslistauksen latautumista..."
-
-msgid "Search for conference:"
-msgstr "Etsi kokous:"
-
-msgid "Confirm reading this text?"
-msgstr "Vahvistatko lukeneesi tämän tekstin?"
-
-msgid "List conferences with unread"
-msgstr "Kokoukset joissa uusia viestejä"
-
-msgid "The username is ambiguous"
-msgstr "Antamasi nimi ei ollut yksiselitteinen"
-
-msgid "No username given."
-msgstr "Et ole antanut käyttäjänimeä."
-
-msgid "Alarm message"
-msgstr "Kiireellinen tiedote"
-
-msgid "Conferences (you are a member of)"
-msgstr "Kokoukset (joissa olet jäsenenä)"
-
-msgid "You can find more information about WebKOM on the"
-msgstr "Lisätietoa WebKOMista"
-
-msgid "Wrong password."
-msgstr "Väärä salasana."
-
-msgid "Go to main page"
-msgstr "sisäänkirjoittautumissivu"
-
-msgid "Created with %s."
-msgstr "Luo uusi käyttäjä"
-
-msgid "Previous page"
-msgstr "Edellinen sivu"
-
-msgid "Unread: "
-msgstr "Lukematta: "
-
-msgid "Old password"
-msgstr "Vanha salasana"
-
-msgid "the login page"
-msgstr "sisäänkirjoittautumissivu"
-
-msgid "(Not readable)"
-msgstr "(Ei luettavissa)"
-
-msgid "Bugs"
-msgstr "Bugit"
-
-msgid "No unread"
-msgstr "Ei lukemattomia"
-
-msgid "User created."
-msgstr "Käyttäjä on luotu."
-
-msgid "See text "
-msgstr "Lue teksti "
-
-msgid "Recipient"
-msgstr "Vastaanottaja"
+msgid "WebKOM server message"
+msgstr "Viesti WebKOM-palvelimelta"
 
 msgid "Article number:"
 msgstr "Artikkelin numero:"
 
-msgid "Time: "
-msgstr "Aika: "
+msgid "View FAQ"
+msgstr "Näytä FAQ"
+
+msgid "User created."
+msgstr "Käyttäjä on luotu."
+
+msgid "No recipients!"
+msgstr "Vastaanottajat puuttuvat!"
+
+msgid "No unread"
+msgstr "Ei lukemattomia"
+
+msgid "The two new passwords didn't match."
+msgstr "Salasana ei täsmää."
+
+msgid "New password"
+msgstr "Uusi salasana"
+
+msgid "(Not readable)"
+msgstr "(Ei luettavissa)"
+
+msgid "the login page"
+msgstr "sisäänkirjoittautumissivu"
+
+msgid "Old password"
+msgstr "Vanha salasana"
+
+msgid "Unread: "
+msgstr "Lukematta: "
+
+msgid "Previous page"
+msgstr "Edellinen sivu"
+
+msgid "Created with %s."
+msgstr "Luo uusi käyttäjä"
+
+msgid "%s: %s -- bad text number"
+msgstr "%s: %s -- huono tekstin numero"
+
+msgid "Go to main page"
+msgstr "sisäänkirjoittautumissivu"
+
+msgid "Wrong password."
+msgstr "Väärä salasana."
+
+msgid "The number of unread articles is now "
+msgstr "Lukemattomia on nyt "
+
+msgid "You can find more information about WebKOM on the"
+msgstr "Lisätietoa WebKOMista"
 
 msgid "Go to "
 msgstr "Mene "
 
-msgid "Translations are provided by the GNU gettext library."
-msgstr "Käännökset on toteutettu GNU gettext -kirjastona."
+msgid "Alarm message"
+msgstr "Kiireellinen tiedote"
 
-msgid "Not logged in"
-msgstr "Ei sisäänkirjautuneena"
+msgid "No username given."
+msgstr "Et ole antanut käyttäjänimeä."
+
+msgid "List conferences with unread"
+msgstr "Kokoukset joissa uusia viestejä"
+
+msgid "Go back to the article you footnoted"
+msgstr ""
+
+msgid "User<br>From"
+msgstr "Käyttäjä<br>Mistä"
+
+msgid "Confirm reading this text?"
+msgstr "Vahvistatko lukeneesi tämän tekstin?"
+
+msgid "Do you really want to leave conference "
+msgstr "Haluatko varmasti erota kokouksesta "
+
+msgid "An error occurred when fetching article information."
+msgstr "Viestin noudossa tapahtui virhe."
+
+msgid "Please wait while your conference list is loading..."
+msgstr "Odota kokouslistauksen latautumista..."
+
+msgid "Message Of The Day"
+msgstr ""
+
+msgid "Footnote in article:"
+msgstr "Viite viestissä:"
+
+msgid "list with known bugs"
+msgstr "lista tunnetuista bugeista"
+
+msgid "Password"
+msgstr "Salasana"
+
+msgid "The server requires login before new users can be created"
+msgstr "Palvelimelle on kirjauduttava ennen uuden käyttäjän luomista"
+
+msgid "Web page"
+msgstr "Seuraava sivu"
+
+msgid "Overview"
+msgstr "Yhteenveto"
+
+#, fuzzy
+msgid "Write personal comment"
+msgstr "Kirjoita kommentti"
+
+msgid "Time: "
+msgstr "Aika: "
+
+msgid "You are no longer a member of conference "
+msgstr "Et ole enää mukana kokouksessa "
+
+msgid "Sent:"
+msgstr "Lähetetty:"
+
+msgid "Someone (probably you) ended this session remotely"
+msgstr "Joku (sinä itse?) etäloggasi ulos tästä istunnosta"
+
+msgid "Server call not implemented"
+msgstr "Palvelinkutsua ei asennettu"
+
+msgid "Leave conference"
+msgstr "Poistu kokouksesta"
+
+msgid "Add marked"
+msgstr "Lisää ylle valittuihin"
+
+msgid "Author:"
+msgstr "Kirjoittaja:"
+
+msgid "Unable to change current conference."
+msgstr "Aktiivisen kokouksen muuttaminen epäonnistui."
 
 msgid ""
 "Type in the beginning of the conference name. You can also search via "
@@ -644,21 +180,565 @@ msgstr ""
 "Syötä kokouksen nimen alkuosa. Voit myös tehdä haun kokouksen \n"
 "numerolla kirjoittamalla # ja kokouksen numeron."
 
-msgid "Author"
-msgstr "Kirjoittaja"
+msgid "Conference name"
+msgstr "Kokouksen nimi"
+
+#, fuzzy
+msgid " has no presentation"
+msgstr "Aseta esittelyksi"
+
+msgid "Read next unread"
+msgstr "Lue seuraava lukematon"
+
+msgid "Marks:"
+msgstr "Merkkaukset:"
+
+msgid "Date:"
+msgstr "Päiväys:"
+
+msgid "Yes, leave conference"
+msgstr "Kyllä, eroa kokouksesta"
+
+msgid "Password variable is missing."
+msgstr "Et antanut salasanaa."
+
+#, fuzzy
+msgid "Mark"
+msgstr "Merkkaukset:"
+
+msgid " conferences."
+msgstr " kokousta."
+
+msgid "WebKOM is a WWW-interface for "
+msgstr "WebKOM on WWW-käyttöliittymä ohjelmalle "
+
+msgid "User number"
+msgstr "Käyttäjänimi"
+
+msgid " by "
+msgstr " kirjoittaja "
+
+msgid "Conferences (with unread)"
+msgstr "Kokouksia (joissa lukemattomia)"
+
+msgid "Number of unread"
+msgstr "Lukemattomien lukumäärä"
+
+msgid "Type"
+msgstr "Tyyppi"
+
+msgid "A total of %s active users."
+msgstr "Yhteensä %s aktiivista käyttäjää."
+
+msgid "Username"
+msgstr "Käyttäjänimi"
+
+msgid "Confirmed reading: "
+msgstr "Vahvistanut lukemisen: "
+
+msgid "Main Page"
+msgstr "Pääsivulle"
+
+msgid "Blind carbon copy"
+msgstr "Tiedoksi vastaanottajille"
+
+msgid "Continue Logging in"
+msgstr ""
+
+msgid "Translations"
+msgstr "Käännökset"
+
+#, fuzzy
+msgid "View marked articles"
+msgstr "Aiemmat viestit"
+
+#, fuzzy
+msgid "the list with known bugs."
+msgstr "luettelo tunnetuista bugeista"
+
+msgid "Unable to set number of unread."
+msgstr "Lukemattomien lukumäärää ei voitu asettaa."
+
+msgid "You are now a member of conference "
+msgstr "Olet nyt kokouksen jäsen "
+
+msgid "Default command: "
+msgstr "Standardivalinta: "
+
+msgid ", not marked by you. "
+msgstr ""
+
+msgid "A user with this name exists."
+msgstr "Nimi on jo käytössä"
+
+msgid "Write article"
+msgstr "Kirjoita viesti"
+
+msgid "The following translations are installed on this system:"
+msgstr "Seuraavat käännökset on asennettu tähän järjestelmään"
+
+msgid "Server"
+msgstr "Palvelin"
+
+msgid "Conferences (you are a member of)"
+msgstr "Kokoukset (joissa olet jäsenenä)"
+
+msgid "Login again"
+msgstr "Loggaa sisään uudelleen"
+
+msgid "See text "
+msgstr "Lue teksti "
+
+msgid "Create new user"
+msgstr "Luo uusi käyttäjä"
+
+msgid "Invalid password"
+msgstr "Väärä salasana"
+
+msgid "Killed the following session(s):"
+msgstr "Seuraavat istunnot katkaistiin:"
+
+msgid "Later articles"
+msgstr "Myöhemmät viestit"
+
+msgid "Comment to:"
+msgstr "Kommentti viestiin:"
+
+msgid ", %(days)d days, %(hours)d hours and %(minutes)d minutes ago"
+msgstr ""
+
+msgid "(like John Doe, ACM)"
+msgstr ""
+
+msgid "View presentation"
+msgstr "Näytä esittely"
+
+msgid "The server time was: "
+msgstr "Palvelimen aikaleima oli: "
+
+msgid "The article does not exist."
+msgstr "Viestiä ei löydy."
+
+msgid "Repeat new password"
+msgstr "Uusi salasana uudestaan"
+
+msgid "The server rejected your password change request"
+msgstr "Palvelin ei hyväksynyt salasanan vaihtoa"
+
+msgid "Your password has been changed"
+msgstr "Salasanan vaihto onnistui"
+
+msgid "Cannot connect to server."
+msgstr "Ei voi kirjautua serverille."
+
+msgid "Write comment"
+msgstr "Kirjoita kommentti"
+
+msgid "The author has requested others not to comment this text."
+msgstr "Kirjoittajan toivomuksesta tätä tekstiä ei voi kommentoida."
+
+msgid "Footnote to:"
+msgstr "Viittaus viestiin:"
+
+msgid "Sent by:"
+msgstr "Lähettäjä:"
+
+msgid "Session"
+msgstr "Istunto"
+
+msgid "Set unread"
+msgstr "Lue vain"
+
+msgid "The HTML code is generated by "
+msgstr "HTML-koodin generoi "
+
+msgid "The author requests read confirmation. "
+msgstr "Kirjoittaja pyytää vahvistusta lukemisesta. "
+
+msgid "Subject"
+msgstr "Aihe"
+
+msgid "Technology"
+msgstr "Toteutustapa"
+
+msgid "Peter Åstrand (project starter, most of implementation)"
+msgstr "Peter Åstrand (projektin käynnistäjä ja pääkehittäjä)"
+
+msgid "There is a "
+msgstr "On "
+
+msgid "An error occurred when fetching article."
+msgstr "Artikkelin haku epäonnistui."
+
+msgid "External recipient:"
+msgstr "Ulkoinen vastaanottaja:"
+
+msgid "Join conference"
+msgstr "Liity kokoukseen"
+
+msgid "Read next comment"
+msgstr "Lue seuraava kommentti"
+
+msgid "No server given."
+msgstr "Et ole valinnut palvelinta."
+
+msgid "Recipient"
+msgstr "Vastaanottaja"
+
+msgid "Marktype"
+msgstr ""
+
+msgid "View in code style"
+msgstr "Näytä koodatussa muodossa"
+
+msgid "Imported:"
+msgstr "Noudettu:"
+
+#, fuzzy
+msgid ""
+"Type in the beginning of a conference or person. You can also search via "
+"conference numbers by giving # followed by the conference or person number."
+msgstr ""
+"Syötä kokouksen nimen alkuosa. Voit myös tehdä haun kokouksen \n"
+"numerolla kirjoittamalla # ja kokouksen numeron."
+
+#, fuzzy
+msgid "Invalid input"
+msgstr "Väärä salasana"
+
+msgid " and login again."
+msgstr " ja kirjaudu uudelleen sisään."
+
+msgid "Login progress"
+msgstr "Sisäänkirjautumisen kulku"
+
+msgid "The goal is a simple, easy-to-use client."
+msgstr "Tavoitteena on yksinkertainen, helppokäyttöinen asiakas."
+
+msgid "Received:"
+msgstr "Vastaanotettu:"
+
+msgid "View in normal style"
+msgstr "Näytä tavallisessa muodossa"
+
+msgid "Write letter"
+msgstr "Kirjoita kirje"
+
+msgid " application."
+msgstr " sovellus."
+
+msgid "Join marked conference"
+msgstr "Liity ruksattuun kokoukseen"
+
+msgid "Set as presentation"
+msgstr "Aseta esittelyksi"
+
+msgid "Logout"
+msgstr "Loggaa ulos"
+
+msgid "You must give a number as argument."
+msgstr ""
+
+#, fuzzy
+msgid "If it isn't, please report this problem to"
+msgstr "Ellei, ilmoita ongelmasta tälle henkilölle: "
+
+msgid "Date"
+msgstr "Päiväys"
+
+msgid "Added by:"
+msgstr "Lisääjä:"
+
+msgid "Version running: "
+msgstr "Käytössä oleva versio: "
+
+msgid "Person %d (does not exist)"
+msgstr "Henkilö %d (ei ole olemassa)"
+
+msgid "The user %s does not exist."
+msgstr "Käyttäjää %s ei löydy."
+
+msgid " unread articles in this conference."
+msgstr " lukematonta tässä kokouksessa."
+
+msgid "Search"
+msgstr "Etsi"
+
+msgid "This text is FAQ for conference "
+msgstr "Kokouksen FAQ-teksti"
+
+msgid "Showing all sessions active within the last 30 minutes."
+msgstr "Viimeisten 30 minuutin aikana aktiiviset istunnot"
+
+msgid "Go to conference"
+msgstr "Valitse kokous"
 
 msgid "Authors"
 msgstr "Tekijät"
 
-msgid "Login with selected user"
-msgstr "Kirjaudu sisään valitulla käyttäjänimellä"
+msgid "Logins are not accepted right now. Try again later."
+msgstr "Uusia istuntoja ei nyt käynnistetä. Yritä myöhemmin uudestaan."
+
+msgid "Bugs"
+msgstr "Bugit"
+
+msgid "Added:"
+msgstr "Lisätty:"
+
+msgid ""
+"WebKOM made a server call that this server did not understand. WebKOM only "
+"works with LysKOM servers with version 2.0 or higher"
+msgstr ""
+"WebKOM teki palvelinpyynnön jota palvelin ei osannut tulkita. WebKOM toimii "
+"vain palvelinversion 2.0 tai uudempien kanssa"
+
+msgid "Invalid cross reference:"
+msgstr "Epäkelpo ristiviittaus:"
+
+msgid "Remove marked recipients"
+msgstr "Poista valinnat edeltä"
+
+msgid ", marked by you. "
+msgstr ""
+
+msgid "View all conferences"
+msgstr "Näytä kaikki kokoukset"
+
+msgid "Subject:"
+msgstr "Aihe:"
+
+msgid "Remove?"
+msgstr "Poista?"
+
+msgid "none"
+msgstr "ei"
+
+#, fuzzy
+msgid "Search for conference or person:"
+msgstr "Etsi kokous:"
+
+msgid "Try again!"
+msgstr ""
+
+msgid "Check if this bug is listed on"
+msgstr "Katso onko tämä bugi listattu "
+
+msgid "See person "
+msgstr "Näytä henkilö "
+
+msgid ""
+"If certain characters are hard to write with your keyword, you can copy and "
+"paste from the line below:"
+msgstr ""
+"jos seuraavia merkkejä on vaikea muuten kirjoittaa, leikkaa ja liimaa ne "
+"alla olevalta riviltä:"
+
+msgid "The following people have in one way or another contributed to WebKOM:"
+msgstr ""
+"Seuraavat henkilöt ovat tavalla tai toisella osallistuneet WebKOMin "
+"tekemiseen:"
+
+msgid "Number"
+msgstr "Numero"
+
+msgid "Logged out remotely"
+msgstr "Istunto etäkatkaistiin"
+
+msgid "(Nothing matches %s)"
+msgstr "(Mikään ei vastaa merkkijonon %s alkua)"
+
+msgid "The username is ambiguous"
+msgstr "Antamasi nimi ei ollut yksiselitteinen"
+
+#, fuzzy
+msgid "This server instance started "
+msgstr "Palvelimen aikaleima oli: "
+
+msgid "Go back to the article you commented"
+msgstr ""
+
+msgid "WebKOM is free software, licensed under GPL."
+msgstr ""
+"WebKOM on vapaa ohjelma ja se on lisensoitu GNU General Public Licensen "
+"(GPL) alle."
+
+msgid "Working conference<br>Is doing"
+msgstr "Kokouksessa<br>Tekee"
+
+msgid "Search result:"
+msgstr "Hakutulokset:"
+
+msgid "Eva Isaksson (Finnish translation)"
+msgstr "Eva Isaksson (suomennos)"
+
+msgid "Next page"
+msgstr "Seuraava sivu"
+
+msgid "Change password"
+msgstr "Vaihda salasanasi"
+
+msgid "(Too many matches, search result truncated)"
+msgstr "(Liian monta osumaa, hakutulosta lyhennetty)"
+
+msgid "From: "
+msgstr "Lähettäjä: "
+
+msgid "Carbon copy"
+msgstr "Muut vastaanottajat"
+
+msgid "Login failed"
+msgstr "Sisäänkirjoittautuminen epäonnistui"
+
+msgid "Attach the error message below."
+msgstr "Liitä virheilmoitus alle."
+
+msgid "Submit"
+msgstr "Lähetä"
+
+msgid "(Too many hits, the table is truncated)"
+msgstr "(Liian monta osumaa, listausta lyhennetty)"
+
+msgid "What can WebKOM do?"
+msgstr "Mitä WebKOM osaa?"
+
+msgid "There are no unread articles."
+msgstr "Ei enää lukemattomia viestejä."
+
+msgid " (last modified "
+msgstr " (viimeksi muokattu "
+
+msgid "Ok"
+msgstr "Ok"
+
+msgid " in the Bugzilla at Lysator"
+msgstr ""
+
+msgid "You lack permissions to create new users"
+msgstr "Sinulla ei ole riittävästi oikeuksia luoda uutta käyttäjää"
+
+msgid "Unable to create article."
+msgstr "Viestiä ei voitu lisätä"
+
+msgid "Translations are provided by the GNU gettext library."
+msgstr "Käännökset on toteutettu GNU gettext -kirjastona."
+
+msgid "Unable to leave conference."
+msgstr "Kokouksesta eroaminen epäonnistui"
+
+msgid "WebKOM is written in Python and is a persistent, threaded "
+msgstr "WebKOM on kirjoitettu Pythonilla ja se on pitkäikäinen, säikeistetty "
+
+msgid "You have confirmed reading text "
+msgstr "Olet vahvistanut lukeneesi viestin "
+
+msgid "Personal message"
+msgstr "Henkilökohtainen viesti"
+
+msgid "Choose user:"
+msgstr "Valitse nimi:"
 
 msgid "The author requests private replies only."
 msgstr "Tekijä pyytää vain henkilökohtaisia vastauksia."
 
-msgid "Number of conferences loaded:"
-msgstr "Lukemattomien lukumäärä"
+msgid "Choose working conference"
+msgstr "Valitse kokous"
 
-msgid "Unable to join conference."
-msgstr "Kokoukseen liittyminen ei onnistunut."
+msgid "Request failed"
+msgstr "Kysely epäonnistui"
 
+msgid "Next conference with unread"
+msgstr "Seuraava kokous jossa lukemattomia viestejä"
+
+msgid "Search for conference:"
+msgstr "Etsi kokous:"
+
+msgid "Who is logged in"
+msgstr "Näytä läsnäolijat"
+
+msgid "About WebKOM"
+msgstr "Tietoa WebKOMista"
+
+msgid "Search for new recipient:"
+msgstr "Etsi uusi vastaanottaja:"
+
+msgid "homepage."
+msgstr "kotisivu."
+
+msgid "No working conference"
+msgstr "Ei kokousta"
+
+msgid "See conference "
+msgstr "Poistu kokouksesta "
+
+msgid "Articles"
+msgstr "Viestien otsikot"
+
+msgid "Error: "
+msgstr "Virhe: "
+
+msgid "Name"
+msgstr "Nimi"
+
+msgid "License"
+msgstr "Lisenssi"
+
+msgid "Logout my other sessions"
+msgstr "Loggaa ulos muut istuntoni"
+
+msgid "User name"
+msgstr "Käyttäjänimi"
+
+#, fuzzy
+msgid "Article submitted."
+msgstr "Artikkeli jätetty"
+
+msgid "Write presentation"
+msgstr "Kirjoita esittely"
+
+msgid "No conference selected."
+msgstr "Et ole valinnut kokousta."
+
+msgid "Login"
+msgstr "Loggaa sisään"
+
+msgid "Unread"
+msgstr "Lukematon"
+
+msgid "Search result will be limited to "
+msgstr "Osumien lukumäärä enintään "
+
+msgid "List all conferences you are a member of"
+msgstr "Kaikki kokoukset joissa olet jäsenenä"
+
+msgid "Unmark"
+msgstr ""
+
+msgid "Conference %d (does not exist)"
+msgstr "Kokous %d (ei ole olemassa)"
+
+msgid "%s: %d -- text not found"
+msgstr "%s: %d -- tekstiä ei löydy"
+
+msgid "External carbon copy:"
+msgstr "Ulkoinen kopio:"
+
+msgid "Repeat password"
+msgstr "Uusi salasana uudestaan"
+
+msgid "WebKOM login"
+msgstr "WebKOM-sisäänkirjautuminen"
+
+msgid "Earlier articles"
+msgstr "Aiemmat viestit"
+
+msgid "Group message to "
+msgstr "Joukkotiedote "
+
+msgid "Set read marks to "
+msgstr "Aseta niin että sinulla on vain "
+
+msgid "Comment in article:"
+msgstr "Kommentti viestissä:"
+
+msgid "All conferences loaded. "
+msgstr "kokousta."
