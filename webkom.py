@@ -983,9 +983,10 @@ class ViewTextActions(Action):
         self.doc.append(BR())
         self.doc.append(Table(body=header, cell_padding=2, column1_align="right", width="80%"))
         # Body
-        # FIXME: Reformatting according to protocol A. 
-        body = HTMLutil.latin1_escape(escape(body))
+        # FIXME: Reformatting according to protocol A.
         body = linkify_text(body)
+        body = HTMLutil.latin1_escape(escape(body))
+        body = unquote_specials(body)
         
         self.doc.append(string.replace(body, "\n","<br>\n"))
 

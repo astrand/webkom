@@ -60,7 +60,7 @@ def get_num_unread_texts(conn, pers_num, conf_num):
     return num_unread
 
 
-def get_next_unread(conn, pers_num, conf_num, current_text):
+def get_next_unread(conn, pers_num, conf_num):
         "Get next unread text"
         # FIXME: Make more server-friendly
         ms = kom.ReqQueryReadTexts(conn, pers_num, conf_num).response()
@@ -211,23 +211,32 @@ def external_href(url, text):
                                       height=13, width=17, alt="[extern länk]")))
 
 def linkify_text(text):
-    # FIXME: Linkify everything that looks like an URL. 
+    # FIXME: Linkify everything that looks like an URL or mail adress. 
+    # NOTE:
+    # < = \001
+    # > = \002
+    # This is because otherwise these are quoted by HTMLgen.escape. 
+    
     # http URLs
     pat = re.compile("(?P<fullurl>(http://|(?=www\\.))(?P<url>\\S*\\w))")
-    repl = '<a href="http://\\g<url>">\\g<fullurl></a>'
+    repl = '\001a href="http://\\g<url>"\002\\g<fullurl>\001/a\002'
     text = pat.sub(repl, text)
 
     # ftp URLs
     pat = re.compile("(?P<fullurl>(ftp://|(?=ftp\\.))(?P<url>\\S*\\w))")
-    repl = '<a href="ftp://\\g<url>">\\g<fullurl></a>'
+    repl = '\001a href="ftp://\\g<url>"\002\\g<fullurl>\001/a\002'
     text = pat.sub(repl, text)
 
     # file URLs
     pat = re.compile("(?P<fullurl>(file://)(?P<url>\\S*\\w))")
-    repl = '<a href="file://\\g<url>">\\g<fullurl></a>'
+    repl = '\001a href="file://\\g<url>"\002\\g<fullurl>\001/a\002'
     text = pat.sub(repl, text)
     return text
 
+def unquote_specials(text):
+    text = string.replace(text, "\001","<")
+    text = string.replace(text, "\002",">")
+    return text
 
 def reformat_text(text):
     linelist = string.split(text, "\n")
