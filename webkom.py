@@ -215,7 +215,7 @@ class Response:
             server_name = "http://" + server_name
         script_name = self.env["SCRIPT_NAME"]
         self.http_header = "Location: " + server_name + script_name + url_text + "\n\n"
-        
+
     def add_shortcut(self, key, url):
         self.shortcuts.append((key, url))
 
@@ -333,6 +333,11 @@ class Action:
 
     def append_std_top(self, leftobj):
         self.doc.append(self.gen_std_top(leftobj))
+        
+    def submit_redir(self, submit_result):
+        self.sess.submit_result = submit_result
+        # Redirect to result page. Note: Since this is not HTML, do not escape "&"
+        self.resp.set_redir("?sessionkey=" + self.resp.key + "&action=submit_result")
 
 
 class ViewPendingMessages(Action):
@@ -1459,11 +1464,6 @@ class ChangePwActions(Action):
 
 class ChangePwSubmit(Action):
     "Change LysKOM password"
-    def redir(self, submit_result):
-        self.sess.submit_result = submit_result
-        # Redirect to result page. Note: Since this is not HTML, do not escape "&"
-        self.resp.set_redir("?sessionkey=" + self.resp.key + "&action=submit_result")
-
     def response(self):
         assert(self.form.has_key("oldpw") and self.form.has_key("newpw1")
                and self.form.has_key("newpw2"))
@@ -1480,21 +1480,21 @@ class ChangePwSubmit(Action):
         
         if newpw1 != newpw2:
             result_cont.append(self.gen_error(self._("The two new passwords didn't match.")))
-            self.redir(result_cont)
+            self.submit_redir(result_cont)
             return
 
         try:
             kom.ReqSetPasswd(self.sess.conn, self.sess.conn.get_user(), oldpw, newpw1).response()
         except:
             result_cont.append(self.gen_error(self._("The server rejected your password change request")))
-            self.redir(result_cont)
+            self.submit_redir(result_cont)
             return
 
 
         # No problems, it seems. 
         result_cont.append(Heading(3, self._("Ok")))
         result_cont.append(self._("Your password has been changed"))
-        self.redir(result_cont)
+        self.submit_redir(result_cont)
         return
                            
 
@@ -1795,6 +1795,9 @@ class WriteArticleActions(Action):
 class WriteArticleSubmit(Action):
     "Submit the article"
     def response(self):
+        # We add to a container instead of document, since we are going to redirect. 
+        result_cont = Container()
+        
         # Fetch conference name
         conf_num = self.sess.current_conf
         conf_name = self.get_conf_name(conf_num)
@@ -1803,11 +1806,10 @@ class WriteArticleSubmit(Action):
         thisconf = self.action_href("goconf&amp;conf=" + str(conf_num), conf_name)
         writeart = self.action_href("writearticle", self._("Write article"))
         
-        cont = Container(toplink, " : ", self.current_conflink(), " : ", thisconf, " : ", writeart)
-        self.append_std_top(cont)
-
-        self.doc.append(Heading(2, self._("Write article")))
-        self.doc.append(self._("Article submitted"), BR())
+        top_cont = Container(toplink, " : ", self.current_conflink(), " : ", thisconf, " : ", writeart)
+        result_cont.append(self.gen_std_top(top_cont))
+        result_cont.append(Heading(2, self._("Write article")))
+        
 
         # Get recipients
         # rcpt_dict is an dictionary index with the rcpt_number and rcpt_type as value
@@ -1854,12 +1856,18 @@ class WriteArticleSubmit(Action):
                         mic = kom.MICommentTo(type, text_num)
                         misc_info.comment_to_list.append(mic)
                     except:
-                        self.print_error(self._("%s: %d -- text not found") % (typename, text_num))
+                        result_cont.append(self.gen_error(self._("%s: %d -- text not found") % (typename, text_num)))
+                        self.submit_redir(result_cont)
+                        return
                 except:
-                    self.print_error(self._("%s: %s -- bad text number") % (typename, text_num_str))
+                    result_cont.append(self.gen_error(self._("%s: %s -- bad text number") % (typename, text_num_str)))
+                    self.submit_redir(result_cont)
+                    return
 
         if not len(misc_info.recipient_list) > 0:
-            self.print_error(self._("No recipients!"))
+            result_cont.append(self.gen_error(self._("No recipients!")))
+            self.submit_redir(result_cont)
+            return
 
         subject = self.form.getvalue("articlesubject", "")
         text = self.form.getvalue("text_area", "")
@@ -1887,16 +1895,21 @@ class WriteArticleSubmit(Action):
                     update_membership(self.sess.conn, r.recpt, r.loc_no)
                 
         except kom.Error:
-            self.print_error(self._("Unable to create article."))
+            result_cont.append(self.gen_error(self._("Unable to create article.")))
+            self.submit_redir(result_cont)
+            return
 
-        return text_num
+        result_cont.append(self._("Article submitted"), BR())
+        self.submit_redir(result_cont)
+
+        return text_num 
 
 class WritePresentationSubmit(Action):
     "Submit a presentation"
     def response(self):
         text_num = WriteArticleSubmit(self.resp, self._).response()
         presentation_for = int(self.form.getvalue("presentationfor"))
-        if 0 != text_num:
+        if text_num:
             kom.ReqSetPresentation(self.sess.conn,
                                    presentation_for,
                                    text_num).response()
@@ -2229,7 +2242,6 @@ class SubmitResultActions(Action):
     "to this page, to prevent re-submission via browser reload etc."
     def response(self):
         self.doc.append(self.sess.submit_result)
-        self.sess.submit_result = None
         return
     
 
