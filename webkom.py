@@ -894,6 +894,12 @@ class ViewTextActions(Action):
             if self.sess.comment_tree:
                 if global_num == self.sess.comment_tree[0]:
                     del self.sess.comment_tree[0]
+
+        # Add links for reading next local text
+        next_text = get_next_unread(self.sess.conn, self.sess.pers_num,
+                                    self.sess.current_conf)
+        self.doc.append(self.action_href("viewtext&textnum=" + str(next_text),
+                                         "Läsa nästa olästa", next_text), NBSP)
         # Add new comments
         self.sess.comment_tree = new_comments + self.sess.comment_tree
 
@@ -902,18 +908,12 @@ class ViewTextActions(Action):
         # link.
         if self.sess.comment_tree:
             next_text = self.sess.comment_tree[0]
-            self.doc.append(self.action_href("viewtext&textnum=" + str(next_text) + "&reading_comment=1",
-                                             "Läsa nästa kommentar", next_text), NBSP)
         else:
-            # Add links for reading next local text
-            if local_num:
-                next_text = get_next_unread(self.sess.conn, self.sess.pers_num,
-                                            self.sess.current_conf, local_num)
-            else:
-                next_text = 0
-            self.doc.append(self.action_href("viewtext&textnum=" + str(next_text),
-                                             "Läsa nästa inlägg", next_text), NBSP)
+            next_text = None
+        self.doc.append(self.action_href("viewtext&textnum=" + str(next_text) + "&reading_comment=1",
+                                         "Läsa nästa kommentar", next_text), NBSP)
 
+            
         # Link for next conference with unread
         self.doc.append(self.action_href("goconf_with_unread",
                                          "Nästa möte med olästa"), NBSP)
