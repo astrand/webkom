@@ -1,0 +1,29 @@
+--- /usr/home/peter/devel/HTMLgen/HTMLgen.py	Wed Apr 21 04:56:50 1999
++++ /usr/lib/HTMLgen/HTMLgen.py	Thu Dec 20 22:02:46 2001
+@@ -56,7 +56,7 @@
+ TupleType  = type((1,2))
+ InstanceType = type(UserList.UserList())
+ CONTYPE = 'Content-Type: text/html\n\n'
+-DOCTYPE = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">\n<HTML>\n'
++DOCTYPE = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">'
+ PRINTECHO = 1
+ 
+ 
+@@ -287,7 +287,7 @@
+             s.append('\n <LINK rel=stylesheet href="%s" type=text/css title="%s">\n' \
+                      % (self.stylesheet, self.stylesheet))
+         if self.style:
+-            s.append('\n<STYLE>\n<!--\n%s\n-->\n</style>\n' % self.style)
++            s.append('\n<STYLE type="text/css">\n<!--\n%s\n-->\n</style>\n' % self.style)
+         if self.script: # for javascripts
+             if type(self.script) in (TupleType, ListType):
+                 for script in self.script:
+@@ -1611,7 +1611,7 @@
+                 s.append('</TD>\n')
+             s.append('</TR>\n')
+         #close table
+-        s.append('</TABLE><P>\n')
++        s.append('</TABLE>\n')
+         return string.join(s, '')
+     
+     def get_body_color(self, colors, i):
