@@ -582,6 +582,11 @@ class AboutPageActions(Action):
         self.doc.append(self._("Translations are provided by the GNU gettext library."))
         self.doc.append(self._("The following translations are installed on this system:"), BR())
         self.doc.append(get_installed_languages())
+
+        self.doc.append(Heading(3, self._("Web page")))
+        self.doc.append(self._("You can find more information about WebKOM on the"))
+        self.doc.append(external_href("http://www.lysator.liu.se/lyskom/klienter/webkom/",
+                                      self._("homepage.")))
         
         self.doc.append(Heading(3, self._("Bugs")))
         self.doc.append(self._("There is a "),

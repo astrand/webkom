@@ -1,6 +1,10 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: WebKOM 0.10\n"
+"Project-Id-Version: WebKOM 0.16\n"
 "PO-Revision-Date: Sun Mar 18 22:08:39 2001\n"
 "Last-Translator: Peter Åstrand <astrand@lysator.liu.se>\n"
 "Language-Team: Peter Åstrand <astrand@lysator.liu.se>\n"
@@ -60,8 +64,8 @@ msgstr "Logga in"
 msgid "No conference selected."
 msgstr "Inget möte valt."
 
-msgid "Authors"
-msgstr "Författare"
+msgid "Do you really want to leave conference "
+msgstr "Vill du verktligen utträda ur möte "
 
 msgid "User name"
 msgstr "Användarnamn"
@@ -88,8 +92,8 @@ msgstr ""
 msgid "No working conference"
 msgstr "Inget aktuellt möte"
 
-msgid "Password"
-msgstr "Lösenord"
+msgid "Web page"
+msgstr "Webbsida"
 
 msgid "Search for new recipient:"
 msgstr "Sök ny mottagare:"
@@ -145,8 +149,8 @@ msgstr "WebKOM är skriven i Python och är en persistent, trådad "
 msgid "Attach the error message below."
 msgstr "Bifoga felmeddelandet nedan."
 
-msgid "Login failed"
-msgstr "Inloggningen misslyckades"
+msgid "Version running: "
+msgstr "Version i drift: "
 
 msgid "Carbon copy"
 msgstr "Extra kopiemottagare"
@@ -183,6 +187,9 @@ msgstr "För kännedom"
 
 msgid "An user with this name exists."
 msgstr "En användare med det namnet finns redan."
+
+msgid "Password"
+msgstr "Lösenord"
 
 msgid "Logged out remotely"
 msgstr "Utloggad på distans"
@@ -281,6 +288,9 @@ msgstr "Visa alla möten"
 msgid "No server given."
 msgstr "Ingen server angiven."
 
+msgid "Ok"
+msgstr "Ok"
+
 msgid "Write letter"
 msgstr "Skriv brev"
 
@@ -295,9 +305,6 @@ msgstr "Målet är en enkel klient som är lätt att lära sig."
 
 msgid "No recipients!"
 msgstr "Inga mottagare!"
-
-msgid "Version running: "
-msgstr "Version i drift: "
 
 msgid "Set as presentation"
 msgstr "Sätt som presentation"
@@ -385,14 +392,11 @@ msgstr "Senare inlägg"
 msgid "Create new user"
 msgstr "Skapa ny användare"
 
-msgid "User created."
-msgstr "Användaren skapad."
-
 msgid "New password"
 msgstr "Nytt lösenord"
 
-msgid "Server"
-msgstr "Server"
+msgid "Login failed"
+msgstr "Inloggningen misslyckades"
 
 msgid "The following translations are installed on this system:"
 msgstr "Följande översättningar finns installerade på det här systemet:"
@@ -408,6 +412,9 @@ msgstr "Du är nu medlem i mötet "
 
 msgid "The number of unread articles is now "
 msgstr "Antalet olästa inlägg är nu "
+
+msgid "homepage."
+msgstr "hemsidan."
 
 msgid "Translations"
 msgstr "Översättningar"
@@ -472,6 +479,9 @@ msgstr "Ett fel uppstod när inlägget skulle hämtas"
 msgid "(To many hits, the table is truncated)"
 msgstr "(För många träffar, sökresultatet har trunkerats)"
 
+msgid "Server"
+msgstr "Server"
+
 msgid "the list with known bugs"
 msgstr "listan med kända buggar"
 
@@ -508,9 +518,6 @@ msgstr "möten."
 msgid "list with known bugs"
 msgstr "lista med kända buggar"
 
-msgid "Do you really want to leave conference "
-msgstr "Vill du verktligen utträda ur möte "
-
 msgid "Write presentation"
 msgstr "Skriv presentation"
 
@@ -523,8 +530,8 @@ msgstr "Vänta medans din möteslista laddas in..."
 msgid "Search for conference:"
 msgstr "Sök efter möte:"
 
-msgid "Ok"
-msgstr "Ok"
+msgid "Join marked conference"
+msgstr "Gå med i markerat möte"
 
 msgid "The username is ambigious"
 msgstr "Användarnamnet är ej entydigt"
@@ -540,6 +547,9 @@ msgstr "Servern kräver inloggning innan nya användare kan skapas"
 
 msgid "List conferences with unread"
 msgstr "Lista möten med olästa"
+
+msgid "You can find more information about WebKOM on the"
+msgstr "Du hittar mer information om WebKOM på"
 
 msgid "User<br>From"
 msgstr "Användare<br>Från"
@@ -568,8 +578,8 @@ msgstr "Buggar"
 msgid "No unread"
 msgstr "Inga olästa"
 
-msgid "Join marked conference"
-msgstr "Gå med i markerat möte"
+msgid "User created."
+msgstr "Användaren skapad."
 
 msgid "Recipient"
 msgstr "Mottagare"
@@ -595,11 +605,14 @@ msgstr "Ej inloggad."
 msgid "Author"
 msgstr "Författare"
 
-msgid "Unable to join conference."
-msgstr "Kan inte gå med i möte."
+msgid "Authors"
+msgstr "Författare"
 
 msgid "Login with selected user"
 msgstr "Logga in med vald användare"
 
 msgid "Number of conferences loaded:"
 msgstr "Antal inladdade möten:"
+
+msgid "Unable to join conference."
+msgstr "Kan inte gå med i möte."
