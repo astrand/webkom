@@ -18,3 +18,5 @@ Coding standards
   letter capitalized (like TranslatorCache.py). 
 
 
+* Imports: Do not import modules with *. Exceptions to this rule is
+  webkom_constants and HTMLgen. 
