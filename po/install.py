@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+
 import os
 import glob
 import sys
@@ -26,5 +27,7 @@ for pofile in glob.glob("*.po"):
     os.system("msgfmt -o " + mofile + " " + pofile)
 
     # Copy file
-    os.system("cp " + mofile + " " + destdir + "/webkom.mo")
+    cmd = "cp " + mofile + " " + destdir + "/webkom.mo"
+    print cmd
+    os.system(cmd)
     
