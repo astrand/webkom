@@ -559,7 +559,7 @@ class AboutPageActions(Action):
         hours = (timediff - 86400*days) / 3600
         minutes = ((timediff - 86400*days) - 3600*hours) / 60
         self.doc.append(self._(", %(days)d days, %(hours)d hours and "\
-                               "%(minutes)d minutes ago" % locals()))
+                               "%(minutes)d minutes ago") % locals())
 
         self.doc.append(Heading(3, self._("Overview")))
         self.doc.append(self._("WebKOM is a WWW-interface for "))
