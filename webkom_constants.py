@@ -33,4 +33,4 @@ MAX_CONFERENCE_LEN = 37
 # 12 hours auto-logout
 SESSION_TIMEOUT = 60 * 60 * 12 
 DEFAULT_LANG = "sv"
-
+LOGLEVEL = 4
