@@ -809,7 +809,8 @@ class LogInActions(Action):
 
         try:
             conn = kom.CachedUserConnection(self.komserver, int(self.komport),
-                                            "WebKOM%" + remote_host)
+                                            "WebKOM%" + remote_host,
+                                            localbind=LOCALBIND)
         except:
             self.error_message(self._("Cannot connect to server."))
             return

@@ -21,6 +21,7 @@ import os
 import sys
 import string
 
+
 # FIXME: Remove this function when Python provides realpath. 
 def realpath(filename):
     """Return the canonical path of the specified filename, eliminating any
@@ -54,6 +55,14 @@ LOCALE_DIR = os.path.join(ORIGIN_DIR, "locale")
 VERSION = "0.17"
 BASE_URL = "webkom.py"
 DEFAULT_KOM_SERVER = "kom.lysator.liu.se"
+
+# Set LOCALBIND to either None or a tuple (hostname, 0). If set to None,
+# outgoing connections to the LysKOM server(s) will come from the primary
+# interface of the machine running WebKOM. Setting it to something else
+# makes it possible to bind to a virtual interface.
+LOCALBIND = None
+# LOCALBIND = ('webkom.lysator.liu.se', 0)
+
 MAX_SUBJ_PER_PAGE = 25
 MAX_CONFS_PER_PAGE = 15
 MAINTAINER_NAME = "Peter Åstrand"
@@ -66,3 +75,4 @@ SESSION_TIMEOUT = 60 * 60 * 12
 DEFAULT_LANG = "sv"
 LOGLEVEL = 4
 COPYPASTE_CHARACTERS = "å Å ä Ä ö Ö ü Ü ! \" @ $ % & / { } [ ] ( ) \ ? ~ < > |"
+
