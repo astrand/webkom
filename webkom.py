@@ -375,7 +375,7 @@ class Action:
 
     def unread_info(self, current_conf=0):
         "Return a string (current/total) with information about number of unread"
-        total = get_total_num_unread(self.sess.conn, self.sess.conn.get_user(),
+        total = get_total_num_unread(self.sess.conn, 
                                      self.sess.conn.member_confs)
         if current_conf:
             try:
