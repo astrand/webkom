@@ -51,8 +51,8 @@ msgstr "Eva Isaksson (finsk översättning)"
 msgid "Search result will be limited to "
 msgstr "Sökresultatet kommer att begränsas till "
 
-msgid "Main Page"
-msgstr "Huvudsida"
+msgid " and login again."
+msgstr " och logga in igen."
 
 msgid "Login"
 msgstr "Logga in"
@@ -71,9 +71,6 @@ msgstr "Licens"
 
 msgid "Name"
 msgstr "Namn"
-
-msgid "Conferences (you are a member of)"
-msgstr "Möten (som du är medlem i)"
 
 msgid "Error: "
 msgstr "Fel: "
@@ -145,8 +142,8 @@ msgstr "WebKOM är skriven i Python och är en persistent, trådad "
 msgid "Attach the error message below."
 msgstr "Bifoga felmeddelandet nedan."
 
-msgid "Version running: "
-msgstr "Version i drift: "
+msgid "Login failed"
+msgstr "Inloggningen misslyckades"
 
 msgid "Carbon copy"
 msgstr "Extra kopiemottagare"
@@ -202,8 +199,8 @@ msgstr "Kontrollera ifall den här buggen finns med på"
 msgid "Article submitted"
 msgstr "Inlägget skickat"
 
-msgid "Do you really want to leave conference "
-msgstr "Vill du verktligen utträda ur möte "
+msgid "none"
+msgstr "ingen"
 
 msgid "Remove?"
 msgstr "Ta bort?"
@@ -211,8 +208,8 @@ msgstr "Ta bort?"
 msgid "Subject:"
 msgstr "Ärende:"
 
-msgid "Killed the following session(s):"
-msgstr "Följande session(er) loggades ut:"
+msgid "All conferences loaded. "
+msgstr "Alla möten inladdade. "
 
 msgid "Remove marked recipients"
 msgstr "Ta bort markerade mottagare"
@@ -286,11 +283,17 @@ msgstr "Målet är en enkel klient som är lätt att lära sig."
 msgid "No recipients!"
 msgstr "Inga mottagare!"
 
+msgid "Version running: "
+msgstr "Version i drift: "
+
 msgid "Set as presentation"
 msgstr "Sätt som presentation"
 
 msgid "Imported:"
 msgstr "Importerad:"
+
+msgid "Killed the following session(s):"
+msgstr "Följande session(er) loggades ut:"
 
 msgid "View in code style"
 msgstr "Visa i kodstil"
@@ -366,9 +369,6 @@ msgstr "Kommentar till:"
 msgid "Later articles"
 msgstr "Senare inlägg"
 
-msgid "none"
-msgstr "ingen"
-
 msgid "Create new user"
 msgstr "Skapa ny användare"
 
@@ -401,6 +401,12 @@ msgstr "Översättningar"
 
 msgid "An error occured when fetching article information."
 msgstr "Ett fel uppstod när inläggen skulle hämtas."
+
+msgid "Main Page"
+msgstr "Huvudsida"
+
+msgid "Login progress"
+msgstr "Inloggningsförlopp"
 
 msgid "Username"
 msgstr "Användarnamn"
@@ -486,11 +492,17 @@ msgstr "möten."
 msgid "list with known bugs"
 msgstr "lista med kända buggar"
 
+msgid "Do you really want to leave conference "
+msgstr "Vill du verktligen utträda ur möte "
+
 msgid "Write presentation"
 msgstr "Skriv presentation"
 
 msgid "The two new passwords didn't match."
 msgstr "De två nya lösenorden var ej lika."
+
+msgid "Please wait while your conference list is loading..."
+msgstr "Vänta medans din möteslista laddas in..."
 
 msgid "Search for conference:"
 msgstr "Sök efter möte:"
@@ -510,14 +522,14 @@ msgstr "Alarmmeddelande"
 msgid "The server requires login before new users can be created"
 msgstr "Servern kräver inloggning innan nya användare kan skapas"
 
-msgid " and login again."
-msgstr " och logga in igen."
+msgid "List conferences with unread"
+msgstr "Lista möten med olästa"
 
 msgid "User<br>From"
 msgstr "Användare<br>Från"
 
-msgid "List conferences with unread"
-msgstr "Lista möten med olästa"
+msgid "Go to main page"
+msgstr "Gå till huvudsidan"
 
 msgid "Previous page"
 msgstr "Föregående sida"
@@ -552,8 +564,8 @@ msgstr "Inläggsnummer"
 msgid "Time: "
 msgstr "Tid:"
 
-msgid "Login failed"
-msgstr "Inloggningen misslyckades"
+msgid "Conferences (you are a member of)"
+msgstr "Möten (som du är medlem i)"
 
 msgid "Go to "
 msgstr "Gå till "
@@ -572,3 +584,6 @@ msgstr "Kan inte gå med i möte."
 
 msgid "Login with selected user"
 msgstr "Logga in med vald användare"
+
+msgid "Number of conferences loaded:"
+msgstr "Antal inladdade möten:"
