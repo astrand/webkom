@@ -1762,13 +1762,14 @@ class WritePresentationSubmit(Action):
     "Submit a presentation"
     def response(self):
         text_num = WriteArticleSubmit(self.resp).response()
-        import sys
+        presentation_for = int(self.form.getvalue("presentationfor"))
         sys.stderr.write("text_num is %d in WritePresentationSubmit\n" % text_num)
-        sys.stderr.write("presentationfor is %d\n" % int(self.form.getvalue("presentationfor")))
+        sys.stderr.write("presentationfor is %d\n" % presentation_for)
         if 0 != text_num:
             kom.ReqSetPresentation(self.sess.conn,
-                                   int(self.form.getvalue("presentationfor")),
+                                   presentation_for,
                                    text_num).response()
+            self.sess.conn.conferences.invalidate(presentation_for)
 
 
 
