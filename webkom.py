@@ -472,6 +472,7 @@ class MainPageActions(Action):
         cont = Container()
         cont.append(Heading(2, "Huvudsidan"))
         cont.append(Heading(3, self.action_href("viewconfs", "Lista möten")))
+        cont.append(Heading(3, self.action_href("viewconfs_unread", "Lista möten med olästa")))
         cont.append(Heading(3, self.action_href("writeletter&rcpt=" + str(self.sess.pers_num),
                                                 "Skicka brev")))
         cont.append(Heading(3, self.action_href("joinconf", "Gå med i möte")))
@@ -640,15 +641,27 @@ class InvalidSessionPageActions(Action):
         return 
 
 
+class ViewConfsUnreadActions(Action):
+    def response(self):
+        ViewConfsActions(self.resp).response(only_unread=1)
+        
 class ViewConfsActions(Action):
     "Generate a page with all member conferences"
-    def response(self):
+    def response(self, only_unread=0):
         toplink = Href(self.base_session_url(), "WebKOM")
-        conflink = self.action_href("viewconfs", "Möten")
+        if only_unread:
+            action_url = "viewconfs_unread"
+        else:
+            action_url = "viewconfs"
+
+        conflink = self.action_href(action_url, "Möten")
         cont = Container(toplink, " : ", conflink)
         self.append_std_top(cont)
-        
-        self.doc.append(Heading(2,"Möten (som du är medlem i)"))
+
+        if only_unread:
+            self.doc.append(Heading(2,"Möten (som du har olästa i)"))
+        else:
+            self.doc.append(Heading(2,"Möten (som du är medlem i)"))
 
         std_cmd = Container()
         self.doc.append("Standardkommando: ", std_cmd)
@@ -663,8 +676,12 @@ class ViewConfsActions(Action):
             ask_for = 0
 
         # We ask for one extra, so we can know if we should display a next-page-link
-        memberships = get_active_memberships(self.sess.conn, self.sess.conn.member_confs, ask_for,
-                                             MAX_CONFS_PER_PAGE + 1)
+        if only_unread:
+            memberships = get_active_memberships_unread(self.sess.conn, self.sess.conn.member_confs,
+                                                        ask_for, MAX_CONFS_PER_PAGE + 1)
+        else:
+            memberships = get_active_memberships(self.sess.conn, self.sess.conn.member_confs,
+                                                 ask_for, MAX_CONFS_PER_PAGE + 1)
         prev_first = next_first = None
         if ask_for:
             # Link to previous page
@@ -693,7 +710,7 @@ class ViewConfsActions(Action):
             conf_dict[conf_name] = (conf_num, num_unread)
 
         # Add the previous-page-link
-        self.doc.append(self.action_href("viewconfs&first_conf=" + str(prev_first),
+        self.doc.append(self.action_href(action_url + "&first_conf=" + str(prev_first),
                                          "Föregående sida", prev_first is not None), NBSP)
 
         # Add a table
@@ -717,7 +734,7 @@ class ViewConfsActions(Action):
                         comment])
 
         # Add the next-page-link
-        self.doc.append(self.action_href("viewconfs&first_conf=" + str(next_first),
+        self.doc.append(self.action_href(action_url + "&first_conf=" + str(next_first),
                                          "Nästa sida", next_first is not None), NBSP)
         # Link for next conference with unread
         self.doc.append(self.action_href("goconf_with_unread",
@@ -1586,6 +1603,7 @@ def actions(resp):
                        "searchconfsubmit" : JoinConfActions }
     action_keywords = {"logout" : LogOutActions,
                        "viewconfs" : ViewConfsActions,
+                       "viewconfs_unread" : ViewConfsUnreadActions,
                        "goconf" : GoConfActions,
                        "goconf_with_unread" : GoConfWithUnreadActions,
                        "viewtext" : ViewTextActions,
