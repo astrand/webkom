@@ -424,6 +424,8 @@ class LocalArticleSearcher(ArticleSearcher):
         self.later_texts_exists = m.later_texts_exists
         self.local_no_ceiling = m.range_begin
         textnums = [textnum for local_textnum, textnum in m.list]
+        # Some textnums might be zero. 
+        textnums = filter(lambda x: x !=0 , textnums)
         textnums.reverse()
         return textnums
 
