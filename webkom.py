@@ -422,6 +422,16 @@ class Action:
 
     def append_std_top(self, leftobj):
         self.doc.append(self.gen_std_top(leftobj))
+
+    def append_right_footer(self):
+        "Add link to W3C validator and CUSTOM_RIGHT_FOOTER"
+        div = Div(align = "right")
+        self.doc.append(div)
+        div.append(str(CUSTOM_RIGHT_FOOTER))
+        div.append(NBSP*4)
+        image = Image(src="/webkom/images/check.png", border=0, height=17, width=22,
+                      alt="[check HTML validity]")
+        div.append(Href("http://validator.w3.org/check/referer", str(image)))
         
     def submit_redir(self, submit_result):
         self.sess.submit_result = submit_result
@@ -536,6 +546,7 @@ class LoginPageActions(Action):
         F.append(Center(submitbutton))
 
         self.doc.append(Href(BASE_URL + "?action=create_user&amp;komserver=" + default_kom_server, self._("Create new user") + "..."))
+        self.append_right_footer()
 
         return
 
@@ -2994,14 +3005,7 @@ def actions(resp):
     # Generate page. Note: if this is the logout page, resp.sess will be cleared.
     action.response()
 
-    # Add link to W3C validator
-    div = Div(align = "right")
-    resp.doc.append(div)
-    div.append(str(CUSTOM_RIGHT_FOOTER))
-    div.append(NBSP*4)
-    image = Image(src="/webkom/images/check.png", border=0, height=17, width=22,
-                  alt="[check HTML validity]")
-    div.append(Href("http://validator.w3.org/check/referer", str(image)))
+    action.append_right_footer()
 
     # Add Javascript shortcuts
     if resp.shortcuts_active and resp.sess:
