@@ -53,7 +53,7 @@ ORIGIN_DIR = get_origin_dir()
 LOG_DIR = os.path.join(ORIGIN_DIR, "logs")
 #LOG_DIR = "/var/log/webkom"
 LOCALE_DIR = os.path.join(ORIGIN_DIR, "locale")
-VERSION = "0.17"
+VERSION = "0.18"
 BASE_URL = "webkom.py"
 DEFAULT_KOM_SERVER = "kom.lysator.liu.se"
 
@@ -70,8 +70,8 @@ LOCALBIND = None
 
 MAX_SUBJ_PER_PAGE = 25
 MAX_CONFS_PER_PAGE = 15
-MAINTAINER_NAME = "Erik Forsberg"
-MAINTAINER_MAIL = "forsberg@lysator.liu.se"
+MAINTAINER_NAME = "YOUR NAME HERE"
+MAINTAINER_MAIL = "your.name@example.com"
 CONSOLE_SOCKET = "/tmp/webkom.console"
 
 MAX_CONFERENCE_LEN = 37
