@@ -1452,9 +1452,11 @@ class WhoIsOnActions(Action):
             static = kom.ReqGetStaticSessionInfo(self.sess.conn, who.session).response()
             name = self.get_conf_name(who.person)
             user_and_host = static.username + "@" + static.hostname
+            conf_name = self.sess.conn.conf_name(who.working_conference,
+                                                 default="Ej närvarande i något möte")[:MAX_CONFERENCE_LEN]
             tab.append([who.session, 
                         name[:37] + "<br>" + user_and_host[:37],
-                        self.get_conf_name(who.working_conference)[:37] \
+                        conf_name \
                         + "<br>" + who.what_am_i_doing[:37]])
 
         self.doc.append(Table(heading=headings, cell_padding=2, body=tab, width="100%"))
