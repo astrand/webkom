@@ -139,6 +139,7 @@ class Response:
         self.sess = None
         self.shortcuts = []
         self.shortcuts_active = 1
+        self.pref_lang = "en"
 
         # Default HTTP header. 
         self.http_header = "Content-type: text/html\r\n" \
@@ -1888,6 +1889,11 @@ class ChooseConfActions(Action):
 
 def actions(resp):
     "Do requested actions based on CGI keywords"
+    # Set up wanted language
+    langs = string.split(resp.env["HTTP_ACCEPT_LANGUAGE"], ',')
+    langs = [string.strip(lang) for lang in langs]
+    resp.pref_lang = langs[0]
+    
     if resp.form.has_key("loginsubmit"):
         LogInActions(resp).response()
         return
@@ -1988,6 +1994,7 @@ def actions(resp):
 
     # For debugging 
     #resp.doc.append(str(resp.env))
+    #resp.doc.append("<hr>Språket är:" + resp.pref_lang)
         
     return 
 
