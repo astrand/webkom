@@ -241,24 +241,7 @@ class Response:
         self.req = req
         self.env = env
         self.form = form
-
-        # FIXME: Should only be on pages that uses countdowns. 
-        style = """\
-SPAN.countdownstyle {
-    background-color: #ffffff;
-    position:absolute; 
-    left:40; 
-    top:140; 
-}
-SPAN.countdownfinished {
-    background-color: #ffffff;
-    position:absolute; 
-    left:5; 
-    top:200; 
-}
-
-"""
-        self.doc = WebKOMSimpleDocument(title="WebKOM", bgcolor=HTMLcolors.WHITE, vlinkcolor=HTMLcolors.BLUE, style=style)
+        self.doc = WebKOMSimpleDocument(title="WebKOM", bgcolor=HTMLcolors.WHITE, vlinkcolor=HTMLcolors.BLUE)
         
         self.key = ""
         self.sess = None
@@ -931,6 +914,21 @@ class LogInActions(Action):
 class LoginProgressPageActions(Action):
     def response(self):
         self.resp.shortcuts_active = 0
+        self.doc.style = """\
+SPAN.countdownstyle {
+    background-color: #ffffff;
+    position:absolute; 
+    left:40; 
+    top:140; 
+}
+SPAN.countdownfinished {
+    background-color: #ffffff;
+    position:absolute; 
+    left:5; 
+    top:200; 
+}
+
+"""
         self.resp.write_docstart_refresh(1, "")
         self.doc.append(Heading(2, self._("Login progress")))
         self.doc.append(self._("Please wait while your conference list is loading..."), BR())
