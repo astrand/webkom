@@ -2323,7 +2323,7 @@ class WriteArticleActions(Action):
             quotebutton = ""
 
         # Append table with quote and submit button
-        F.append(Table(body=[[quotebutton, submitbutton]], border=0,
+        F.append(Table(body=[[submitbutton, quotebutton]], border=0,
                        column1_align="left", cell_align="right", width="500"))
 
         self.doc.append(self._("If certain characters are hard to write with your keyword, "
