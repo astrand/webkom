@@ -3268,10 +3268,10 @@ def write_traceback(resp):
     # Put it on the web.
     resp.doc.append(Heading(3, "Internal server error"))
     resp.doc.append(_("Check if this bug is listed on"))
-    resp.doc.append(self.external_href(KNOWN_BUGS_URL,
+    resp.doc.append(external_href(KNOWN_BUGS_URL,
                                   _("the list with known bugs.")))
     resp.doc.append(_("If not, please"))
-    resp.doc.append(self.external_href(BUGREPORT_URL, _("submit a bug report.")))
+    resp.doc.append(external_href(BUGREPORT_URL, _("submit a bug report.")))
     resp.doc.append(_("Attach the error message below."))
     resp.doc.append(_("The server time was: ") + \
                     time.strftime("%Y%m%d-%H:%M", time.localtime(time.time())))
