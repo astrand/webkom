@@ -121,6 +121,17 @@ def get_active_memberships(conn, member_confs, first_pos, max_num):
     return retlist
 
 
+def get_active_memberships_unread(conn, member_confs, first_pos, max_num):
+    "Get a limited number of active memberships, starting at position first_pos"
+    retlist = []
+    for conf_num in member_confs[first_pos:]:
+        if len(retlist) >= max_num:
+            return retlist
+        if conn.no_unread[conf_num]:
+            retlist.append(conn.memberships[conf_num])
+    return retlist
+
+
 def get_conf_with_unread(conn, member_confs):
     "Get next conference with unread articles"
     for conf_num in member_confs:
