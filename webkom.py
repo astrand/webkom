@@ -468,7 +468,8 @@ class AboutPageActions(Action):
                                       "Peter Åstrand (initiativtagare)"), BR())
         self.doc.append("Kent Engström", BR())
         self.doc.append("Per Cederqvist", BR())
-        self.doc.append("Erik Forsberg", BR())
+        self.doc.append(external_href("http://www.lysator.liu.se/~forsberg/",
+                                      "Erik Forsberg"), BR())
         self.doc.append("Kjell Enblom", BR())
         self.doc.append("Niklas Lindgren", BR())
 
