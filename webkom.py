@@ -2474,45 +2474,42 @@ def print_not_implemented(resp):
 # Main action routine
 # Note: "func" is a sz_fcgi magic name
 def func(fcg, env, form):
-    try: # Exceptions within this clause are critical.
+    try: # Exceptions within this clause are critical and not sent to browser.
         resp = Response(env, form)
-        try: # Exceptions within this clause are sent to the browser. 
+        try:
             actions(resp)
-
-            # Unlock session (it was probably locked in "actions")
-            if resp.sess:
-                resp.sess.unlock_sess()
-
-            # Produce output
-            fcg.pr(resp.http_header)
-            fcg.pr(str(resp.doc))
-            
         except RemotelyLoggedOutException:
             print_logged_out_response(resp)
         except kom.NotImplemented:
             print_not_implemented(resp)
         except:
             write_traceback(resp)
+
+        # Unlock session (it was probably locked in "actions")
+        if resp.sess:
+            resp.sess.unlock_sess()
+        fcg.pr(resp.http_header)
+        fcg.pr(str(resp.doc))
         
-    # We are not interested in these exceptions
-    except SystemExit:
-        pass
-    # Something went wrong when creating Response instance
+    # Something went wrong when creating Response instance or
+    # printing response doc. 
     except:
-        import traceback
         f = open(LOG_DIR + "traceback.func", "w")
         traceback.print_exc(file = f)
         f.close()
-        fcg.pr("Content-type: text/html\r\n\r\n")
-        fcg.pr("WebKOM internal server error")
 
-    # Always run fcg.finish(). Make sure this line is always reached
-    # (eg. all exceptions are handled)
-    fcg.finish()
+    # Finish thread and send all data back to the FCGI parent
+    try:
+        fcg.finish()
+    except SystemExit:
+        pass
+    except:
+        f = open(LOG_DIR + "traceback.finish", "w")
+        traceback.print_exc(file = f)
+        f.close()
+        # If fcg.finish() failed, this thread is still alive. Kill ourselves. 
+        thread.exit()	
         
-    return
-
-
 # Interaction via FIFO
 def run_console(self, *args):
     import fifoconsole
