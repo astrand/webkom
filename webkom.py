@@ -1181,28 +1181,25 @@ class ViewConfsActions(Action):
         # Information about number of unread
         self.doc.append(self.unread_info())
 
-        if self.form.getvalue("first_conf"):
-            ask_for = int(self.form.getvalue("first_conf"))
-        else:
-            ask_for = 0
+        first_conf = int(self.form.getvalue("first_conf", "0"))
 
         # We ask for one extra, so we can know if we should display a next-page-link
-        if only_unread:
-            memberships = get_active_memberships_unread(self.sess.conn, ask_for, MAX_CONFS_PER_PAGE + 1)
-        else:
-            memberships = get_active_memberships(self.sess.conn, ask_for, MAX_CONFS_PER_PAGE + 1)
+        memberships = get_active_memberships(self.sess.conn, first_conf, MAX_CONFS_PER_PAGE + 1, only_unread)
         prev_first = next_first = None
-        if ask_for:
+        if first_conf:
             # Link to previous page
-            prev_first = ask_for - MAX_CONFS_PER_PAGE
+            prev_first = first_conf - MAX_CONFS_PER_PAGE
             if prev_first < 0:
                 prev_first = 0
                 
         if len(memberships) > MAX_CONFS_PER_PAGE:
             # We cannot show all confs on the same page. Link to next page
-            next_first = ask_for + MAX_CONFS_PER_PAGE
+            next_first = first_conf + MAX_CONFS_PER_PAGE
             # Remove the highest conference
             memberships.pop()
+
+        # Now that we (possibly) have pop:d the extra one, sort!
+        memberships.sort(lambda first, second: cmp(second.priority, first.priority))
 
         # Add the previous-page-link
         self.doc.append(self.action_href(action_url + "&amp;first_conf=" + str(prev_first),

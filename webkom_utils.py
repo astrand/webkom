@@ -137,34 +137,21 @@ def get_texts(conn, conf_num, max_num, lowest_local=None):
     return texts
 
 
-def membership_sort_p(first, second):
-    "Sort-predicate for memberships, based on priority"
-    return cmp(second.priority, first.priority)
+def get_active_memberships(conn, first_pos, max_num, only_unread=0):
+    """Get a limited number of active memberships with unread, starting
+    at position first_pos (starts at 0)"""
 
+    if only_unread:
+        # Select conferences with unread
+        conf_nums = filter(lambda conf_num: conn.no_unread[conf_num], conn.member_confs)
+    else:
+        conf_nums = conn.member_confs
 
-def get_active_memberships(conn, first_pos, max_num):
-    "Get a limited number of active memberships, starting at position first_pos"
-    retlist = []
-    for conf_num in conn.member_confs[first_pos:]:
-        if len(retlist) >= max_num:
-            break
-        retlist.append(conn.memberships[conf_num])
+    # Select conferences to display, wrt first_pos and max_num
+    interesting_conf_nums = conf_nums[first_pos:first_pos+max_num]
 
-    retlist.sort(membership_sort_p)
-    return retlist
-
-
-def get_active_memberships_unread(conn, first_pos, max_num):
-    "Get a limited number of active memberships, starting at position first_pos"
-    retlist = []
-    for conf_num in conn.member_confs[first_pos:]:
-        if len(retlist) >= max_num:
-            break
-        if conn.no_unread[conf_num]:
-            retlist.append(conn.memberships[conf_num])
-
-    retlist.sort(membership_sort_p)
-    return retlist
+    # Construct list with kom.Membership instances. Sort. Return.
+    return [conn.memberships[conf_num] for conf_num in interesting_conf_nums]
 
 
 def get_conf_with_unread(conn, member_confs, current_conf):
