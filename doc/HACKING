@@ -1,11 +1,11 @@
 Coding standards
 ================
-* Use two blank rows between classes and standalone functions, one
-  blank row between methods in the same class.
+PEP 8 - Style Guide for Python Code
+(http://python.sourceforge.net/peps/pep-0008.html) should be
+obeyed. The current source may not conform to these guide. Feel free
+to fix any discrepancies. 
 
-* Class names as usual: ThisIsAClass.
-
-* Variable names like this: some_nice_variable.
+Additionally:
 
 * Variables representing numbers should have "num" as a part their
   names rather than "no". Example: conf_num (conference number). NOTE:
@@ -17,9 +17,10 @@ Coding standards
   module contains a single class, it should names with the first
   letter capitalized (like TranslatorCache.py). 
 
-
 * Imports: Do not import modules with *. Exceptions to this rule is
   webkom_constants, HTMLgen and webkom_utils.
+
+* Strings should be written with double quotes like "this". 
 
 
 Handling submits
