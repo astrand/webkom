@@ -2656,9 +2656,10 @@ class SetUnreadSubmit(Action):
         
         try:
             num_unread = int(self.form.getvalue("num_unread"))
+            if num_unread < 0: raise ValueError
         except ValueError:
             result_cont.append(Heading(3, self._("Invalid input")))
-            result_cont.append(self._("You must give a number as argument."))
+            result_cont.append(self._("You must give a positive number as argument."))
             result_cont.append(self.action_href("set_unread",
                                                 self._("Try again!")))
             
