@@ -21,7 +21,7 @@
 LOG_DIR = "/home/astrand/webkom/webkom/logs/"
 MODULES_PATH = "/home/astrand/webkom/python-modules/"
 LOCALE_DIR = "/home/astrand/webkom/locale/"
-VERSION = "0.8"
+VERSION = "0.9"
 BASE_URL = "webkom.py"
 DEFAULT_KOM_SERVER = "kom.lysator.liu.se"
 MAX_SUBJ_PER_PAGE = 25
