@@ -207,6 +207,10 @@ class Session:
         # at the same time from one session, since the session is locked. 
         self.submit_result = {}
 
+        self.marked_texts = {}
+        for mark in kom.ReqGetMarks(self.conn).response():
+            self.marked_texts[mark.text_no] = [mark.type]
+
     def lock_sess(self):
         "Lock session"
         self.lock.acquire()
@@ -2415,7 +2419,7 @@ class ViewMarkingsActions(Action):
     # Note: It's possible we want to flush output, since this operation
     # takes long time for the server.
     def response(self):
-        markings = kom.ReqGetMarks(self.sess.conn).response()
+        markings = self.sess.marked_texts.keys()
         headings = [self._("Number"), self._("Author"),
                      self._("Subject"), self._("Marktype")]
         tab = []
@@ -2436,28 +2440,40 @@ class ViewMarkingsActions(Action):
                               cell_align="left",
                               width="100%"))
         for mark in markings:
-            try:
-                ts = self.sess.conn.textstats[mark.text_no]
-            except kom.NoSuchText:
-                continue
-            textnum = self.action_href("viewtext&amp;textnum="+\
-                                       str(mark.text_no),
-                                       str(mark.text_no))
-            ai_from = kom.first_aux_items_with_tag(ts.aux_items,
-                                                   kom.AI_MX_FROM)
-            author = ""
-            if ai_from:
-                ai_author =  ai_author = kom.first_aux_items_with_tag(
-                    ts.aux_items,
-                    kom.AI_MX_AUTHOR)
-                if ai_author:
-                    author = ai_author.data + " "
-                author = author + str(Href("mailto:" + ai_from.data,
-                                       ai_from.data))
+            if len(self.sess.marked_texts[mark]) > 1:
+                try:
+                    [tpe, author, subject] = self.sess.marked_texts[mark]
+                except ValueError:
+                    continue # Non-existing text
             else:
-                author = self.get_pers_name(ts.author)
-            subject = self.sess.conn.subjects[mark.text_no]
-            tab.append([textnum, author, subject, str(mark.type)])
+                try:
+                    [tpe] = self.sess.marked_texts[mark]
+                except ValueError:
+                    continue # Non-existing text
+                try:
+                    ts = self.sess.conn.textstats[mark]
+                except kom.NoSuchText:
+                    self.sess.marked_texts[mark] = [] # Mark as non-existing
+                    continue
+                ai_from = kom.first_aux_items_with_tag(ts.aux_items,
+                                                   kom.AI_MX_FROM)
+                author = ""
+                if ai_from:
+                    ai_author =  ai_author = kom.first_aux_items_with_tag(
+                        ts.aux_items,
+                        kom.AI_MX_AUTHOR)
+                    if ai_author:
+                        author = ai_author.data + " "
+                        author = author + str(Href("mailto:" + ai_from.data,
+                                                   ai_from.data))
+                else:
+                    author = self.get_pers_name(ts.author)
+                subject = self.sess.conn.subjects[mark]
+
+            textnum = self.action_href("viewtext&amp;textnum="+\
+                                       str(mark),
+                                       str(mark))
+            tab.append([textnum, author, subject, tpe])
         return
 
 
