@@ -2363,34 +2363,34 @@ def write_traceback(resp):
 # Main action routine
 # Note: "func" is a sz_fcgi magic name
 def func(fcg, env, form):
-    try: # Catch everything else
-        try: # Don't catch SystemExit
-            resp = Response(env, form)
-            try: # For response generation
-                actions(resp)
-            except RemotelyLoggedOutException:
-                _ = translator_cache.get_translator("en").gettext
-                cont = Container(Href(BASE_URL, "WebKOM"))
-                cont.append(Heading(3, _("Logged out remotely")))
-                cont.append(_("Someone (probably you) ended this session remotely"))
-                cont.append(P())
-                cont.append(Href(BASE_URL, _("Login again")))
-                resp.doc.append(cont)
-                resp.sess = None
-            except:
-                write_traceback(resp)
+    try: # Exceptions within this clause are critical. 
+        resp = Response(env, form)
+        try: # Exceptions within this clause are sent to the browser. 
+            actions(resp)
+        except RemotelyLoggedOutException:
+            _ = translator_cache.get_translator("en").gettext
+            cont = Container(Href(BASE_URL, "WebKOM"))
+            cont.append(Heading(3, _("Logged out remotely")))
+            cont.append(_("Someone (probably you) ended this session remotely"))
+            cont.append(P())
+            cont.append(Href(BASE_URL, _("Login again")))
+            resp.doc.append(cont)
+            resp.sess = None
+        except:
+            write_traceback(resp)
 
-            # Unlock session (it was probably locked in "actions")
-            if resp.sess:
-                resp.sess.unlock_sess()
+        # Unlock session (it was probably locked in "actions")
+        if resp.sess:
+            resp.sess.unlock_sess()
 
-            # Produce output
-            fcg.pr(resp.http_header)
-            fcg.pr(str(resp.doc))
-            fcg.finish()
-        except SystemExit:
-            # We are not interested in these exceptions
-            pass
+        # Produce output
+        fcg.pr(resp.http_header)
+        fcg.pr(str(resp.doc))
+        fcg.finish()
+        
+    # We are not interested in these exceptions
+    except SystemExit:
+        pass
     except:
         import traceback
         f = open(LOG_DIR + "traceback.func", "w")
