@@ -56,6 +56,7 @@ LOCALE_DIR = os.path.join(ORIGIN_DIR, "locale")
 VERSION = "0.19"
 BASE_URL = "webkom.py"
 DEFAULT_KOM_SERVER = "kom.lysator.liu.se"
+LOCK_KOM_SERVER = 0
 
 # Log out the users sessions on the same webkom/komserver if this is set to
 # 1.

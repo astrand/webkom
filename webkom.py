@@ -508,7 +508,7 @@ class LoginPageActions(Action):
         cont = Container(toplink, " : " + self._("Login"))
         self.append_std_top(cont)
         default_kom_server = DEFAULT_KOM_SERVER
-        if self.form.has_key("komserver"):
+        if self.form.has_key("komserver") and not LOCK_KOM_SERVER:
             default_kom_server = self.form["komserver"].value
         submitbutton = Input(type="submit", name="loginsubmit", value=self._("Login"))
 
@@ -520,9 +520,16 @@ class LoginPageActions(Action):
 
         F = Form(BASE_URL, name="loginform", submit="")
         cont.append(F)
-        logintable = [(self._("Server"), Input(name="komserver", size=20, value=default_kom_server)),
-                      (self._("Username"), Input(name="username",size=20)),
-                      (self._("Password"), Input(type="password",name="password",size=20)) ]
+
+        logintable = []
+
+        if LOCK_KOM_SERVER:
+            logintable.append((self._("Server"), default_kom_server))
+        else:
+            logintable.append((self._("Server"), Input(name="komserver", size=20, value=default_kom_server)))
+
+        logintable.append((self._("Username"), Input(name="username",size=20)))
+        logintable.append((self._("Password"), Input(type="password",name="password",size=20)))
 
         F.append(Center(Formtools.InputTable(logintable)))
         F.append(Center(submitbutton))
