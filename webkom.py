@@ -3077,6 +3077,17 @@ def print_not_implemented(resp):
     resp.doc.append(cont)
     resp.sess = None
 
+def print_receive_error(resp):
+    _ = resp.get_translator()
+    cont = Container(Href(BASE_URL, "WebKOM"))
+    cont.append(Heading(3, _("Server communications error")))
+    cont.append(_("An error occured while communicating with the LysKOM server. "
+                  "This could be a network problem or a LysKOM server failure."))
+    cont.append(P())
+    cont.append(Href(BASE_URL, _("Login again")))
+    resp.doc.append(cont)
+    resp.sess = None
+
 # Main action routine. This function is critical and must obey these rules:
 # req.finish() should always be executed. If it failes, a manual thread.exit()
 # should be done.
@@ -3088,6 +3099,8 @@ def handle_req(req, env, form):
             actions(resp)
         except RemotelyLoggedOutException:
             print_logged_out_response(resp)
+        except kom.ReceiveError:
+            print_receive_error(resp)
         except kom.NotImplemented:
             print_not_implemented(resp)
         except:
