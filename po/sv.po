@@ -1,10 +1,6 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: WebKOM 0.17\n"
+"Project-Id-Version: WebKOM 0.20\n"
 "PO-Revision-Date: Sun Mar 18 22:08:39 2001\n"
 "Last-Translator: Peter Åstrand <astrand@lysator.liu.se>\n"
 "Language-Team: Peter Åstrand <astrand@lysator.liu.se>\n"
@@ -64,8 +60,8 @@ msgstr "Inga olästa"
 msgid "Add recipients and comments to existing articles"
 msgstr "Lägga till mottagare och kommentarer till existerande inlägg"
 
-msgid "Try again!"
-msgstr "Försök igen!"
+msgid "View with mail headers"
+msgstr "Visa med mail-headers"
 
 msgid "(Not readable)"
 msgstr "(Ej läsbar)"
@@ -308,8 +304,8 @@ msgstr "Se även inlägg "
 msgid "Create new user"
 msgstr "Skapa ny användare"
 
-msgid "Invalid password"
-msgstr "Felaktigt lösenord"
+msgid "Repeat password"
+msgstr "Upprepa lösenord"
 
 msgid ", marked by you. "
 msgstr ", markerad av dig. "
@@ -561,6 +557,9 @@ msgstr "ingen"
 msgid "Search for conference or person:"
 msgstr "Sök efter möte eller person:"
 
+msgid "Try again!"
+msgstr "Försök igen!"
+
 msgid "Check if this bug is listed on"
 msgstr "Kontrollera ifall den här buggen finns med på"
 
@@ -670,8 +669,8 @@ msgstr "Läsa markerade inlägg"
 msgid " in the Bugzilla at Lysator"
 msgstr "i Bugzilla på Lysator"
 
-msgid "Repeat password"
-msgstr "Upprepa lösenord"
+msgid "View without mail headers"
+msgstr "Visa utan mail-headers"
 
 msgid "An error occurred when fetching article information."
 msgstr "Ett fel uppstod när inläggen skulle hämtas."
@@ -744,6 +743,9 @@ msgstr "Se även möte "
 
 msgid "Articles"
 msgstr "Inlägg"
+
+msgid "Invalid password"
+msgstr "Felaktigt lösenord"
 
 msgid "Error: "
 msgstr "Fel: "
