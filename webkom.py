@@ -433,10 +433,11 @@ class Action:
         self.doc.append(div)
         div.append(str(CUSTOM_RIGHT_FOOTER))
         div.append(NBSP*4)
-        image = Image(src="/webkom/images/check.png", border=0, height=17, width=22,
-                      alt="[check HTML validity]")
-        div.append(Href("http://validator.w3.org/check?uri=%s" % (urllib.quote(self.resp._get_my_url())),
-                        str(image)))
+        if VALIDATOR_LINK:
+            image = Image(src="/webkom/images/check.png", border=0, height=17, width=22,
+                          alt="[check HTML validity]")
+            div.append(Href("http://validator.w3.org/check?uri=%s" % (urllib.quote(self.resp._get_my_url())),
+                            str(image)))
         
     def submit_redir(self, submit_result):
         self.sess.submit_result = submit_result
