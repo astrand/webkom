@@ -79,7 +79,7 @@ class SessionSet:
 
     def add_session(self, sess):
         "Add session to sessionset. Return sessionkey"
-        system_log.write(2, "Creating session for person %d on server %s"
+        system_log.level_write(2, "Creating session for person %d on server %s"
                          % (sess.conn.get_user(), sess.komserver))
         key = self.gen_uniq_key()
         self.sessionset_lock.acquire()
@@ -90,7 +90,7 @@ class SessionSet:
 
     def _delete_session(self, key, deltype=""):
         sess = self.sessionset[key]
-        system_log.write(2, "Deleting %ssession for person %d on server %s, sessnum=%d"
+        system_log.level_write(2, "Deleting %ssession for person %d on server %s, sessnum=%d"
                          % (deltype, sess.conn.get_user(), sess.komserver, sess.session_num))
         
         # Be nice and shut down connection and socket. 
@@ -113,11 +113,11 @@ class SessionSet:
             # but there is nothing wrong with helping the GC a little bit...
             num_refs = sys.getrefcount(self.sessionset[key])
             if num_refs != 5:
-                system_log.write(1, "INTERNAL ERROR: Wrong number of Session references before deletion")
+                system_log.level_write(1, "INTERNAL ERROR: Wrong number of Session references before deletion")
             del self.sessionset[key]
 
         except:
-            system_log.write(1, "Exception in _delete_session when deleting session.")
+            system_log.level_write(1, "Exception in _delete_session when deleting session.")
 
     def del_session(self, key):
         "Delete session from sessionset"
@@ -2574,29 +2574,39 @@ def handle_req(fcg, env, form):
 class Logger:
     "Write log messages to files, with current time prefixed"
     def __init__(self, filename):
-        self.log = open(filename, "a")
+        # 0 means unbuffered.
+        self.log = open(filename, "a", 0)
 
-    def write(self, level, msg):
+    def __getattr__(self, attrname):
+        return getattr(self.log, attrname)
+
+    def write(self, msg):
+        self.log.write(time.strftime("%Y-%m-%d %H:%M ", time.localtime(time.time())))
+        self.log.write(str(msg))
+        if not msg[-1] == "\n":
+            self.log.write("\n")
+
+    def level_write(self, level, msg):
         if level <= LOGLEVEL:
-            self.log.write(time.strftime("%Y-%m-%d %H:%M ", time.localtime(time.time())))
-            self.log.write(str(msg) + "\n")
-            self.log.flush()
+            self.write(msg)
 
         
 # Interaction via FIFO
 def run_console(*args):
-    system_log.write(2, "Console thread started")
-    system_log.write(4, "Console using fifo prefix " + FIFO_PREFIX)
-    import fifoconsole
+    system_log.level_write(2, "Console thread started")
+    system_log.level_write(4, "Console using socket " + CONSOLE_SOCKET)
+    import consoleserver
     try:
-        fifoconsole.interact(local=globals(), fifoprefix=FIFO_PREFIX)
+        consoleserver.main_thread(globals(), CONSOLE_SOCKET)
+    except SystemExit:
+        system_log.level_write(2, "Console thread exited")
     except:
-        f=open(os.path.join(LOG_DIR, "traceback.fifoconsole"), "w")
+        f=open(os.path.join(LOG_DIR, "traceback.console"), "w")
         traceback.print_exc(file = f)
         f.close()
 
 def run_maintenance(*args):
-    system_log.write(2, "Maintenance thread started")
+    system_log.level_write(2, "Maintenance thread started")
     while 1:
         time.sleep(60)
         sessionset.del_inactive()
@@ -2614,12 +2624,12 @@ def run_fcgi():
 #
 # Global log file
 system_log = Logger(os.path.join(LOG_DIR, "system.log"))
-system_log.write(1, "WebKOM started, LOGLEVEL=%d" % LOGLEVEL)
+system_log.level_write(1, "WebKOM started, LOGLEVEL=%d" % LOGLEVEL)
 
-# Take care of output to stdout and stderr. 0 means unbuffered.
+# Take care of output to stdout and stderr. 
 # Note: stdout and stderr should not normally be used for any output. 
-sys.stdout = open(os.path.join(LOG_DIR, "stdout.log"), "w", 0)
-sys.stderr = open(os.path.join(LOG_DIR, "stderr.log"), "w", 0)
+sys.stdout = system_log
+sys.stderr = system_log
 
 # Start console thread
 thread.start_new_thread(run_console,())
