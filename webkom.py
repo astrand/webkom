@@ -2948,7 +2948,7 @@ class ViewPresentationActions(Action):
         toplink = Href(self.base_session_url(), "WebKOM")
         golink = self.action_href("view_presentation",
                                   self._("View presentation"))
-        self.append_std_top(Container(toplink, ' : ', golink))
+        self.append_std_top(Container(toplink, TOPLINK_SEPARATOR, golink))
         self.resp.flush()
         
         F = Form(BASE_URL, name="view_pres_form", submit="")
