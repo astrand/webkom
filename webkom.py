@@ -281,7 +281,7 @@ class AddShortCuts(Action):
         ret = """    case '%s':
             window.location="%s";
             break;
-        """ % (key, location)
+""" % (key, location)
         return ret
     
     def response(self):
@@ -363,6 +363,7 @@ class LoginPageActions(Action):
         F_submit.append(Input(name="password", type="hidden"))
 
         # Translate abstract container into document.write statements
+        # FIXME: Use string.join instead. 
         form_code = ""
         for line in string.split(str(Center(js_cont)), '\n'):
             form_code = form_code + "document.write('" + line + "');\n"
@@ -1706,9 +1707,11 @@ def actions(resp):
     ViewPendingMessages(resp).response()
 
     # Create an instance of apropriate class and let it generate response
-    response_type(resp).response()
+    action = response_type(resp)
+    action.response()
 
-    resp.add_shortcut("p", "http://www.pp.se")
+    # Add global shortcuts XXX
+    resp.add_shortcut("v", action.base_session_url() + "whoison")
 
     # Add Javascript shortcuts
     if resp.shortcuts_active:
