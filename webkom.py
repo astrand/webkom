@@ -844,7 +844,7 @@ class GoConfActions(Action):
         self.doc.append(self.action_href("viewtext&textnum=" + str(presentation),
                                          "Visa presentation", presentation), NBSP)
 
-
+        self.doc.append(self.action_href("set_unread", "Endast"))
         
         self.doc.append(BR(), Heading(3, "Inläggsrubriker"))
 
@@ -1620,6 +1620,64 @@ class JoinConfSubmit(Action):
         
         return
 
+class SetUnreadActions(Action):
+    "Generate a page for setting unread"
+    def response(self):
+        self.resp.shortcuts_active = 0
+        toplink = Href(self.base_session_url(), "WebKOM")
+        conflink = self.action_href("viewconfs", "Möten")
+        cont = Container(toplink, " : ", conflink)
+        self.append_std_top(cont)
+
+        conf_num = self.sess.current_conf
+        conf_name = self.get_conf_name(conf_num)
+        cont.append(" : ", self.action_href("goconf&conf=" + str(conf_num),
+                                            conf_name))
+
+        submitbutton = Input(type="submit", name="set_unread_submit", value="Utför")
+        F = Form(BASE_URL, name="set_unread_form", submit=submitbutton)
+        self.doc.append(F)
+        F.append(self.hidden_key())
+
+        F.append(Heading(2, "Endast läsa senaste"))
+
+        F.append("Sätt läsmarkeringar så att du endast har ")
+        F.append(Input(name="num_unread", size=4, value="20"))
+        F.append(" olästa i detta mötet.", BR())
+
+        return
+
+
+class SetUnreadSubmit(Action):
+    "Handles submits for joining a conference."
+    def response(self):
+        toplink = Href(self.base_session_url(), "WebKOM")
+        conflink = self.action_href("viewconfs", "Möten")
+        cont = Container(toplink, " : ", conflink)
+        self.append_std_top(cont)
+
+        conf_num = self.sess.current_conf
+        conf_name = self.get_conf_name(conf_num)
+        cont.append(" : ", self.action_href("goconf&conf=" + str(conf_num),
+                                            conf_name))
+        
+        
+        num_unread = int(self.form.getvalue("num_unread"))
+        try:
+            kom.ReqSetUnread(self.sess.conn, conf_num, num_unread).response()
+        except:
+            self.print_error("Det gick ej att sätta antalet olästa.")
+            return
+
+        # Invalidate caches
+        self.sess.conn.memberships.invalidate(conf_num)
+        self.sess.conn.no_unread.invalidate(conf_num)
+        
+        self.doc.append(Heading(3, "Ok"))
+        self.doc.append("Antal olästa är nu satt till " + str(num_unread) + ".")
+        
+        return
+
 
 def actions(resp):
     "Do requested actions based on CGI keywords"
@@ -1644,7 +1702,8 @@ def actions(resp):
                        "searchrcptsubmit" : WriteArticleActions,
                        "writearticlesubmit" : WriteArticleSubmit,
                        "joinconfsubmit" : JoinConfSubmit,
-                       "searchconfsubmit" : JoinConfActions }
+                       "searchconfsubmit" : JoinConfActions,
+                       "set_unread_submit" : SetUnreadSubmit }
     action_keywords = {"logout" : LogOutActions,
                        "viewconfs" : ViewConfsActions,
                        "viewconfs_unread" : ViewConfsUnreadActions,
@@ -1657,7 +1716,8 @@ def actions(resp):
                        "writeletter" : WriteLetterActions,
                        "whats_implemented" : WhatsImplementedActions,
                        "joinconf" : JoinConfActions,
-                       "about" : AboutPageActions }
+                       "about" : AboutPageActions,
+                       "set_unread" : SetUnreadActions }
 
     if not sessionset.valid_session(resp.key):
         InvalidSessionPageActions(resp).response()
