@@ -538,7 +538,7 @@ class Action:
             result += self._("Type in a part of a conference name to search for. ")
 
         result += self._("The search is not case sensitive. ")
-        result += self._("Regular expressions are allowed, unless the checkbox below is on.")
+        result += self._("Regular expressions are allowed, unless KOM matching is used.")
         return result
 
 

@@ -138,8 +138,8 @@ msgstr "Fotnot i inlägg:"
 msgid "list with known bugs"
 msgstr "lista med kända buggar"
 
-msgid "homepage."
-msgstr "hemsidan."
+msgid "Password"
+msgstr "Lösenord"
 
 msgid "Conferences (you are a member of)"
 msgstr "Möten (som du är medlem i)"
@@ -418,9 +418,6 @@ msgstr "Möte"
 msgid "Join conference"
 msgstr "Gå med i möte"
 
-msgid "Regular expressions are allowed, unless the checkbox below is on."
-msgstr "Reguljära uttryck tillåts, såvida kryssrutan nedan ej är ikryssad. "
-
 msgid ""
 "It should be used for bug reports, feature requests and general feedback."
 msgstr "Den bör användas för buggrapporter, önskemål och allmän feedback."
@@ -543,6 +540,9 @@ msgstr "Person"
 
 msgid "Read article by specifying global article number"
 msgstr "Läsa inlägga via inläggsnummer"
+
+msgid "List all conferences you are a member of"
+msgstr "Lista alla möten som du är medlem i"
 
 msgid "Remove marked recipients"
 msgstr "Ta bort markerade mottagare"
@@ -740,8 +740,8 @@ msgstr "Om WebKOM"
 msgid "Search for new recipient:"
 msgstr "Sök ny mottagare:"
 
-msgid "Password"
-msgstr "Lösenord"
+msgid "homepage."
+msgstr "hemsidan."
 
 msgid "External recipient:"
 msgstr "Extern mottagare:"
@@ -809,8 +809,8 @@ msgstr "Skriva kommentarer"
 msgid "Search result will be limited to "
 msgstr "Sökresultatet kommer att begränsas till "
 
-msgid "List all conferences you are a member of"
-msgstr "Lista alla möten som du är medlem i"
+msgid "Regular expressions are allowed, unless KOM matching is used."
+msgstr "Reguljära uttryck tillåts, förutom när KOM-matchning används."
 
 msgid "Unmark"
 msgstr "Avmarkera"
