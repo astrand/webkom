@@ -50,6 +50,19 @@ class SessionSet:
         # Global session log
         self.log = open(LOG_DIR + "session.log", "a")
 
+    def gen_session_key(self):
+        key = ""
+        for foo in range(0, 4):
+            key = key + hex(random.randrange(sys.maxint))[2:]
+            return key
+
+    def gen_uniq_key(self):
+        "Generate a uniq session key"
+        while 1:
+            key = self.gen_session_key()
+            if not self.valid_session(key):
+                return key
+            
     def valid_session(self, key):
         "Check if a given key is a valid, active sessionkey"
         self.sessionset_lock.acquire()
@@ -64,16 +77,14 @@ class SessionSet:
         session.timestamp = time.time()
         return session
 
-    def new_session(self, key, session):
-        "Create new session"
+    def add_session(self, session):
+        "Add session to sessionset. Return sessionkey"
+        key = self.gen_uniq_key()
         self.sessionset_lock.acquire()
-        if self.sessionset.has_key(key):
-            # Something is totally wrong
-            self.sessionset_lock.release()
-            assert(0)
         self.sessionset[key] = session
         self.write_log("Creating session", key)
         self.sessionset_lock.release()
+        return key
 
     def del_session(self, key):
         "Delete session from sessionset"
@@ -731,6 +742,22 @@ class LogInActions(Action):
         return TRUE
 
 
+    def setup_asyncs(self, conn):
+        ACCEPTING_ASYNCS = [
+            kom.ASYNC_NEW_NAME,
+            kom.ASYNC_LEAVE_CONF,
+            kom.ASYNC_SEND_MESSAGE,
+            kom.ASYNC_DELETED_TEXT,
+            kom.ASYNC_NEW_TEXT,
+            kom.ASYNC_NEW_RECIPIENT,
+            kom.ASYNC_SUB_RECIPIENT,
+            kom.ASYNC_NEW_MEMBERSHIP,
+            kom.ASYNC_LOGOUT ]
+        conn.add_async_handler(kom.ASYNC_SEND_MESSAGE, self.resp.sess.async_message)
+        conn.add_async_handler(kom.ASYNC_LOGOUT, self.resp.sess.async_logout)
+        kom.ReqAcceptAsync(conn, ACCEPTING_ASYNCS).response()
+        
+
     def response(self):
         self.resp.shortcuts_active = 0
         
@@ -750,18 +777,6 @@ class LogInActions(Action):
 
         try:
             conn = kom.CachedUserConnection(self.komserver, 4894, "WebKOM%" + remote_host)
-            # Set up asyncs
-            ACCEPTING_ASYNCS = [
-                kom.ASYNC_NEW_NAME,
-                kom.ASYNC_LEAVE_CONF,
-                kom.ASYNC_SEND_MESSAGE,
-                kom.ASYNC_DELETED_TEXT,
-                kom.ASYNC_NEW_TEXT,
-                kom.ASYNC_NEW_RECIPIENT,
-                kom.ASYNC_SUB_RECIPIENT,
-                kom.ASYNC_NEW_MEMBERSHIP,
-                kom.ASYNC_LOGOUT ]
-            kom.ReqAcceptAsync(conn, ACCEPTING_ASYNCS).response()
         except:
             self.error_message(self._("Cannot connect to server."))
             return
@@ -787,22 +802,15 @@ class LogInActions(Action):
 
         # Set user_no in connection
         conn.set_user(pers_num)
-
         kom.ReqSetClientVersion(conn, "WebKOM", VERSION)
 
         # Create new session
-        sessionkey = gen_session_key()
-        # If the sessionkey is valid, someone else is using it. 
-        while sessionset.valid_session(sessionkey):
-            sessionkey = gen_session_key()
         self.resp.sess = Session(conn)
         # Add to sessionset
-        sessionset.new_session(sessionkey, self.resp.sess)
-        self.resp.key = sessionkey
+        self.resp.key = sessionset.add_session(self.resp.sess)
 
-        # Handle messages
-        conn.add_async_handler(kom.ASYNC_SEND_MESSAGE, self.resp.sess.async_message)
-        conn.add_async_handler(kom.ASYNC_LOGOUT, self.resp.sess.async_logout)
+        # Setup async handling
+        self.setup_asyncs(conn)
 
         # Pre-fetch information about half of the conferences
         prefetch_num = len(conn.member_confs)/2
