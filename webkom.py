@@ -323,6 +323,7 @@ class Action:
 
     def gen_error(self, *msg):
         "Generate error message in bold, with a BR following"
+        msg = map(webkom_escape, msg)
         return Container(BR(), Bold(self._("Error: "), *msg), BR())
 
     def print_error(self, *msg):
@@ -343,12 +344,14 @@ class Action:
     def get_conf_name(self, num):
         "Get conference name"
         # FIXME: Do linebreaks instead of truncating
-        return self.sess.conn.conf_name(num, default=self._("Conference %d (does not exist)"))[:MAX_CONFERENCE_LEN]
+        default = self._("Conference %d (does not exist)")
+        return webkom_escape(self.sess.conn.conf_name(num, default=default)[:MAX_CONFERENCE_LEN])
 
     def get_pers_name(self, num):
         "Get persons name"
         # FIXME: Do linebreaks instead of truncating
-        return self.sess.conn.conf_name(num, default=self._("Person %d (does not exist)"))[:MAX_CONFERENCE_LEN]
+        default = self._("Person %d (does not exist)")
+        return webkom_escape(self.sess.conn.conf_name(num, default=default)[:MAX_CONFERENCE_LEN])
 
     def get_presentation(self, num):
         "Get presentation of a conference"
@@ -489,7 +492,7 @@ class ViewPendingMessages(Action):
             else:
                 sender_name = self.get_pers_name(msg.sender)
                 
-            self.doc.append(Bold(self._("From: ") + sender_name), BR())
+            self.doc.append(Bold(self._("From: ") + webkom_escape(sender_name)), BR())
             self.doc.append(Bold(self._("Time: ") +
                                  time.strftime("%Y-%m-%d %H:%M", time.localtime(msg.time))))
             
@@ -764,7 +767,7 @@ class LogInActions(Action):
         toplink = Href(BASE_URL, "WebKOM")
         self.doc.append(Container(toplink, TOPLINK_SEPARATOR + self._("Login")))
         self.doc.append(Heading(2, self._("Login failed")))
-        self.doc.append(errmsg)
+        self.doc.append(webkom_escape(errmsg))
 
     def gen_table(self, matches):
         # Ambiguity
@@ -784,7 +787,7 @@ class LogInActions(Action):
             infotext = self._("(Too many hits, the table is truncated)")
         
         for (pers_num, pers_name) in matches[:15]:
-            tab.append([pers_name,
+            tab.append([webkom_escape(pers_name),
                         pers_num,
                         Input(type="radio", name="username", value="#" + str(pers_num))])
         if infotext:
@@ -1258,8 +1261,10 @@ class GoConfActions(Action):
             ts = self.sess.conn.textstats[global_num]
             # Textnum
             textnum = self.action_href("viewtext&amp;textnum=" + str(global_num), str(global_num))
+            
             # Date
             date = self.sess.conn.textstats[global_num].creation_time.to_date_and_time()
+            
             # Author
             ai_from = kom.first_aux_items_with_tag(ts.aux_items,
                                                    kom.AI_MX_FROM)
@@ -1274,6 +1279,7 @@ class GoConfActions(Action):
                                        ai_from.data))
             else:
                 author = self.get_pers_name(ts.author)
+                
             # Subject
             subjtext = self.sess.conn.subjects[global_num]
             if not subjtext:
@@ -2160,7 +2166,7 @@ class WriteArticleActions(Action):
             F.append(self._("Search result:"), BR())
             tab=[]
             for (rcpt_num, rcpt_name) in matches[:10]:
-                tab.append([rcpt_name,
+                tab.append([webkom_escape(rcpt_name),
                             Input(type="checkbox", name="addrcpt", value=str(rcpt_num))])
             if infotext:
                 tab.append([infotext, ""])
@@ -2475,6 +2481,7 @@ class JoinConfActions(Action):
             searchtext = " "
 
         # Search result
+        # FIXME: Code duplicated from WriteArticleActions. 
         if searchtext:
             matches = self.sess.conn.lookup_name(searchtext, want_pers=0, want_confs=1)
             infotext = None
@@ -2486,7 +2493,7 @@ class JoinConfActions(Action):
             F.append(self._("Search result:"), BR())
             tab=[]
             for (rcpt_num, rcpt_name) in matches[:maxhits]:
-                tab.append([rcpt_name,
+                tab.append([webkom_escape(rcpt_name),
                             Input(type="radio", name="new_conference", value=str(rcpt_num))])
             if infotext:
                 tab.append([infotext, ""])
@@ -2590,7 +2597,7 @@ class ViewMarkingsActions(Action):
                                                    ai_from.data))
                 else:
                     author = self.get_pers_name(ts.author)
-                subject = self.sess.conn.subjects[mark]
+                subject = webkom_escape(self.sess.conn.subjects[mark])
 
             textnum = self.action_href("viewtext&amp;textnum="+\
                                        str(mark),
@@ -2850,6 +2857,7 @@ class ChooseConfActions(Action):
         F.append(cont)
         
         ## Search result
+        # FIXME: Code duplicated.
         searchtext = self.form.getvalue("searchtext", None)
         if searchtext:
             matches = self.sess.conn.lookup_name(searchtext, want_pers=0, want_confs=1)
@@ -2867,7 +2875,8 @@ class ChooseConfActions(Action):
             self.doc.append(self._("Search result:"), BR())
             tab=[]
             for (rcpt_num, rcpt_name) in member_matches[:10]:
-                tab.append([self.action_href("goconf&amp;conf=" + str(rcpt_num), rcpt_name)])
+                tab.append([self.action_href("goconf&amp;conf=" + str(rcpt_num),
+                                             webkom_escape(rcpt_name))])
 
             if infotext:
                 tab.append([infotext, ""])
@@ -3009,7 +3018,8 @@ def actions(resp):
     resp.sess.lock_sess()
 
     # Set page title
-    resp.doc.title = "WebKOM: " + resp.sess.conn.conf_name(resp.sess.conn.get_user())[:MAX_CONFERENCE_LEN]
+    resp.doc.title = "WebKOM: " \
+                     + webkom_escape(resp.sess.conn.conf_name(resp.sess.conn.get_user())[:MAX_CONFERENCE_LEN])
 
     # Tell the server the user is active
     resp.sess.user_is_active()
