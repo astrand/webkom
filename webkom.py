@@ -594,7 +594,7 @@ class LogInActions(Action):
     "Do login actions"
     def error_message(self, errmsg):
         toplink = Href(BASE_URL, "WebKOM")
-        self.doc.append(Container(toplink, self._(" : Login")))
+        self.doc.append(Container(toplink, " : " + self._("Login")))
         self.doc.append(Heading(2, self._("Login failed")))
         self.doc.append(errmsg)
 
@@ -602,7 +602,7 @@ class LogInActions(Action):
         # Ambiguity
         # Create top
         toplink = Href(BASE_URL, "WebKOM")
-        self.doc.append(Container(toplink, self._(" : Login")))
+        self.doc.append(Container(toplink, " : " + self._("Login")))
         self.doc.append(Heading(2, self._("The username is ambigious")))
 
         F = Form(BASE_URL, name="loginform", submit="")
@@ -1342,7 +1342,7 @@ class ChangePwActions(Action):
     def response(self):
         self.resp.shortcuts_active = 0
         toplink = Href(self.base_session_url(), "WebKOM")
-        cont = Container(toplink, self._(" : Change password"))
+        cont = Container(toplink, " : " + self._("Change password"))
         self.append_std_top(cont)
         submitbutton = Center(Input(type="submit", name="changepwsubmit", value="Byt lösenord"))
         F = Form(BASE_URL, name="changepwform", submit=submitbutton)
