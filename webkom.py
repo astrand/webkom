@@ -1168,7 +1168,6 @@ class ViewTextActions(Action):
             subject = "&nbsp;"
         else:
             subject = webkom_escape(subject)
-        print "subject is", repr(subject)
         return subject
 
 
@@ -1343,6 +1342,27 @@ class ViewTextActions(Action):
     def print_personal_comment(self, ts):
         if kom.first_aux_items_with_tag(ts.aux_items, kom.AI_PERSONAL_COMMENT):
             self.doc.append(self._("The author requests private replies only."))
+
+    def print_read_confirmations(self, global_num, ts):
+        # FIXME: Maybe remove duplicate confirmations
+        read_confirms = kom.all_aux_items_with_tag(ts.aux_items, kom.AI_READ_CONFIRM)
+        creators = [ai.creator for ai in read_confirms]
+        me = self.sess.conn.get_user()
+        if not me in creators:
+            self.print_request_confirmation(global_num, ts)
+
+        for confirmation in read_confirms:
+            self.doc.append(self._("Confirmed reading: "),
+                            webkom_escape(self.get_pers_name(confirmation.creator)),
+                            BR())
+
+    def print_request_confirmation(self, global_num, ts):
+        if kom.first_aux_items_with_tag(ts.aux_items, kom.AI_REQUEST_CONFIRMATION):
+            confirm_link = self.action_href("read_confirmation&amp;textnum=" + \
+                                            str(global_num),
+                                            self._("Confirm reading this text?"))
+            self.doc.append(self._("The author requests read confirmation. "),
+                            Bold(confirm_link), BR())
 
     def response(self):
         # Toplink
@@ -1527,6 +1547,9 @@ class ViewTextActions(Action):
         # no-comments, personal-comment
         self.print_no_comments(ts)
         self.print_personal_comment(ts)
+
+        # request-confirmation
+        self.print_read_confirmations(global_num, ts)
 
         # Add all comments.
         new_comments = []
@@ -2459,7 +2482,29 @@ class SubmitResultActions(Action):
     def response(self):
         self.doc.append(self.sess.submit_result)
         return
-    
+
+class ReadConfirmationActions(Action):
+    def response(self):
+        # Fetch conference name
+        conf_num = self.sess.current_conf
+        conf_name = self.get_conf_name(conf_num)
+        toplink = Href(self.base_session_url(), "WebKOM")
+        thisconf = self.action_href("goconf&amp;conf=" + str(conf_num), conf_name)
+        cont = Container(toplink, " : ", self.current_conflink(), " : ", thisconf, " : ", "Confirm reading")
+        self.append_std_top(cont)
+
+        self.doc.append(Heading(2, "Read confirmation"))
+
+        # FIXME: Maybe handle case when text is removed. 
+        global_num = int(self.form["textnum"].value)
+        read_confirmation = kom.AuxItem(tag=kom.AI_READ_CONFIRM)
+        kom.ReqModifyTextInfo(self.sess.conn, global_num, [], [read_confirmation])
+        # Invalidate cache
+        self.sess.conn.textstats.invalidate(global_num)
+        
+        textlink = self.action_href("viewtext&amp;textnum=" + str(global_num), str(global_num))
+        self.doc.append(BR(), self._("You have confirmed reading text "),
+                        textlink, ".", BR())
 
 def actions(resp):
     "Do requested actions based on CGI keywords"
@@ -2521,7 +2566,8 @@ def actions(resp):
                        "set_unread" : SetUnreadActions,
                        "logoutothersessions" : LogoutOtherSessionsActions,
                        "submit_result" : SubmitResultActions,
-                       "login_progress" : LoginProgressPageActions }
+                       "login_progress" : LoginProgressPageActions,
+                       "read_confirmation" : ReadConfirmationActions }
 
     if not sessionset.valid_session(resp.key):
         InvalidSessionPageActions(resp).response()
