@@ -352,6 +352,17 @@ class Action:
         except:
             # Zero is special: It indicates that the text does not exist. 
             return 0
+
+    def get_article_text(self, num):
+        ts = self.sess.conn.textstats[num] 
+        try:
+            text = kom.ReqGetText(self.sess.conn, num, 0, ts.no_of_chars).response()
+        except:
+            self.print_error(self._("An error occurred when fetching article."))
+            return ""
+        # Skip over the subject
+        text = text[string.find(text, "\n")+1:]
+        return text
     # End of KOM utility methods.
     #
             
@@ -1577,18 +1588,9 @@ class ViewTextActions(Action):
         
         # Warn for strange content-types
         self.check_content_type(ts)
-                
-        # Fetch text
-        try:
-            text = kom.ReqGetText(self.sess.conn, global_num, 0, ts.no_of_chars).response()
-        except:
-            self.print_error(self._("An error occurred when fetching article."))
-            return
-            
 
-        # Skip over the subject
-        body = text[string.find(text, "\n"):]
-        # ...and the empty line
+        body = self.get_article_text(global_num)
+        
         ismail = 0
         if kom.first_aux_items_with_tag(ts.aux_items, kom.AI_MX_FROM):
             ismail = 1
@@ -2164,27 +2166,19 @@ class WriteArticleActions(Action):
         F.append(Input(name="articlesubject", value=subject, size=60), BR())
 
         text = self.form.getvalue("text_area", "")
-        if presentationfor and \
-               self.sess.conn.conferences[presentationfor].presentation != 0:
-            try:
-                ts = self.\
-                     sess.conn.textstats[self.sess.conn.\
-                                         conferences[presentationfor].\
-                                         presentation]
-                text = kom.ReqGetText(self.sess.conn,
-                                      self.sess.conn.\
-                                      conferences[presentationfor].\
-                                      presentation,
-                                      0,
-                                      ts.no_of_chars).response()
-                text = text[string.find(text, "\n")+1:]
-            except:
-                self.print_error("An error occurred when fetching article information for text %d" \
-                                 % self.sess.conn.conferences[presentationfor].presentation)
+        if presentationfor:
+            pres_text = self.sess.conn.conferences[presentationfor].presentation
+            if pres_text != 0:
+                text = self.get_article_text(pres_text)
+        elif self.form.getvalue("quotesubmit") and comment_to_list:
+            comment_text = self.get_article_text(int(comment_to_list[0]))
+            text = quote_text(comment_text) + "\n\n" + text
                 
         F.append("Article text:", BR())
         F.append(Textarea(rows=20, cols=70, text=text))
         F.append(BR())
+        if comment_to_list and not presentationfor:
+            F.append(Input(type="submit", name="quotesubmit", value=self._("Quote")))
 
         self.doc.append(self._("If certain characters are hard to write with your keyword, "
                                "you can copy and paste from the line below:"), BR())
@@ -2919,13 +2913,14 @@ def actions(resp):
         return
     else:
         LoginPageActions(resp).response()
-        return 
-    
+        return
+
     # "loginsubmit" and "about" excluded
     submit_keywords = {"changepwsubmit" : ChangePwSubmit,
                        "removercptsubmit" : WriteArticleActions,
                        "addrcptsubmit" : WriteArticleActions,
                        "searchrcptsubmit" : WriteArticleActions,
+                       "quotesubmit" : WriteArticleActions,
                        "writearticlesubmit" : WriteArticleSubmit,
                        "writepresentationsubmit" : WritePresentationSubmit,
                        "joinconfsubmit" : JoinConfSubmit,
