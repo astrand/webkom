@@ -732,11 +732,9 @@ class ViewConfsActions(Action):
 
         # We ask for one extra, so we can know if we should display a next-page-link
         if only_unread:
-            memberships = get_active_memberships_unread(self.sess.conn, self.sess.conn.member_confs,
-                                                        ask_for, MAX_CONFS_PER_PAGE + 1)
+            memberships = get_active_memberships_unread(self.sess.conn, ask_for, MAX_CONFS_PER_PAGE + 1)
         else:
-            memberships = get_active_memberships(self.sess.conn, self.sess.conn.member_confs,
-                                                 ask_for, MAX_CONFS_PER_PAGE + 1)
+            memberships = get_active_memberships(self.sess.conn, ask_for, MAX_CONFS_PER_PAGE + 1)
         prev_first = next_first = None
         if ask_for:
             # Link to previous page
@@ -750,20 +748,6 @@ class ViewConfsActions(Action):
             # Remove the highest conference
             memberships.pop()
 
-
-        # Create a dictionary with the name as the key and (conf_num, num_unread)
-        conf_dict = {}
-        for conf in memberships:
-            conf_num = conf.conference
-            conf_name = self.get_conf_name(conf_num)
-            # Change the first letter to uppercase
-            conf_name = string.upper(conf_name[:1]) + conf_name[1:]
-
-            # Get number of unread
-            num_unread = self.sess.conn.no_unread[conf_num]
-            
-            conf_dict[conf_name] = (conf_num, num_unread)
-
         # Add the previous-page-link
         self.doc.append(self.action_href(action_url + "&first_conf=" + str(prev_first),
                                          "Föregående sida", prev_first is not None), NBSP)
@@ -773,9 +757,10 @@ class ViewConfsActions(Action):
         tab = []
         self.doc.append(Table(heading=headings, body=tab, cell_padding=2, width="60%"))
 
-        for name in conf_dict.keys():
-            conf_num = conf_dict[name][0]
-            n_unread = conf_dict[name][1]
+        for conf in memberships:
+            n_unread = self.sess.conn.no_unread[conf.conference]
+            name = self.get_conf_name(conf.conference)
+            name = string.upper(name[:1]) + name[1:]
             if n_unread > 500:
                 comment = escape(">500")
                 name = Bold(name)
@@ -785,8 +770,10 @@ class ViewConfsActions(Action):
             else:
                 comment = "inga"
                 
-            tab.append([self.action_href("goconf&conf=" + str(conf_num), name),
+            tab.append([self.action_href("goconf&conf=" + str(conf.conference), name),
                         comment])
+
+        
 
         # Add the next-page-link
         self.doc.append(self.action_href(action_url + "&first_conf=" + str(next_first),
@@ -794,7 +781,7 @@ class ViewConfsActions(Action):
         # Link for next conference with unread
         self.doc.append(self.action_href("goconf_with_unread",
                                          "Nästa möte med olästa"), NBSP)
-        
+
         return
 
 
