@@ -2085,9 +2085,12 @@ class ChooseConfActions(Action):
 def actions(resp):
     "Do requested actions based on CGI keywords"
     # Set up wanted language
-    langs = string.split(resp.env["HTTP_ACCEPT_LANGUAGE"], ',')
-    langs = [string.strip(lang) for lang in langs]
-    resp.pref_lang = langs[0]
+    try:
+        langs = string.split(resp.env["HTTP_ACCEPT_LANGUAGE"], ',')
+        langs = [string.strip(lang) for lang in langs]
+        resp.pref_lang = langs[0]
+    except KeyError:
+        langs = []
     
     if resp.form.has_key("loginsubmit"):
         LogInActions(resp).response()
