@@ -600,10 +600,10 @@ class LogInActions(Action):
         kom.ReqSetClientVersion(conn, "WebKOM", VERSION)
 
         # Create new session
-        sessionkey = hex(random.randrange(1E12))
+        sessionkey = gen_session_key()
         # If the sessionkey is valid, someone else is using it. 
         while sessionset.valid_session(sessionkey):
-            sessionkey = hex(random.randrange(1E12))
+            sessionkey = gen_session_key()
         self.resp.sess = Session(conn, pers_num)
         # Add to sessionset
         sessionset.new_session(sessionkey, self.resp.sess)
