@@ -485,7 +485,6 @@ class AboutPageActions(Action):
                         external_href("http://webkom.lysator.liu.se/bugs.html",
                                       self._("list with known bugs")), ".")
 
-        # FIXME: Translate
 class WhatsImplementedActions(Action):
     "Generate a page with implementation details"
     def response(self):
@@ -496,50 +495,47 @@ class WhatsImplementedActions(Action):
         
         self.doc.append(Heading(2, self._("Vad kan WebKOM göra? (only available in Swedish)")))
         page = """
-        <h3>Implementerat</h3>
+        <h3>Implemented</h3>
         <ul>
-        <li>Se vem som är inloggad</li>
-        <li>Lista olästa inlägg</li>
-        <li>Skriva inlägg</li>
-        <li>Kommentera inlägg</li>
-        <li>Skriva brev</li>
-        <li>Återse mötespresentation</li>
-        <li>Ändra lösenord</li>
-        <li>Läsa nästa kommentar (i djupet-först-ordning)</li>
-        <li>Bli medlem i möte</li>
-        <li>Endast läsa senaste</li>
-        <li>Utträda ur möte</li>
+        <li>Check who is logged in</li>
+        <li>List unread articles</li>
+        <li>Write articles</li>
+        <li>Write comments</li>
+        <li>Write personal letters</li>
+        <li>Read conference presentation</li>
+        <li>Change password</li>
+        <li>Read comments in depth-first order</li>
+        <li>Join conference</li>
+        <li>Set unread</li>
+        <li>Leave conference</li>
         </ul>
 
-        <h3>Tänkt att implementeras</h3>
+        <h3>May be implemented in a near future</h3>
         <ul>
-        <li>Återse särskilt inlägg via globalt inläggsnummer</li>
-        <li>Skriva fotnot</li>
-        <li>Markera/avmarkera inlägg</li>
-        <li>Återse markerade</li>
-        <li>Lägga till kommentarslänkar</li>
+        <li>Read article by specifying global article number</li>
+        <li>Write footnotes</li>
+        <li>Mark/unmark articles</li>
+        <li>Read marked articles</li>
         </ul>
 
-        <h3>Ej tänkt att implementeras dem närmsta tiden</h3>
+        <h3>Things that probably won't be implemented soon</h3>
         <ul>
-        <li>Skicka meddelande</li>
-        <li>Sätt/ta bort lappar på dörrar</li>
-        <li>Prioritera möten</li>
-        <li>Skapa möten</li>
-        <li>Hoppa</li>
-        <li>Sessionsstatus för person</li>
-        <li>Ändra namn</li>
-        <li>Engelsk språköversättning</li>
-        <li>Radera inlägg</li>
-        <li>Status för möte/person</li>
-        <li>Addera mottagare i efterhand</li>
-        <li>Flytta inlägg</li>
-        <li>Addera FAQ</li>
-        <li>Förhindra kommentarer</li>
-        <li>Begär personligt svar</li>
-        <li>Begär läsbekräftelse</li>
-        <li>Aux-items</li>
-        <li>Korsreferenser</li>
+        <li>Send messages</li>
+        <li>Set/remove notes on letterbox</li>
+        <li>Prioritize conferences</li>
+        <li>Create conferences</li>
+        <li>Jump</li>
+        <li>View sessionstatus for persons</li>
+        <li>Change name</li>
+        <li>Delete articles</li>
+        <li>Status for conference/persons</li>
+        <li>Add recipients and comments to existing articles</li>
+        <li>Move articles between conferences</li>
+        <li>FAQ handling</li>
+        <li>Prevent comments</li>
+        <li>Request personal answer</li>
+        <li>Request read confirmation</li>
+        <li>Cross references</li>
         </ul>
 
         """
@@ -1175,12 +1171,11 @@ class ViewTextActions(Action):
         importdate = kom.first_aux_items_with_tag(ts.aux_items,
                                                   kom.AI_MX_DATE)
 
-        # FIXME: Translate
         if importdate:
-            header.append([self._("Datum:"),
+            header.append([self._("Date:"),
                            importdate.data])
         else:
-            header.append([self._("Datum:"), ts.creation_time.to_date_and_time()]);
+            header.append([self._("Date:"), ts.creation_time.to_date_and_time()]);
         if ismail:
             ai_from = kom.first_aux_items_with_tag(ts.aux_items,
                                                    kom.AI_MX_FROM)
@@ -1189,30 +1184,30 @@ class ViewTextActions(Action):
             realname = ""
             if ai_author:
                 realname = ai_author.data + " "
-            header.append([self._("Författare:"),
-                           realname + str(Href(self._("mailto:") + ai_from.data,
-                                ai_from.data))])
+            header.append([self._("Author:"),
+                           realname + str(Href("mailto:" + ai_from.data,
+                                               ai_from.data))])
             
-            header.append([self._("Importerad:"),
+            header.append([self._("Imported:"),
                            ts.creation_time.to_date_and_time() +\
-                           self._(" av ") +
+                           self._(" by ") +
                            str(self.action_href("viewtext&textnum=" +\
                                                 presentation,
                                                 self.get_pers_name(ts.author),
                                                 presentation))])
             for recipient in kom.all_aux_items_with_tag(ts.aux_items,
                                                         kom.AI_MX_TO):
-                header.append([self._("Extern mottagare:"),
-                              Href("mailto:" + recipient.data,
-                                   recipient.data)])
+                header.append([self._("External recipient:"),
+                               Href("mailto:" + recipient.data,
+                                    recipient.data)])
             for recipient in kom.all_aux_items_with_tag(ts.aux_items,
                                                         kom.AI_MX_CC):
-                header.append([self._("Extern kopiemottagare:"),
-                              Href("mailto:" + recipient.data,
-                                   recipient.data)])
+                header.append([self._("External carbon copy:"),
+                               Href("mailto:" + recipient.data,
+                                    recipient.data)])
             
         else:            
-            header.append([self._("Författare:"),
+            header.append([self._("Author:"),
                            self.action_href("viewtext&textnum=" + presentation,
                                             self.get_pers_name(ts.author), presentation)])
 
@@ -1326,17 +1321,16 @@ class ViewTextActions(Action):
             lower_actions.append(self.action_href("viewtext&textnum=" + str(global_num) + "&viewformat=code",
                                                   self._("View in code style")))
 
-        # FIXME: Translate
         if ismail:
             if "" != viewmailheadercode:
                 lower_actions.append(self.action_href("viewtext&textnum=" +\
                                                       str(global_num),
-                                                      "Visa utan headers"))
+                                                      "View without mail headers"))
             else:
                 lower_actions.append(self.action_href("viewtext&textnum=" +\
                                                       str(global_num) +\
                                                       "&viewmailheader=true",
-                                                      "Visa med mailheader"))
+                                                      "View with mail headers"))
         return 
 
 
