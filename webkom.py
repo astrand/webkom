@@ -18,6 +18,7 @@ from Formtools import *
 import random, time
 import thread
 from webkom_utils import *
+import webkom_js
 
 
 class SessionSet:
@@ -264,71 +265,31 @@ class ViewPendingMessages(Action):
 
 class AddShortCuts(Action):
     def shortcut_case(self, key, location):
-        ret = """case '%s':
+        ret = """    case '%s':
             window.location="%s";
             break;
         """ % (key, location)
         return ret
     
     def response(self):
-        code_begin = """
-        <SCRIPT LANGUAGE="JavaScript1.2">
-        <!--
-        function reFocus(e) {
-            if (active) {
-                document.shortcut_form.shortcut_entry.focus();
-                window.setTimeout(reFocus, 1000);
-            }
-        }
+        # Begin Javascript
+        ret = webkom_js.code_begin
+        # Determine browser type
+        ret = ret + webkom_js.browser_type
+        # Shortcut functions
+        ret = ret + webkom_js.shortcut_functions
+        # Begin case
+        ret = ret + webkom_js.begin_switch
+        # Add case for disabling shortcuts
+        ret = ret + webkom_js.disable_shortcuts
         
-        var ns4 = (document.layers)? true:false
-        var ie4 = (document.all)? true:false
-        var active = new Boolean(true);
-
-        document.onkeypress=keyPress;
-
-        if (ns4) {
-            document.write("<form name='shortcut_form'>");
-            document.write("<input name='shortcut_entry' type=text size=1>")
-            document.write("</form>")
-            document.captureEvents(Event.KEYPRESS);
-            window.setTimeout(reFocus, 100);
-        }
-        
-        function keyPress(e) {
-            if (!active) return true;
-            if (ns4)
-                keyChar = String.fromCharCode(e.which);
-            else if (ie4)
-                keyChar = String.fromCharCode(window.event.keyCode);
-            else
-                keyChar = ""
-            switch (keyChar) {
-        """
-        
-        disable_shortcuts = """
-        case 'z':
-            active = false;
-            alert("Snabbtangenter avslagna.");
-            break;
-        """
-            
-        code_end = """
-                }
-            return false;
-        }
-        //-->
-        </SCRIPT>
-        """
-        
-        ret = code_begin + disable_shortcuts
         # Example:
         #ret = ret + self.shortcut_case("q", "http://www.abc.se")
         
         for s in self.resp.shortcuts:
             ret = ret + self.shortcut_case(s[0], s[1])
         
-        ret = ret + code_end
+        ret = ret + webkom_js.code_end
         self.doc.append(ret)
     
     
