@@ -295,34 +295,44 @@ def webkom_escape_linkify(str):
 
 
 def reformat_text(text):
-    linelist = string.split(text, "\n")
+    result = ""
+    
+    for line in text.split("\n"):
+        line = _reformat_line(line)
+        result = _reformat_add_line(result, line)
+
+    return result
+
+def _reformat_add_line(text, line):
+    if text:
+        text += "\n"
+    text += line
+    return text
+
+def _reformat_line(line):
     result = ""
     outline = ""
-    for line in linelist:
-        # Clear outline
-        outline = ""
-        rest = string.split(line)
 
-        while rest:
-            newword = rest[0]
-            # Remove newword from rest
-            rest = rest[1:]
-            # The 1 is for the space. 
-            if (len(outline) + 1 + len(newword)) > 70:
-                # We can't get this word also. Break line here. 
-                result = result + outline + "\n"
-                outline = newword
-            else:
-                # Add newword to current line.
-                # Only add space if not first word on line. 
-                if outline:
-                    outline = outline + " " 
-                outline = outline + newword
+    for word in line.split(" "):
+        if word == "":
+            # We had a space
+            word = " "
+        
+        # Ok to add another word to this line?
+        # The 1 is for the space. 
+        if (len(outline) + 1 + len(word)) <= 70:
+            # Yepp, word fits on line
+            if outline:
+                outline += " "
+            outline += word
+        else:
+            # No, must create a new line
+            result = _reformat_add_line(result, outline)
+            outline = word
 
-        # Ok, this inputline is done. Add it to output.
-        if result:
-            result += "\n"
-        result += outline
+    # Add rest
+    if outline:
+        result = _reformat_add_line(result, outline)
 
     return result
 
