@@ -5,7 +5,7 @@ Release: 1
 Requires: python2, webserver
 Copyright: GPL
 Group: System Environment/Daemons
-Source: http://www.lysator.liu.se/lyskom/klienter/webkom/webkom-0.14.tgz
+Source: http://www.lysator.liu.se/lyskom/klienter/webkom/webkom-%{version}.tgz
 URL: http://www.lysator.liu.se/lyskom/klienter/webkom/
 Packager: Peter Åstrand <astrand@lysator.liu.se>
 BuildRoot: %{_tmppath}/%{name}-root
