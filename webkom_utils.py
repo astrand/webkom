@@ -426,6 +426,7 @@ class FinalizerChecker:
 class WebKOMSimpleDocument(SimpleDocument):
     def get_doc_start(self):
         s = []
+        s.append(DOCTYPE)
         # build the HEAD and BODY tags
         s.append(self.html_head())
         s.append(self.html_body_tag())
