@@ -319,7 +319,8 @@ class LoginPageActions(Action):
         F.append(BR(2))
         F.append(Center(Heading(2, "WebKOM inloggning")))
         F.append(BR(2))
-        logintable = [("Server", Input(name="komserver",size=20,value=DEFAULT_KOM_SERVER)),
+        self.doc.onLoad = "document.loginform.username.focus()"
+        logintable = [("Server", Input(name="komserver", size=20, value=DEFAULT_KOM_SERVER)),
                       ("Användarnamn", Input(name="username",size=20)),
                       ("Lösenord", Input(type="password",name="password",size=20)) ]
         F.append(Center(InputTable(logintable)))
