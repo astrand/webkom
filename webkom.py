@@ -316,13 +316,13 @@ class Action:
         # Language
         self._ = resp.get_translator()
 
-    def gen_error(self, msg):
+    def gen_error(self, *msg):
         "Generate error message in bold, with a BR following"
-        return Container(BR(), Bold(self._("Error: ") + msg), BR())
+        return Container(BR(), Bold(self._("Error: "), *msg), BR())
 
-    def print_error(self, msg):
+    def print_error(self, *msg):
         "Print error message"
-        self.doc.append(self.gen_error(msg))
+        self.doc.append(self.gen_error(*msg))
         
     #
     # Small and frequently-used KOM utility methods. The rest in webkom_utils.py
@@ -1303,8 +1303,38 @@ class ViewTextActions(Action):
             self.doc.append(webkom_escape(replystring), BR())
 
     def print_cross_refs(self, ts):
-        pass
-        #ai_cr = kom.first_aux_items_with_tag(ts.aux_items, kom.AI_CROSS_REFERENCE)
+        ai_cr_list = kom.all_aux_items_with_tag(ts.aux_items, kom.AI_CROSS_REFERENCE)
+        for ai_cr in ai_cr_list:
+            reftype = ai_cr.data[0]
+            refdata = ai_cr.data[1:]
+            if reftype == "T":
+                textlink = self.action_href("viewtext&amp;textnum=" + str(refdata), str(refdata))
+                self.doc.append(self._("See text "), textlink)
+            elif reftype == "C":
+                conf_num = int(refdata)
+                confname = self.get_conf_name(conf_num)
+                conf_num_link = self.action_href("goconf&amp;conf=" + refdata,
+                                                 "<%s>" % refdata)
+                conf_name_link = self.action_href("goconf&amp;conf=" + refdata,
+                                                  confname)
+                self.doc.append(self._("See conference "), conf_num_link,
+                                " ", conf_name_link)
+            elif reftype == "P":
+                pers_num = int(refdata)
+                persname = self.get_pers_name(pers_num)
+                presentation = str(self.get_presentation(pers_num))
+                pers_num_link = self.action_href("viewtext&amp;textnum=" + presentation,
+                                                 "<%s>" % refdata)
+                pers_name_link = self.action_href("viewtext&amp;textnum=" + presentation,
+                                                  persname)
+                self.doc.append(self._("See person "), pers_num_link,
+                                " ", pers_name_link)
+            else:
+                self.print_error(self._("Invalid cross reference:"), webkom_escape(ai_cr.data))
+                return
+
+            authstring = " /" + self.get_pers_name(ai_cr.creator)
+            self.doc.append(webkom_escape(authstring), BR())
 
     def response(self):
         # Toplink
@@ -1482,6 +1512,9 @@ class ViewTextActions(Action):
 
         # Ok, the body is done. Lets add fast replies.
         self.print_fast_replies(ts)
+
+        # Print cross reference aux-items
+        self.print_cross_refs(ts)
 
         # Add all comments.
         new_comments = []
