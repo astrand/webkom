@@ -35,59 +35,66 @@ Requirements
 ============
 * Python 2.0 or newer.
 * FastCGI-capable webbserver (eg. Apache with mod_fastcgi).
-* fcgi.py
-* Python-lyskom (kom.py)
-* HTMLgen (apply included patch HTMLgen.patch for best result)
+* HTMLgen 2.2 (apply patches found on WebKOM homepage)
 
 
 Installation
 ============
-1. Decide a web home directory, for example /home/httpd. In this
-   documentation, the web home is denoted <webhome>. 
+Generic installation instructions can be found on the WebKOM homepage
+(http://www.lysator.liu.se/lyskom/klienter/webkom/) (currently in
+swedish only). 
 
-   Decide a web root directory under <webhome>, for example
-   /home/httpd/html. The web root directory is denoted <webroot>.
+Most Apache-users should be able to use apache-setup.py, which does
+all required configuration. 
 
-   The WebKOM distribution directory is denoted <webkom>. 
 
-2. Copy <webkom>/images to <webroot>/images. 
+1. Find out the web server document root. In Apache, this is the
+   DocumentRoot variable in httpd.conf. In this document, the document
+   root is denoted <documentroot>. 
 
-3. Copy <webkom>/*.py to <webhome>/fcgi-bin. Make sure webkom.py is
-   executable. 
+   Note that special script directories like /home/httpd/cgi-bin/ or
+   /home/httpd/fcgi-bin/ are not used by WebKOM; the WebKOM FastCGI
+   application is <documentroot>/webkom/webkom.py. 
 
-4. Copy <webkom>/*.html to <webroot>.
+2. Decide a WebKOM installation directory and place the distribution
+   files there. /opt/webkom is recommended. In this document, this
+   directory is denoted <webkom>. 
 
-5. Setup webserver. For Apache, this means compiling with mod_fastcgi
-   and editing httpd.conf. In particular, pay attention to these
-   parameters:
+3. Create these links:
 
-   DocumentRoot "<webroot>"
-   FastCgiServer <webhome>/fcgi-bin/webkom.py -idle-timeout 60
+   <documentroot>/webkom/images -> <webkom>/images
+   <documentroot>/webkom/webkom.py -> webkom.py.wrapper
 
-   <Directory "<webhome>/fcgi-bin">
-       SetHandler fastcgi-script
-   </Directory>
-
-6. (optional step, for translations) Make a directory tree for GNU
-   gettext translation files. Change LOCALE_DIR in webkom_constants.py
-   to this directory. Go to the "po" directory and run ./install.py
-   <locale-dir>. 
-
-7. Configure constants in webkom_constants.py. Documentation for these
-   can be found in the file CONSTANTS. 
-
-8. Make sure the correct Python version is used. You should make sure
-   "python2" (currently) is in the PATH when webkom.py is executed. This
-   can be done in many ways, like:
-
-   * Using the mod_env, if running Apache. 
-
-   * Creating a wrapper script that sets up an correct PATH and then
-   executes WebKOM. Example:
-
+4. Create webkom.py.wrapper. It should look like this:
+   
    #!/bin/sh
-   export PATH=/usr/local/python/bin:$PATH
-   exec /opt/local/webkom/wwwroot/fcgi-bin/webkom.py
+   # This is the place where to select Python interpreter for WebKOM.
+   PATH=$PATH
+   export PATH
+   PYTHONOPTIMIZE=1
+   export PYTHONOPTIMIZE
+   exec <webkom>/webkom.py
 
-   Changing the shebang directly is depricated. 
+   Replace <webkom> with your WebKOM installation directory. If your
+   preferred Python binary is not in the default PATH, add the correct
+   path here. Make sure this script is executable.
+
+5. Configure your web server. For Apache, this means adding a 
+   new section to httpd.conf. Example:
+   
+   FastCgiServer /home/httpd/html/webkom/webkom.py -idle-timeout 60
+   <Directory /home/httpd/html/webkom>
+   Options FollowSymLinks
+   DirectoryIndex webkom.py
+   Allow from all
+   <Files webkom.py>
+       SetHandler fastcgi-script
+   </Files>
+   </Directory>
+      
+   Add this section just below the section beginning with 
+   <Directory />. 
+   
+6. Configure constants in webkom_constants.py. Documentation for these
+   can be found in the file CONSTANTS.
 
