@@ -337,6 +337,14 @@ def _reformat_line(line):
     return result
 
 
+def quote_text(text):
+    print >>sys.stderr, "QUOTE:", repr(text)
+    result = ""
+    for line in text.split("\n"):
+        result = _reformat_add_line(result, ">" + line)
+    return result
+
+
 def update_membership(conn, conf_num, read_text):
     "Update the Membership object in the cache when we have read a text"
     # Note: read_text is a local number of the read text.
