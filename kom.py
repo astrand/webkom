@@ -2541,8 +2541,7 @@ class CachedUserConnection(CachedConnection):
 
     def get_member_confs(self):
         result = []
-        # FIXME: Change want_read_texts to 0 as soon as we supports it. 
-        ms_list = ReqGetMembership(self, self._user_no, 0, 10000, want_read_texts=1).response()
+        ms_list = ReqGetMembership(self, self._user_no, 0, 10000, want_read_texts=0).response()
         for ms in ms_list:
             if (ms.priority != 0) and (not ms.type.passive):
                 result.append(ms.conference)
