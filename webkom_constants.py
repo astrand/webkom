@@ -51,14 +51,14 @@ def get_origin_dir(argv0=sys.argv[0]):
 ORIGIN_DIR = get_origin_dir()
 LOG_DIR = os.path.join(ORIGIN_DIR, "logs")
 LOCALE_DIR = os.path.join(ORIGIN_DIR, "locale")
-VERSION = "0.14"
+VERSION = "0.15"
 BASE_URL = "webkom.py"
 DEFAULT_KOM_SERVER = "kom.lysator.liu.se"
 MAX_SUBJ_PER_PAGE = 25
 MAX_CONFS_PER_PAGE = 15
 MAINTAINER_NAME = "Peter Åstrand"
 MAINTAINER_MAIL = "astrand@lysator.liu.se"
-FIFO_PREFIX = "/tmp/testwebkom"
+FIFO_PREFIX = "/tmp/webkom"
 
 MAX_CONFERENCE_LEN = 37
 # 12 hours auto-logout
