@@ -52,8 +52,6 @@ class SessionSet:
     # This class has knowledge about Sessions
     def __init__(self):
         self.sessionset = {}
-        # Lock variable, for updating "sessions"
-        self.sessionset_lock = thread.allocate_lock()
         self.logins_accepted = TRUE
 
     def gen_session_key(self):
@@ -71,23 +69,26 @@ class SessionSet:
             
     def valid_session(self, key):
         "Check if a given key is a valid, active sessionkey"
-        self.sessionset_lock.acquire()
-        had_key = self.sessionset.has_key(key)
-        self.sessionset_lock.release()
-        return had_key
+        # D.keys() is atomic, so has_key() should be as well. 
+        return self.sessionset.has_key(key)
 
     def get_session(self, key):
         "Fetch session, based on sessionkey"
         # This method assumes that the session is locked
-        session = self.sessionset[key]
-        session.timestamp = time.time()
+        session = self.sessionset.get(key)
+        if session:
+            session.timestamp = time.time()
         return session
 
     def get_sessionkeys_by_person_no(self, pno):
         "Fetch session, based on person number"
         ret = []
         for key in self.sessionset.keys():
-            if self.sessionset[key].conn.get_user() == pno:
+            sess = self.sessionset.get(key)
+            if not sess:
+                # The session was perhaps deleted by another thread
+                continue
+            if sess.conn.get_user() == pno:
                 ret.append(key)
         return ret
                 
@@ -97,14 +98,18 @@ class SessionSet:
         system_log.level_write(2, "Creating session for person %d on server %s"
                          % (sess.conn.get_user(), sess.komserver))
         key = self.gen_uniq_key()
-        self.sessionset_lock.acquire()
+        # D[x] = y is atomic
         self.sessionset[key] = sess
-        self.sessionset_lock.release()
 
         return key
 
     def _delete_session(self, key, deltype=""):
-        sess = self.sessionset[key]
+        sess = self.sessionset.get(key)
+        if not sess:
+            # The session was perhaps deleted by another thread
+            system_log.level_write(2, "warning: _delete_session couldn't fetch session with key %d" % key)
+            return
+        
         system_log.level_write(2, "Deleting %ssession for person %d on server %s, sessnum=%d"
                          % (deltype, sess.conn.get_user(), sess.komserver, sess.session_num))
         
@@ -116,7 +121,7 @@ class SessionSet:
             # Do the actual deletion.
             # The CachedUserConnection object probably has registered callbacks for
             # asynchronous messages. These should be removed to prevent circular references.
-            self.sessionset[key].conn.async_handlers = {}
+            sess.conn.async_handlers = {}
             # At this point, there should be 5 references to this Session object:
             # * The reference in the sessionset.sessionset dictionary. 
             # * Response().sess
@@ -126,30 +131,34 @@ class SessionSet:
             # If there are more references, there are probably circular references.
             # The GC will take care of this (as long as no __del__:s are used!),
             # but there is nothing wrong with helping the GC a little bit...
+            #
+            # del D[x] is atomic
             del self.sessionset[key]
         except:
             system_log.level_write(1, "Exception in _delete_session when deleting session.")
 
     def del_session(self, key):
         "Delete session from sessionset"
-        self.sessionset_lock.acquire()
         self._delete_session(key)
-        self.sessionset_lock.release()
 
     def del_inactive(self):
         "Delete and logout inactive sessions"
-        self.sessionset_lock.acquire()
         curtime = time.time()
         for key in self.sessionset.keys():
-            if self.sessionset[key].timestamp + SESSION_TIMEOUT < curtime:
+            sess = self.sessionset.get(key)
+            if not sess:
+                # The session was perhaps deleted by another thread
+                continue
+            if sess.timestamp + SESSION_TIMEOUT < curtime:
                 self._delete_session(key, "inactive ")
-
-        self.sessionset_lock.release()
 
     def notify_all_users(self, msg):
         m = Message(-1, "WebKOM administrator", msg)
         for key in self.sessionset.keys():
-            sess = self.sessionset[key]
+            sess = self.sessionset.get(key)
+            if not sess:
+                # The session was perhaps deleted by another thread
+                continue
             sess.async_message(m, 0)
 
     def shutdown(self, msg):
@@ -157,13 +166,13 @@ class SessionSet:
         self.logins_accepted = FALSE
 
     def log_me_out(self, session):
-        self.sessionset_lock.acquire()
+        # D.keys() is atomic
         for key in self.sessionset.keys():
-            if self.sessionset[key] == session:
+            # The session *might* been deleted by another thread. In
+            # that case, get() will return None. 
+            if self.sessionset.get(key) == session:
                 self._delete_session(key, "remotely logged out ")
                 
-        self.sessionset_lock.release()
-             
 
 # Global variables
 sessionset = SessionSet()
@@ -3015,6 +3024,8 @@ def actions(resp):
 
     # This is the one place where we fetch and lock the session
     resp.sess = sessionset.get_session(resp.key)
+    if not resp.sess:
+        raise RuntimeError("Your session mysteriously disappeared!")
     resp.sess.lock_sess()
 
     # Set page title
