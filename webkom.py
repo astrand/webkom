@@ -362,6 +362,9 @@ class Action:
         else:
             return Font(text, color=INACTIVE_LINK_COLOR)
 
+    def action_shortcut(self, key, actionstr):
+        self.resp.add_shortcut(key, self.base_session_url() + "&amp;action=" + actionstr)
+
     def add_stdaction(self, container, resp, action, caption):
         "Add a link to a standard action and also the keyboard shortcut space"
         # Add link to page
@@ -1480,6 +1483,8 @@ class ViewTextActions(Action):
         comment_url = comment_url + "&amp;comment_to=" + str(global_num)
         lower_actions.append(self.action_href("writearticle" + comment_url,
                                               self._("Write comment")), NBSP)
+        # Add keyboard shortcut
+        self.action_shortcut("k", "writearticle" + comment_url)
 
         if format:
             lower_actions.append(self.action_href("viewtext&amp;textnum=" + str(global_num),
