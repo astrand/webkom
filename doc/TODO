@@ -30,3 +30,9 @@
 
 * Break text if paragraph begings with ">+*"
 
+* Support for more aux-items: redirect, alternate-name, pgp*, e-mail-address, 
+  mx*, notify-comments, recommended-conf, allowed-content-type, canonical-name. 
+
+* Support for viewing x-face aux-items: Could probably be done with
+  the compface module (http://www.cs.usyd.edu.au/~piers/python/compface.tar.gz).
+
