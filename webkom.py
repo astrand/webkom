@@ -132,7 +132,7 @@ class Session:
 class Response:
     "A response class. Used during the construction of a response."
     def __init__(self, env, form):
-        self.doc = SimpleDocument(bgcolor=WHITE, vlinkcolor=BLUE)
+        self.doc = SimpleDocument(title="WebKOM", bgcolor=WHITE, vlinkcolor=BLUE)
         self.env = env
         self.form = form
         self.key = ""
@@ -146,6 +146,17 @@ class Response:
                            "Pragma: no-cache\r\n" \
                            "Expires: 0\r\n" \
                            "\r\n"
+
+    def redir(self, url_text):
+        server_name = self.env["HTTP_HOST"]
+        if not server_name:
+            server_name = self.env["SERVER_NAME"]
+        if self.env.has_key("HTTPS"):
+            server_name = "https://" + server_name
+        else:
+            server_name = "http://" + server_name
+        script_name = self.env["SCRIPT_NAME"]
+        self.http_header = "Location: " + server_name + script_name + url_text + "\n\n"
         
     def add_shortcut(self, key, url):
         self.shortcuts.append((key, url))
@@ -387,6 +398,7 @@ class LoginPageActions(Action):
         self.doc.append(webkom_js.onchange_komserver)
         self.doc.append(webkom_js.onchange_username)
         self.doc.append(webkom_js.onchange_password)
+        self.doc.append("document.username_form.username.focus()")
         self.doc.append(webkom_js.code_end)
 
         # Write non-JS version
@@ -545,14 +557,9 @@ class LogOutActions(Action):
         self.resp.sess = None
 
         self.resp.shortcuts_active = 0
-        
+
         # Redirect to loginpage
-        server_name = self.resp.env["HTTP_HOST"]
-        if not server_name:
-            server_name = self.resp.env["SERVER_NAME"]
-        script_name = self.resp.env["SCRIPT_NAME"]
-        self.resp.http_header = "Location: http://" + server_name + script_name + "\n\n"
-        
+        self.resp.redir("")
         return 
 
 
@@ -677,12 +684,7 @@ class LogInActions(Action):
             conn.no_unread[conf_num]
 
         # Redirect to mainpage
-        server_name = self.resp.env["HTTP_HOST"]
-        if not server_name:
-            server_name = self.resp.env["SERVER_NAME"]
-        script_name = self.resp.env["SCRIPT_NAME"]
-        self.resp.http_header = "Location: http://" + server_name + \
-                                script_name + "?sessionkey=" + self.resp.key + "\n\n"
+        self.resp.redir("?sessionkey=" + self.resp.key)
 
 
 class InvalidSessionPageActions(Action):
