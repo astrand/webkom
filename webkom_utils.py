@@ -143,7 +143,10 @@ def get_active_memberships_unread(conn, first_pos, max_num):
 
 def get_conf_with_unread(conn, member_confs, current_conf):
     "Get next conference with unread articles"
-    current_pos = member_confs.index(current_conf)+1
+    try:
+        current_pos = member_confs.index(current_conf)+1
+    except:
+        current_pos = 0
     ordered_confs = member_confs[current_pos:] + member_confs[:current_pos]
     for conf_num in ordered_confs:
         if conn.no_unread[conf_num] > 0:
