@@ -114,7 +114,7 @@ class SessionSet:
                          % (deltype, sess.conn.get_user(), sess.komserver, sess.session_num))
         
         # Be nice and shut down connection and socket. 
-        kom.ReqDisconnect(sess.conn, 0)
+        kom.ReqDisconnect(sess.conn, 0).response()
         sess.conn.socket.close()
             
         try:
@@ -348,7 +348,7 @@ class Action:
         self.sess.current_conf = conf_num
         # Tell KOM-server that we have changed conference
         try:
-            kom.ReqChangeConference(self.sess.conn, conf_num)
+            kom.ReqChangeConference(self.sess.conn, conf_num).response()
         except:
             self.print_error(self._("Unable to change current conference."))
     
@@ -1125,7 +1125,7 @@ class LogInActions(Action):
 
         # Set user_no in connection
         conn.set_user(pers_num, set_member_confs=0)
-        kom.ReqSetClientVersion(conn, "WebKOM", VERSION)
+        kom.ReqSetClientVersion(conn, "WebKOM", VERSION).response()
 
         if LOGOUT_OTHER_SESSIONS:
             # Logout other sessions
@@ -3057,7 +3057,7 @@ class ReadConfirmationActions(Action):
         # FIXME: Maybe handle case when text is removed. 
         global_num = int(self.form["textnum"].value)
         read_confirmation = kom.AuxItem(tag=kom.AI_READ_CONFIRM)
-        kom.ReqModifyTextInfo(self.sess.conn, global_num, [], [read_confirmation])
+        kom.ReqModifyTextInfo(self.sess.conn, global_num, [], [read_confirmation]).response()
         # Invalidate cache
         self.sess.conn.textstats.invalidate(global_num)
         

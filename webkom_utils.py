@@ -61,8 +61,8 @@ def kom_login(komserver, username, password):
         except:
             return (0, 0, "Felaktigt lösenord.")
 
-    kom.ReqSetClientVersion(conn, "WebKOM", VERSION)
-    kom.ReqAcceptAsync(conn, [kom.ASYNC_NEW_TEXT])
+    kom.ReqSetClientVersion(conn, "WebKOM", VERSION).response()
+    kom.ReqAcceptAsync(conn, [kom.ASYNC_NEW_TEXT]).response()
 
     # Note: matches[0][0] is an integer
     return (conn, matches[0][0], None)
