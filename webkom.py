@@ -633,12 +633,12 @@ class MainPageActions(Action):
 class LogOutActions(Action):
     "Do logout actions"
     def response(self):
+        sessionset.del_session(self.key)
         try:
             kom.ReqLogout(self.sess.conn).response()
         except:
             pass
         
-        sessionset.del_session(self.key)
         self.resp.sess.conn.socket.close()
         self.resp.sess = None
 
