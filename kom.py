@@ -2501,6 +2501,9 @@ class CachedConnection(Connection):
     def regexp_lookup(self, regexp, want_pers, want_confs,
                       case_sensitive=0):
         """Lookup name using regular expression"""
+        if regexp.startswith("#"):
+            return self.lookup_name(regexp, want_pers, want_confs)
+        
         if not case_sensitive:
             regexp = self._case_insensitive_regexp(regexp)
 
