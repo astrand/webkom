@@ -60,10 +60,10 @@ function keyPress(e) {
 """
 
 
-end_switch = """ 
-            }
-        return false;
-    }
+end_switch = """
+        }
+    return false;
+}
 """
 
 
