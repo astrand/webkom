@@ -190,6 +190,13 @@ msgstr "Nummer"
 msgid "Read next unread"
 msgstr "Läs nästa olästa"
 
+msgid ""
+"If certain characters are hard to write with your keyword, you can copy and "
+"paste from the line below:"
+msgstr ""
+"Om vissa tecken är svåra att skriva med ditt tangentbord \n"
+"så kan du klippa och klistra från raden nedan:"
+
 msgid "Search result:"
 msgstr "Sökresultat"
 

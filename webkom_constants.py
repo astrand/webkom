@@ -65,3 +65,4 @@ MAX_CONFERENCE_LEN = 37
 SESSION_TIMEOUT = 60 * 60 * 12 
 DEFAULT_LANG = "sv"
 LOGLEVEL = 4
+COPYPASTE_CHARACTERS = "å Å ä Ä ö Ö ü Ü ! \" @ $ % & / { } [ ] ( ) \ ? ~ < > |"

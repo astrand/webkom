@@ -1851,6 +1851,10 @@ class WriteArticleActions(Action):
         F.append("</textarea>")
         F.append(BR())
 
+        self.doc.append(self._("If certain characters are hard to write with your keyword, "
+                               "you can copy and paste from the line below:"), BR())
+        self.doc.append(HTMLutil.latin1_escape(escape(COPYPASTE_CHARACTERS)))
+
         return
 
 class WriteArticleSubmit(Action):
