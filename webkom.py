@@ -1163,7 +1163,6 @@ class GoConfActions(Action):
 
         # Get unread texts
         # FIXME: error handling
-        ms = self.sess.conn.memberships[conf_num]
         texts = get_texts(self.sess.conn, conf_num, MAX_SUBJ_PER_PAGE, ask_for)
         
         # Prepare for links to earlier/later pages of texts
