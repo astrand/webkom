@@ -1339,7 +1339,10 @@ class ViewTextActions(Action):
     def print_no_comments(self, ts):
         if kom.first_aux_items_with_tag(ts.aux_items, kom.AI_NO_COMMENTS):
             self.doc.append(self._("The author has requested others not to comment this text."), BR())
-    
+
+    def print_personal_comment(self, ts):
+        if kom.first_aux_items_with_tag(ts.aux_items, kom.AI_PERSONAL_COMMENT):
+            self.doc.append(self._("The author requests private replies only."))
 
     def response(self):
         # Toplink
@@ -1521,8 +1524,9 @@ class ViewTextActions(Action):
         # Print cross reference aux-items
         self.print_cross_refs(ts)
 
-        # no-comments
+        # no-comments, personal-comment
         self.print_no_comments(ts)
+        self.print_personal_comment(ts)
 
         # Add all comments.
         new_comments = []
