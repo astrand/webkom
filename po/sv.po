@@ -1,4 +1,3 @@
-
 msgid ""
 msgstr ""
 "Project-Id-Version: WebKOM 0.20\n"
@@ -184,6 +183,9 @@ msgstr "Skicka meddelanden"
 msgid "Conference name"
 msgstr "Mötesnamn"
 
+msgid "Bugs and feedback"
+msgstr "Buggar och feedback"
+
 msgid " has no presentation"
 msgstr " har ingen presentation"
 
@@ -319,14 +321,11 @@ msgstr "Ej implementerat"
 msgid "Later articles"
 msgstr "Senare inlägg"
 
-msgid "User name"
-msgstr "Användarnamn"
+msgid "Comment to:"
+msgstr "Kommentar till:"
 
 msgid ", %(days)d days, %(hours)d hours and %(minutes)d minutes ago"
 msgstr ", %(days)d dagar, %(hours)d timmar och %(minutes)d minuter sedan"
-
-msgid "(like John Doe, ACM)"
-msgstr "(t ex Eskil Block, FOI)"
 
 msgid "View presentation"
 msgstr "Visa presentation"
@@ -410,6 +409,10 @@ msgstr "Gå med i möte"
 msgid "Regular expressions are allowed, unless the checkbox below is on."
 msgstr "Reguljära uttryck tillåts, såvida kryssrutan nedan ej är ikryssad. "
 
+msgid ""
+"It should be used for bug reports, feature requests and general feedback."
+msgstr "Den bör användas för buggrapporter, önskemål och allmän feedback."
+
 msgid "The author requests private replies only."
 msgstr "Författaren har begärt endast personliga svar."
 
@@ -467,9 +470,6 @@ msgstr "Skapa möten"
 msgid "Logout"
 msgstr "Logga ut"
 
-msgid "Comment to:"
-msgstr "Kommentar till:"
-
 msgid "If it isn't, please report this problem to"
 msgstr "Om inte, rapportera detta fel till"
 
@@ -515,8 +515,8 @@ msgstr "Felaktigt lösenord"
 msgid "Logins are not accepted right now. Try again later."
 msgstr "Inloggningar accepteras inte just nu. Försök igen senare."
 
-msgid "Bugs"
-msgstr "Buggar"
+msgid "Type in a part of a conference name or person to search for. "
+msgstr "Skriv in del av mötesnamnet eller personen som du vill söka efter. "
 
 msgid " and login again."
 msgstr " och logga in igen."
@@ -549,6 +549,9 @@ msgstr "Meddelande från WebKOM-servern"
 
 msgid "Write articles"
 msgstr "Skriva inlägg"
+
+msgid " in the Bugzilla at Lysator. "
+msgstr "i Bugzilla på Lysator"
 
 msgid "Remove?"
 msgstr "Ta bort?"
@@ -668,8 +671,8 @@ msgstr " (senast ändrad "
 msgid "Read marked articles"
 msgstr "Läsa markerade inlägg"
 
-msgid " in the Bugzilla at Lysator"
-msgstr "i Bugzilla på Lysator"
+msgid "(like John Doe, ACM)"
+msgstr "(t ex Eskil Block, FOI)"
 
 msgid "View without mail headers"
 msgstr "Visa utan mail-headers"
@@ -764,8 +767,8 @@ msgstr "Logga ut mina andra sessioner"
 msgid "Write personal letters"
 msgstr "Skriva brev"
 
-msgid "Type in a part of a conference name or person to search for. "
-msgstr "Skriv in del av mötesnamnet eller personen som du vill söka efter. "
+msgid "User name"
+msgstr "Användarnamn"
 
 msgid "The server requires login before new users can be created"
 msgstr "Servern kräver inloggning innan nya användare kan skapas"
