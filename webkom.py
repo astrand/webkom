@@ -2508,8 +2508,6 @@ def handle_req(fcg, env, form):
         f = open(LOG_DIR + "traceback.finish", "w")
         traceback.print_exc(file = f)
         f.close()
-        # If fcg.finish() failed, this thread is still alive. Kill ourselves. 
-        thread.exit()	
         
 # Interaction via FIFO
 def run_console(self, *args):
