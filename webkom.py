@@ -1306,7 +1306,7 @@ class ViewTextActions(Action):
         # We are constructing a table manuall, since HTMLgen insists of
         # modify the text put into the cells. 
         self.doc.append("<table width=\"100%\" border=2 cellpadding=2>")
-        self.doc.append("<tr><td>" + str(bodycont) + "</tr></td>")
+        self.doc.append("<tr><td>" + str(bodycont) + "</td></tr>")
         self.doc.append("</table>")
 
         # Ok, the body is done. Let's add all comments.
@@ -2228,6 +2228,9 @@ def actions(resp):
     action = response_type(resp, trans)
     # Generate page
     action.response()
+
+    # Add foot
+    resp.doc.append("<div align=right>fdsfdsfdsdf</div>")
 
     # Add Javascript shortcuts
     if resp.shortcuts_active:
