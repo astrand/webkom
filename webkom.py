@@ -91,10 +91,10 @@ class SessionSet:
         try:
             sess = self.sessionset[key]
             system_log.write("Deleting %ssession for person %d on server %s, sessnum=%d"
-                             % (deltype, sess.conn.get_user(), sess.komserver, sess.whoami))
+                             % (deltype, sess.conn.get_user(), sess.komserver, sess.session_num))
             del sess
         except:
-            pass
+            system_log.write("Exception in _delete_session when deleting:" + deltype)
 
         try:
             del self.sessionset[key]
