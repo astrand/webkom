@@ -87,7 +87,7 @@ all required configuration.
 5. Configure your web server. For Apache, this means adding a 
    new section to httpd.conf. Example:
    
-   FastCgiServer /home/httpd/html/webkom/webkom.py -idle-timeout 60
+   FastCgiServer /home/httpd/html/webkom/webkom.py -idle-timeout 60 -flush
    <Directory /home/httpd/html/webkom>
    Options FollowSymLinks
    DirectoryIndex webkom.py

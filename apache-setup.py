@@ -232,7 +232,7 @@ def main(dry_run):
     print "----------------"
     
     conf_clip = """\
-FastCgiServer %s -idle-timeout 60
+FastCgiServer %s -idle-timeout 60 -flush
 <Directory %s>
 Options FollowSymLinks
 DirectoryIndex webkom.py
