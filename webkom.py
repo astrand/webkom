@@ -1071,7 +1071,7 @@ class ViewTextActions(Action):
                             new_comments.append(c.text_no)
                             break
 
-        self.doc.append(Table(body=header, cell_padding=2, column1_align="right", width="80%"))
+        self.doc.append(Table(body=header, cell_padding=2, column1_align="right", border=0, width="80%"))
 
     def response(self):
         # Toplink
@@ -1135,7 +1135,10 @@ class ViewTextActions(Action):
             return
             
 
+        # Skip over the subject
         body = text[string.find(text, "\n"):]
+        # ...and the empty line
+        body = body[1:]
 
         header = []
         header.append(["Inläggsnummer:",
@@ -1158,30 +1161,40 @@ class ViewTextActions(Action):
         if ts.no_of_marks:
             header.append(["Markeringar:", str(ts.no_of_marks)])
     
-        header.append(["Ärende:", self.get_subject(global_num)])
-        
+        header.append(["Ärende:", Bold(self.get_subject(global_num))])
+
         self.doc.append(BR())
-        self.doc.append(Table(body=header, cell_padding=2, column1_align="right", width="80%"))
+        self.doc.append(Table(body=header, cell_padding=2, column1_align="right", width="75%"))
+        
         # Body
         # FIXME: Reformatting according to protocol A.
         body = linkify_text(body)
         body = HTMLutil.latin1_escape(escape(body))
         body = unquote_specials(body)
+        body = string.replace(body, "\n","<br>\n")
 
+        bodycont = Container()
+
+        # Add formatting style
         format = self.form.getvalue("viewformat")
         if format == "code":
-            self.doc.append("<code>")
+            bodycont.append("<code>")
             body = string.replace(body, " ", "&nbsp;")
-            self.doc.append(string.replace(body, "\n","<br>\n"))
-            self.doc.append("</code>")
+            bodycont.append(body)
+            bodycont.append("</code>")
         elif format:
-            # Generic. May be useful. 
-            self.doc.append("<" + format + ">")
-            self.doc.append(string.replace(body, "\n","<br>\n"))
-            self.doc.append("</" + format + ">")
-            pass
+            # Generic style. May be useful. 
+            bodycont.append("<" + format + ">")
+            bodycont.append(body)
+            bodycont.append("</" + format + ">")
         else:
-            self.doc.append(string.replace(body, "\n","<br>\n"))
+            bodycont.append(body)
+
+        # We are constructing a table manuall, since HTMLgen insists of
+        # modify the text put into the cells. 
+        self.doc.append("<table width=\"100%\" border=2 cellpadding=2>")
+        self.doc.append("<tr><td>" + str(bodycont) + "</tr></td>")
+        self.doc.append("</table>")
 
         # Ok, the body is done. Let's add all comments.
         header = []
