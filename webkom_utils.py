@@ -361,14 +361,20 @@ class ArticleSearcher:
     def __init__(self, conn, limit):
         self.max_int32 = int(2**31L-1)
         self.conn = conn
-        self.limit = limit
+        if limit != None:
+            self.limit = limit
+        else:
+            self.limit = self.max_int32
 
     def search(self, needle):
         result = []
         reo = re.compile(needle, re.I)
         while self.limit > 0:
             self.limit -= 1
-            for textnum in self._fetch_textnums():
+            textnums = self._fetch_textnums()
+            if textnums == []:
+                break
+            for textnum in textnums:
                 try:
                     text = kom.ReqGetText(self.conn, textnum).response()
                     if reo.search(text):
