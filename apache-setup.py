@@ -56,6 +56,9 @@ def get_origin_dir(argv0=sys.argv[0]):
 
 def get_httpd_config():
     p = popen2.Popen3("httpd -V", 1)
+    server_config_file = None
+    http_root = None
+    
     while 1:
         err = p.childerr.read()
         if err:
@@ -68,9 +71,23 @@ def get_httpd_config():
 
         match = re.search("SERVER_CONFIG_FILE=\"(.*)\"", line)
         if match:
-            httpd_config = match.group(1)
+            server_config_file = match.group(1)
 
-    return httpd_config
+        match = re.search("HTTPD_ROOT=\"(.*)\"", line)
+        if match:
+            httpd_root = match.group(1)
+
+    if not server_config_file:
+        raise("Cannot determine SERVER_CONFIG_FILE")
+
+    if server_config_file[0] != os.sep:
+        # Not absolute path, check httpd_root
+        if not httpd_root:
+            raise("Cannot determine HTTPD_ROOT")
+
+        server_config_file = os.path.join(httpd_root, server_config_file)
+
+    return server_config_file
 
 
 def get_httpd_doc_root(config_file):
