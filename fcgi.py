@@ -1,4 +1,4 @@
-#!/usr/local/bin/python1.5
+#!/usr/bin/env python
 #------------------------------------------------------------------------
 #               Copyright (c) 1998 by Total Control Software
 #                         All Rights Reserved
