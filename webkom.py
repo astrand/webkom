@@ -102,6 +102,12 @@ class SessionSet:
         self.log.write(msg +", key=" + str(key) + " pers_num=" +
                        str(self.sessionset[key].conn.get_user()) + "\n")
         self.log.flush()
+
+    def notify_all_users(self, msg):
+        m = Message(-1, "WebKOM administrator", msg)
+        for key in self.sessionset.keys():
+            sess = self.sessionset[key]
+            sess.async_message(m, 0)
              
 
 # Global variables
@@ -283,7 +289,7 @@ class ViewPendingMessages(Action):
     "View pending messages"
     def print_heading(self, msg):
         if msg.recipient == -1:
-            text = self._("Message from WebKOM administrator")
+            text = self._("WebKOM server message")
         elif msg.recipient == 0:
             text = self._("Alarm message")
         elif msg.recipient == self.sess.conn.get_user():
