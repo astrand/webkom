@@ -38,7 +38,6 @@ import random, time
 import thread
 from webkom_utils import *
 import webkom_js
-import rfc822
 
 
 class SessionSet:
@@ -564,6 +563,7 @@ class MainPageActions(Action):
         cont.append(Heading(3, self.action_href("choose_conf", "Gå till möte")))
         cont.append(Heading(3, self.action_href("whoison", "Vilka är inloggade")))
         cont.append(Heading(3, self.action_href("changepw", "Byt lösenord")))
+        cont.append(Heading(3, self.action_href("writepresentation" + "&presentationfor=" + str(self.sess.pers_num), "Skriv presentation")))
         cont.append(Heading(3, self.action_href("logout", "Logga ut")))
         cont.append(BR(), Heading(3, self.action_href("whats_implemented",
                                                       "Vad kan WebKOM göra?")))
@@ -1459,6 +1459,18 @@ class CreateUserSubmit(Action):
         self.doc.append(Heading(3, "Ok"))
         self.doc.append("Användaren är skapad.")
 
+class WritePresentationActions(Action):
+    "Write presentation"
+    def response(self):
+        serverinfo = kom.ReqGetInfo(self.sess.conn).response()
+        presfor = self.form.getvalue("presentationfor")
+        if int(presfor) == self.sess.pers_num:
+            self.change_conf(serverinfo.pers_pres_conf)
+            WriteArticleActions(self.resp).response(presentationfor = int(presfor), presconf = serverinfo.pers_pres_conf)
+        else:
+            self.change_conf(serverinfo.conf_pres_conf)
+            WriteArticleActions(self.resp).response(presentationfor = int(presfor), presconf=serverinfo.pers_pres_conf)
+
 
 class WriteLetterActions(Action):
     "Write personal letter"
@@ -1469,14 +1481,14 @@ class WriteLetterActions(Action):
 
 class WriteArticleActions(Action):
     "Generate a page for writing or commenting an article"
-    def response(self):
+    def response(self, presentationfor = None, presconf = None):
         self.resp.shortcuts_active = 0
         # Fetch conference name
         conf_num = self.sess.current_conf
 #        cs = self.sess.conn.conferences[conf_num]
 #        if cs.type.original:
 #            conf_num = cs.super_conf
-#        conf_name = self.get_conf_name(conf_num)
+        conf_name = self.get_conf_name(conf_num)
         
         toplink = Href(self.base_session_url(), "WebKOM")
         conflink = self.action_href("viewconfs", "Möten")
@@ -1484,19 +1496,30 @@ class WriteArticleActions(Action):
 
         comment_to_list = get_values_as_list(self.form, "comment_to")
         footnote_to_list = get_values_as_list(self.form, "footnote_to")
-        if comment_to_list:
-            page_heading = "Kommentera inlägg"
+        submitname = "writearticlesubmit"
+        submitvalue = "Skicka in"
+        if presentationfor:
+            submitname="writepresentationsubmit"
+            submitvalue="Sätt som presentation"
+            page_heading = "Skriv presentation"
         else:
-            page_heading = "Skriv inlägg"
+            if comment_to_list:
+                page_heading = "Kommentera inlägg"
+            else:
+                page_heading = "Skriv inlägg"
             
         writeart = self.action_href("writearticle", page_heading)
         
         cont = Container(toplink, " : ", conflink, " : ", thisconf, " : ", writeart)
         self.append_std_top(cont)
 
-        submitbutton = Input(type="submit", name="writearticlesubmit", value="Skicka in")
+        submitbutton = Input(type="submit", name=submitname,
+                             value=submitvalue)
         F = Form(BASE_URL, name="writearticleform", submit=submitbutton)
         self.doc.append(F)
+        if presentationfor:
+            F.append(Input(type="hidden", name="presentationfor",
+                           value=presentationfor))
         F.append(self.hidden_key())
         for comment in comment_to_list:
             F.append(Input(type="hidden", name="comment_to", value=comment))
@@ -1515,7 +1538,7 @@ class WriteArticleActions(Action):
             if not rcptparams:
                 continue
             for rcpt in rcptparams:
-                if not self.form.getvalue("searchrcptsubmit") and comment_to_list:
+                if not self.form.getvalue("searchrcptsubmit") and comment_to_list and not presentationfor:
                     cs = self.sess.conn.conferences[int(rcpt)]
                     # If it's a comment, and the conference is of type
                     # original, replace with it's supermeeting.
@@ -1524,8 +1547,9 @@ class WriteArticleActions(Action):
                         rcpt_dict[int(cs.super_conf)] = rcpt_type
                         continue
                 rcpt_dict[int(rcpt)] = rcpt_type
-
-        
+        if presconf and not rcpt_dict.has_key(presconf):
+            rcpt_dict[presconf] = "rcpt"
+            
 
         # Remove removed recipients
         removed = get_values_as_list(self.form, "removercpt")
@@ -1711,7 +1735,8 @@ class WriteArticleSubmit(Action):
         # Remove \m
         text = string.replace(text, "\015", "")
         aux_items = []
-        
+
+        text_num = 0
         try:
             text_num = kom.ReqCreateText(self.sess.conn, subject + "\n" + text,
                                          misc_info, aux_items).response()
@@ -1731,7 +1756,20 @@ class WriteArticleSubmit(Action):
         except kom.Error:
             self.print_error("Det gick ej att skapa inlägget")
 
-        return
+        return text_num
+
+class WritePresentationSubmit(Action):
+    "Submit a presentation"
+    def response(self):
+        text_num = WriteArticleSubmit(self.resp).response()
+        import sys
+        sys.stderr.write("text_num is %d in WritePresentationSubmit\n" % text_num)
+        sys.stderr.write("presentationfor is %d\n" % int(self.form.getvalue("presentationfor")))
+        if 0 != text_num:
+            kom.ReqSetPresentation(self.sess.conn,
+                                   int(self.form.getvalue("presentationfor")),
+                                   text_num).response()
+
 
 
 class WhoIsOnActions(Action):
@@ -2062,6 +2100,7 @@ def actions(resp):
                        "addrcptsubmit" : WriteArticleActions,
                        "searchrcptsubmit" : WriteArticleActions,
                        "writearticlesubmit" : WriteArticleSubmit,
+                       "writepresentationsubmit" : WritePresentationSubmit,
                        "joinconfsubmit" : JoinConfSubmit,
                        "searchconfsubmit" : JoinConfActions,
                        "leaveconfsubmit" : LeaveConfSubmit,
@@ -2079,6 +2118,7 @@ def actions(resp):
                        "whoison" : WhoIsOnActions,
                        "writearticle" : WriteArticleActions,
                        "writeletter" : WriteLetterActions,
+                       "writepresentation" : WritePresentationActions,
                        "whats_implemented" : WhatsImplementedActions,
                        "joinconf" : JoinConfActions,
                        "leaveconf" : LeaveConfActions,
