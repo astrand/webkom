@@ -222,12 +222,13 @@ _sock = None
 class FCGI:
     def __init__(self):
         self.haveFinished = 0
-        if _init == None:
+        if not _init:
             _startup()
         if not isFCGI():
             print >> sys.stderr, "No FastCGI environment found."
             sys.exit(1)
 
+        # Apaches mod_fastcgi seems not to use FCGI_WEB_SERVER_ADDRS. 
         if os.environ.has_key('FCGI_WEB_SERVER_ADDRS'):
             good_addrs = string.split(os.environ['FCGI_WEB_SERVER_ADDRS'], ',')
             good_addrs = map(string.strip(good_addrs))        # Remove whitespace
