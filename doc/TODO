@@ -43,3 +43,5 @@
 * Better dummy-operation than ReqQueryAsync for handling all available responses. 
 
 * List all conferences and/or persons. 
+
+* Feature: View more than one article on a single HTML page. 
