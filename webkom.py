@@ -462,21 +462,25 @@ class ViewPendingMessages(Action):
         return
 
 
-class AddShortCuts(Action):
+class AddShortCuts:
+    def __init__(self, resp, base_sess_url):
+        self.resp = resp
+        self.base_sess_url = base_sess_url
+
     def shortcut_case(self, key, location):
         ret = """    case '%s':
             window.location="%s";
             break;
 """ % (key, location)
         return ret
-    
-    def response(self):
+
+    def add(self):
         # Begin Javascript
         ret = webkom_js.code_begin
         # Determine browser type
         ret = ret + webkom_js.browser_type
         # Shortcut functions
-        ret = ret + webkom_js.shortcut_functions
+        ret = ret + (webkom_js.shortcut_functions % self.base_sess_url)
         # Begin case
         ret = ret + webkom_js.begin_switch
         # Add case for disabling shortcuts
@@ -489,8 +493,8 @@ class AddShortCuts(Action):
             ret = ret + self.shortcut_case(s[0], s[1])
 
         ret = ret + webkom_js.end_switch + webkom_js.code_end
-        self.doc.append(ret)
-    
+        self.resp.doc.append(ret)
+                
     
 class LoginPageActions(Action):
     "Generate the login page"
@@ -2484,7 +2488,7 @@ def actions(resp):
         resp.add_shortcut("b", action.base_session_url() + "&amp;action=writeletter&amp;rcpt=" 
                           + str(resp.sess.conn.get_user()))
         resp.add_shortcut("g", action.base_session_url() + "&amp;action=choose_conf")
-        AddShortCuts(resp).response()
+        AddShortCuts(resp, action.base_session_url()).add()
 
 
     # For debugging 

@@ -56,7 +56,7 @@ document.onkeypress=keyPress;
 
 // If we are runnign NS4 under Unix, do ugly refocus-hack. 
 if (is_nav4 && is_unix) {
-    document.write("<form name='shortcut_form'>");
+    document.write("<form name='shortcut_form' method='POST' action='%s'>");
     document.write("<input name='shortcut_entry' type=text size=1>")
     document.write("<\/form>")
     document.captureEvents(Event.KEYPRESS);
