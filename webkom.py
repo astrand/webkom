@@ -553,6 +553,17 @@ class AboutPageActions(Action):
         last_changed = time.strftime("%Y-%m-%d-%H:%M", time.localtime(os.stat(sys.argv[0])[9]))
         self.doc.append(self._("Version running: ") + VERSION + self._(" (last modified ") + last_changed + ")")
 
+        self.doc.append(BR())
+        self.doc.append(self._("This server instance started "),
+                        time.strftime("%Y-%m-%d %H:%M",
+                                      time.localtime(serverstarttime)))
+        timediff = int(time.time() - serverstarttime)
+        days = timediff / 86400
+        hours = (timediff - 86400*days) / 3600
+        minutes = ((timediff - 86400*days) - 3600*hours) / 60
+        self.doc.append(self._(", %(days)d days, %(hours)d hours and "\
+                               "%(minutes)d minutes ago" % locals()))
+
         self.doc.append(Heading(3, self._("Overview")))
         self.doc.append(self._("WebKOM is a WWW-interface for "))
         self.doc.append(external_href("http://www.lysator.liu.se/lyskom", "LysKOM"), ".")
@@ -2922,7 +2933,11 @@ translator_cache = TranslatorCache.TranslatorCache("webkom", LOCALE_DIR, DEFAULT
 # Create an instance of THFCGI 
 fcgi = thfcgi.THFCGI(handle_req)
 
+# Save time of server start.
+serverstarttime = time.time()
+
 if __name__=="__main__":
     FinalizerChecker(system_log)
     # and let it run
     run_fcgi()
+
