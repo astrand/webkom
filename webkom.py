@@ -1134,11 +1134,12 @@ class ViewTextActions(Action):
             self.print_error("Hämtning av texten misslyckades")
             return
             
-        subject = self.get_subject(global_num)
+
         body = text[string.find(text, "\n"):]
 
         header = []
-        header.append(["Ärende:", subject])
+        header.append(["Inläggsnummer:",
+                       self.action_href("viewtext&textnum=" + str(global_num), str(global_num))])
         header.append(["Datum:", ts.creation_time.to_date_and_time()]);
         presentation = str(self.get_presentation(ts.author))
         header.append(["Författare:",
@@ -1156,9 +1157,8 @@ class ViewTextActions(Action):
 
         if ts.no_of_marks:
             header.append(["Markeringar:", str(ts.no_of_marks)])
-
-        header.append(["Inläggsnummer:",
-                       self.action_href("viewtext&textnum=" + str(global_num), str(global_num))])
+    
+        header.append(["Ärende:", self.get_subject(global_num)])
         
         self.doc.append(BR())
         self.doc.append(Table(body=header, cell_padding=2, column1_align="right", width="80%"))
