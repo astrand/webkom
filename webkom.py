@@ -266,7 +266,8 @@ class Action:
         try:
             return self.sess.conn.conferences[num].presentation
         except:
-            return None
+            # Zero is special: It indicates that the text does not exist. 
+            return 0
     # End of KOM utility methods.
     #
             
