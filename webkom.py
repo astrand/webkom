@@ -1706,6 +1706,7 @@ class ViewTextActions(Action):
         if format == "code":
             bodycont.append("<code>")
             body = string.replace(body, " ", "&nbsp;")
+            body = string.replace(body, "\t", "&nbsp;"*8)
             bodycont.append(body)
             bodycont.append("</code>")
         elif format:
