@@ -1,6 +1,8 @@
 
 from HTMLcolors import *
 
+LOG_DIR = "/home/astrand/webkom/logs/"
+MODULES_PATH = "/home/astrand/webkom/python-modules/"
 VERSION = "0.4"
 BASE_URL = "webkom.py"
 DEFAULT_KOM_SERVER = "kom.lysator.liu.se"
