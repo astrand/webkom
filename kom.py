@@ -1749,6 +1749,10 @@ class Connection:
             self.socket.bind(localbind)
         self.socket.connect((host, port))
 
+        # Remember the host and port for later identification of sessions
+        self.host = host
+        self.port = port
+
         # Requests
         self.req_id = 0      # Last used ID (i.e. increment before use)
         self.req_queue = {}  # Requests sent to server, waiting for answers
@@ -1991,7 +1995,9 @@ class Connection:
     # Send a raw string
     def send_string(self, s):
         #print ">>>",s
-        self.socket.send(s)
+        while len(s) > 0:
+            done = self.socket.send(s)
+            s = s[done:]
 
     # Ensure that there are at least N bytes in the receive buffer
     # FIXME: Rewrite for speed and clarity
