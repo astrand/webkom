@@ -1167,8 +1167,21 @@ class ViewTextActions(Action):
         body = linkify_text(body)
         body = HTMLutil.latin1_escape(escape(body))
         body = unquote_specials(body)
-        
-        self.doc.append(string.replace(body, "\n","<br>\n"))
+
+        format = self.form.getvalue("viewformat")
+        if format == "code":
+            self.doc.append("<code>")
+            body = string.replace(body, " ", "&nbsp;")
+            self.doc.append(string.replace(body, "\n","<br>\n"))
+            self.doc.append("</code>")
+        elif format:
+            # Generic. May be useful. 
+            self.doc.append("<" + format + ">")
+            self.doc.append(string.replace(body, "\n","<br>\n"))
+            self.doc.append("</" + format + ">")
+            pass
+        else:
+            self.doc.append(string.replace(body, "\n","<br>\n"))
 
         # Ok, the body is done. Let's add all comments.
         header = []
@@ -1225,6 +1238,9 @@ class ViewTextActions(Action):
         comment_url = comment_url + "&comment_to=" + str(global_num)
         lower_actions.append(self.action_href("writearticle" + comment_url,
                                               "Kommentera detta inlägg"), NBSP)
+
+        lower_actions.append(self.action_href("viewtext&textnum=" + str(global_num) + "&viewformat=code",
+                                              "Visa i kodstil"))
         
         return 
 
