@@ -178,6 +178,8 @@ class Response:
                            "\r\n"
 
     def redir(self, url_text):
+        # Do not print shortcuts code after redirection, this leads to internal error. 
+        self.shortcuts_active = 0
         server_name = self.env["HTTP_HOST"]
         if not server_name:
             server_name = self.env["SERVER_NAME"]
@@ -1439,6 +1441,7 @@ class ChangePwSubmit(Action):
         self.doc.append(self._("Your password has been changed"))
 
 
+
 class CreateUserActions(Action):
     "Generate a page for creating a new LysKOM user"
     def response(self):
@@ -1529,8 +1532,9 @@ class WriteLetterActions(Action):
     def response(self):
         self.change_conf(self.sess.conn.get_user())
         WriteArticleActions(self.resp, self._).response()
+        return 
 
-
+    
 class WriteArticleActions(Action):
     "Generate a page for writing or commenting an article"
     def response(self, presentationfor = None, presconf = None):
@@ -2261,13 +2265,13 @@ def actions(resp):
 def write_traceback(resp):
     # Something failed in response generation.
     # FIXME: This code does not work! Why?
-    try:
-        lang_string = resp.env["HTTP_ACCEPT_LANGUAGE"]
-    except KeyError:
-        lang_string = ""
+    # try:
+    #         lang_string = resp.env["HTTP_ACCEPT_LANGUAGE"]
+    #     except KeyError:
+    #         lang_string = ""
     
-    _ = translator_cache.get_translator(lang_string).gettext
-    #_ = translator_cache.get_translator("en").gettext
+    #     _ = translator_cache.get_translator(lang_string).gettext
+    _ = translator_cache.get_translator("en").gettext
     
     # Save a copy on disk
     import traceback
