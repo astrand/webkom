@@ -324,11 +324,11 @@ def interact(banner=None, readfunc=None, local=None, fifoprefix="unnamed"):
 
     """
     # stderr and stdout
-    outfifo = os.open("/tmp/" + fifoprefix + "." + "outfifo", os.O_RDWR)
+    outfifo = os.open(fifoprefix + "." + "outfifo", os.O_RDWR)
     outobj = Outobj(outfifo)
 
     # stdin
-    infifo = os.open("/tmp/" + fifoprefix + "." + "infifo", os.O_RDWR)
+    infifo = os.open(fifoprefix + "." + "infifo", os.O_RDWR)
     inobj = Inobj(infifo)
 
     # Redir

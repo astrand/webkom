@@ -2583,9 +2583,10 @@ class Logger:
 # Interaction via FIFO
 def run_console(*args):
     system_log.write(2, "Console thread started")
+    system_log.write(4, "Console using fifo prefix " + FIFO_PREFIX)
     import fifoconsole
     try:
-        fifoconsole.interact(local=globals(), fifoprefix="testwebkom")
+        fifoconsole.interact(local=globals(), fifoprefix=FIFO_PREFIX)
     except:
         f=open(os.path.join(LOG_DIR, "traceback.fifoconsole"), "w")
         traceback.print_exc(file = f)
