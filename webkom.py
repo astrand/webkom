@@ -525,6 +525,7 @@ class LoginPageActions(Action):
 
         if LOCK_KOM_SERVER:
             logintable.append((self._("Server"), default_kom_server))
+            F.append(Input(type="hidden", name="komserver", value=default_kom_server))
         else:
             logintable.append((self._("Server"), Input(name="komserver", size=20, value=default_kom_server)))
 
