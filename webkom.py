@@ -1252,9 +1252,12 @@ class ViewTextActions(Action):
         lower_actions.append(self.action_href("writearticle" + comment_url,
                                               "Kommentera detta inlägg"), NBSP)
 
-        lower_actions.append(self.action_href("viewtext&textnum=" + str(global_num) + "&viewformat=code",
-                                              "Visa i kodstil"))
-        
+        if format:
+            lower_actions.append(self.action_href("viewtext&textnum=" + str(global_num),
+                                                  "Visa i normalstil"))
+        else:
+            lower_actions.append(self.action_href("viewtext&textnum=" + str(global_num) + "&viewformat=code",
+                                                  "Visa i kodstil"))
         return 
 
 
