@@ -338,7 +338,6 @@ def _reformat_line(line):
 
 
 def quote_text(text):
-    print >>sys.stderr, "QUOTE:", repr(text)
     result = ""
     for line in text.split("\n"):
         result = _reformat_add_line(result, ">" + line)
