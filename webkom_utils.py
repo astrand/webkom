@@ -319,8 +319,10 @@ def reformat_text(text):
                     outline = outline + " " 
                 outline = outline + newword
 
-        # Ok, this inputline is done. Add it to output. 
-        result = result + outline + "\n"
+        # Ok, this inputline is done. Add it to output.
+        if result:
+            result += "\n"
+        result += outline
 
     return result
 
