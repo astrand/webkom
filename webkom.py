@@ -646,7 +646,7 @@ class LogInActions(Action):
         if (not (self.form.has_key("komserver") and
                  (self.form.has_key("username") or self.form.has_key("login_persno"))
                  and self.form.has_key("password"))):
-            LoginPageActions(self.resp).response()
+            LoginPageActions(self.resp, self._).response()
             return
 
         self.komserver = self.form["komserver"].value
@@ -741,7 +741,7 @@ class InvalidSessionPageActions(Action):
 
 class ViewConfsUnreadActions(Action):
     def response(self):
-        ViewConfsActions(self.resp).response(only_unread=1)
+        ViewConfsActions(self.resp, self._).response(only_unread=1)
         
 class ViewConfsActions(Action):
     "Generate a page with all member conferences"
@@ -833,7 +833,7 @@ class GoConfWithUnreadActions(Action):
     def response(self):
         next_conf = get_conf_with_unread(self.sess.conn, self.sess.conn.member_confs, self.sess.current_conf)
         if next_conf:
-            GoConfActions(self.resp).response(next_conf)
+            GoConfActions(self.resp, self._).response(next_conf)
         else:
             toplink = Href(self.base_session_url(), "WebKOM")
             conflink = self.action_href("viewconfs", self._("Conferences"))
@@ -1473,10 +1473,10 @@ class WritePresentationActions(Action):
         presfor = self.form.getvalue("presentationfor")
         if int(presfor) == self.sess.pers_num:
             self.change_conf(serverinfo.pers_pres_conf)
-            WriteArticleActions(self.resp).response(presentationfor = int(presfor), presconf = serverinfo.pers_pres_conf)
+            WriteArticleActions(self.resp, self._).response(presentationfor = int(presfor), presconf = serverinfo.pers_pres_conf)
         else:
             self.change_conf(serverinfo.conf_pres_conf)
-            WriteArticleActions(self.resp).response(presentationfor = int(presfor), presconf=serverinfo.pers_pres_conf)
+            WriteArticleActions(self.resp, self._).response(presentationfor = int(presfor), presconf=serverinfo.pers_pres_conf)
 
 
 class WriteLetterActions(Action):
@@ -1787,7 +1787,7 @@ class WriteArticleSubmit(Action):
 class WritePresentationSubmit(Action):
     "Submit a presentation"
     def response(self):
-        text_num = WriteArticleSubmit(self.resp).response()
+        text_num = WriteArticleSubmit(self.resp, self._).response()
         presentation_for = int(self.form.getvalue("presentationfor"))
         if 0 != text_num:
             kom.ReqSetPresentation(self.sess.conn,
