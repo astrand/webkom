@@ -5,6 +5,7 @@ SRCDIR=`basename ${PWD}`
 
 ./set_version.py
 (cd po; ./install.py ../locale)
+make clean
 find . -name '*~' -exec rm \{\} \;
 find . -name '*.pyc' -exec rm \{\} \;
 find . -name '*.pyo' -exec rm \{\} \;
@@ -16,12 +17,18 @@ cd ..
 TOPDIR=`pwd`
 rm -f ${TOPDIR}/webkom-${VERSION}.tgz
 
+# Clean /tmp
+rm -rf /tmp/webkom-${VERSION}
+
 # Copy files to /tmp
 cp -a ${SRCDIR} /tmp/webkom-${VERSION}
 
 cd /tmp
 DISTFILES=`find webkom-${VERSION} \
- -not -path '*CVS*' -and -not -name .cvsignore -and -not -path .\
+ -not -path '*CVS*' -and \
+ -not -name .cvsignore -and \
+ -not -path .\ -and \
+ -not -name misc \
  -type f`
 tar zcvf ${TOPDIR}/webkom-${VERSION}.tgz ${DISTFILES}
 
