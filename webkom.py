@@ -43,6 +43,7 @@ from webkom_utils import *
 import webkom_js
 import TranslatorCache
 import traceback
+import types
 
 class SessionSet:
     "A set of active sessions"
@@ -51,6 +52,7 @@ class SessionSet:
         self.sessionset = {}
         # Lock variable, for updating "sessions"
         self.sessionset_lock = thread.allocate_lock()
+        self.logins_accepted = TRUE
 
     def gen_session_key(self):
         key = ""
@@ -142,6 +144,10 @@ class SessionSet:
         for key in self.sessionset.keys():
             sess = self.sessionset[key]
             sess.async_message(m, 0)
+
+    def shutdown(self, msg):
+        self.notify_all_users(msg)
+        self.logins_accepted = FALSE
 
     def log_me_out(self, session):
         self.sessionset_lock.acquire()
@@ -744,7 +750,6 @@ class LogInActions(Action):
         self.doc.append(F)
         return
 
-
     def valid_parameters(self):
         if not self.form.getvalue("komserver"):
             self.error_message(self._("No server given."))
@@ -760,6 +765,12 @@ class LogInActions(Action):
 
         return TRUE
 
+    def logins_accepted(self):
+        if not sessionset.logins_accepted:
+            self.error_message(self._("Logins are not accepted right now. Try again later."))
+            return FALSE
+        else:
+            return TRUE
 
     def setup_asyncs(self, conn):
         ACCEPTING_ASYNCS = [
@@ -775,10 +786,12 @@ class LogInActions(Action):
         conn.add_async_handler(kom.ASYNC_SEND_MESSAGE, self.resp.sess.async_message)
         conn.add_async_handler(kom.ASYNC_LOGOUT, self.resp.sess.async_logout)
         kom.ReqAcceptAsync(conn, ACCEPTING_ASYNCS).response()
-        
 
     def response(self):
         self.resp.shortcuts_active = 0
+
+        if not self.logins_accepted():
+            return
         
         if not self.valid_parameters():
             return
