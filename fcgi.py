@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+
+# 2001-12-02: Many large changes
+# /Peter Åstrand <astrand@lysator.liu.se>
+
 #------------------------------------------------------------------------
 #               Copyright (c) 1998 by Total Control Software
 #                         All Rights Reserved
