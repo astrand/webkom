@@ -31,6 +31,9 @@ class Outobj:
     def write(self, data):
         os.write(self.fd, data)
 
+    def __getattr__(self, attr):
+        return getattr(sys.stdout, attr)
+
 class Inobj:
     def __init__(self, fd):
         self.fd = fd
@@ -41,7 +44,9 @@ class Inobj:
             char = os.read(self.fd, 1)
             output = output + char
         return output
-
+    
+    def __getattr__(self, attr):
+        return getattr(sys.stdout, attr)
 
 class InteractiveInterpreter:
     """Base class for InteractiveConsole.
