@@ -2023,11 +2023,16 @@ class WhoIsOnActions(Action):
         tab = []
         
         for who in who_list:
-            static = kom.ReqGetStaticSessionInfo(self.sess.conn, who.session).response()
-            name = self.get_pers_name(who.person)
-            user_and_host = static.username + "@" + static.hostname
-            conf_name = self.sess.conn.conf_name(who.working_conference,
-                                                 default=self._("No working conference"))[:MAX_CONFERENCE_LEN]
+            try:
+                static = kom.ReqGetStaticSessionInfo(self.sess.conn, who.session).response()
+                name = self.get_pers_name(who.person)
+                user_and_host = static.username + "@" + static.hostname
+                conf_name = self.sess.conn.conf_name(who.working_conference, 
+                                                     default=self._("No working conference"))[:MAX_CONFERENCE_LEN]
+            except kom.UndefinedSession:
+                # The session got deleted not long ago. 
+                continue
+            
             tab.append([who.session, 
                         name[:37] + "<br>" + user_and_host[:37],
                         conf_name \
