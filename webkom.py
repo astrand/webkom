@@ -823,8 +823,8 @@ class LoginProgressPageActions(Action):
         self.resp.shortcuts_active = 0
         self.resp.write_docstart_refresh(1, "")
         self.doc.append(Heading(2, self._("Login progress")))
-        self.doc.append("Please wait while your conference list is loading...", BR())
-        self.doc.append("Number of conferences loaded:")
+        self.doc.append(self._("Please wait while your conference list is loading..."), BR())
+        self.doc.append(self._("Number of conferences loaded:"))
         self.resp.req.out.write(self.doc.flush_doc_contents())
 
         last_update = 0
@@ -854,8 +854,8 @@ class LoginProgressPageActions(Action):
         kwargs = {"class": "countdownfinished", "id": "counter"}
         span = Span(**kwargs)
         self.doc.append(span)
-        span.append("All conferences loaded. ")
-        span.append(Href(self.base_session_url(), "Go to main page"))
+        span.append(self._("All conferences loaded. "))
+        span.append(Href(self.base_session_url(), self._("Go to main page")))
         
         self.resp.req.out.write(self.doc.flush_doc_contents())
         self.resp.req.flush_out()
