@@ -35,3 +35,14 @@ self.submit_redir() with this container as argument.
 
 Look at LeaveConfSubmit for an example of how to do this. 
 
+
+About hardcoding site-specific configuration
+============================================
+Hardconding site-specific configuration should be avoided. This
+includes specifying shebangs like "#!/usr/local/python2.1". Shebangs
+should be written like this:
+
+#!/usr/bin/env python2
+
+Use "python2" is the application requires Python 2 or newer, use
+"python" is version 1.X or newer is OK etc.

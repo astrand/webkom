@@ -75,3 +75,19 @@ Installation
 
 7. Configure constants in webkom_constants.py. Documentation for these
    can be found in the file CONSTANTS. 
+
+8. Make sure the correct Python version is used. You should make sure
+   "python2" (currently) is in the PATH when webkom.py is executed. This
+   can be done in many ways, like:
+
+   * Using the mod_env, if running Apache. 
+
+   * Creating a wrapper script that sets up an correct PATH and then
+   executes WebKOM. Example:
+
+   #!/bin/sh
+   export PATH=/usr/local/python/bin:$PATH
+   exec /opt/local/webkom/wwwroot/fcgi-bin/webkom.py
+
+   Changing the shebang directly is depricated. 
+
