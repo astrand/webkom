@@ -26,9 +26,8 @@ import sys
 # Not strictly necessary, but it won't hurt. 
 sys.path.append(ORIGIN_DIR)
 
-import os, sys, string, socket, errno
+import os, string, socket
 from cStringIO import StringIO
-import cgi
 import thfcgi
 import kom
 from HTMLgen import *
@@ -3014,7 +3013,6 @@ def write_traceback(resp):
     _ = resp.get_translator()
     
     # Save a copy on disk
-    import time
     timetext = time.strftime("%y%m%d-%H%M", time.localtime(time.time()))                
     f = open(os.path.join(LOG_DIR, "traceback-" + timetext), "w")
     traceback.print_exc(file = f)
